@@ -22,12 +22,21 @@
     <Filter Include="Header Files\Base">
       <UniqueIdentifier>{f9787f64-a445-4241-9b33-f45618756ebc}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\ZombsIO">
+      <UniqueIdentifier>{602a7161-5834-4b21-8743-757476ccd13b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Images\alpha_donald.png">
       <Filter>Resource Files\Images</Filter>
     </Image>
     <Image Include="Images\rocknroll.png">
+      <Filter>Resource Files\Images</Filter>
+    </Image>
+    <Image Include="..\..\..\Documents\ZombsImages\player.PNG">
+      <Filter>Resource Files\Images</Filter>
+    </Image>
+    <Image Include="Images\testimage.png">
       <Filter>Resource Files\Images</Filter>
     </Image>
   </ItemGroup>
@@ -64,6 +73,9 @@
     <ClCompile Include="SourceFiles\WinMain.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="ZombsIO.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Base\Color.h">
@@ -89,6 +101,9 @@
     </ClInclude>
     <ClInclude Include="Base\Surface.h">
       <Filter>Header Files\Base</Filter>
+    </ClInclude>
+    <ClInclude Include="ZombsIO.h">
+      <Filter>Header Files\ZombsIO</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

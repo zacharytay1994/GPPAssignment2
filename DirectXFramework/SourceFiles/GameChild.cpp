@@ -50,4 +50,6 @@ void GameChild::Render()
 {
 	rocknroll_.Draw();
 	mario_sprite_.Draw();
+	rocknroll2_.Draw();
+	player_.Draw();
 }

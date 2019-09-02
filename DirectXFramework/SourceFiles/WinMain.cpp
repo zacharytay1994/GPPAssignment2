@@ -5,11 +5,13 @@
 #include <crtdbg.h>
 
 #include <Windows.h>
+#include "../ZombsIO.h"
 #include "../Base/GameChild.h"
 #include "../Base/GDIPlusManager.h"
 
 // Pointer to a game instance
 std::unique_ptr<GameChild> game_;
+//std::unique_ptr<ZombsIO> game_;
 
 // Function Prototypes
 LRESULT WINAPI WinProc(HWND, UINT, WPARAM, LPARAM);			   // defines custom windows procedure
@@ -59,7 +61,7 @@ int WINAPI WinMain(HINSTANCE hInstance,
 	wce.hInstance = hInstance;
 	wce.hIcon = nullptr; // Default icon if null
 	wce.hCursor = nullptr; // Default cursor if null
-	wce.hbrBackground = (HBRUSH)GetStockObject(WHITE_BRUSH); // DirectX fills background, not windows
+	wce.hbrBackground = (HBRUSH)GetStockObject(BLACK_BRUSH); // DirectX fills background, not windows
 	wce.lpszMenuName = nullptr;
 	wce.lpszClassName = wndClassName;
 	wce.hIconSm = nullptr;
