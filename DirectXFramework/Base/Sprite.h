@@ -82,6 +82,8 @@ public:
 	void	SetAngle(const float& angle);
 	int		GetX();
 	int		GetY();
+	float	GetWorldX();
+	float	GetWorldY();
 	int		GetWidth();
 	int		GetHeight();
 	float	GetScaleX();

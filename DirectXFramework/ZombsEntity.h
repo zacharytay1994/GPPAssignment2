@@ -14,6 +14,7 @@ protected:
 	Vector2D position_ = { x_, y_ };
 
 	// Travelling variables
+	float max_speed_ = 0.0f;
 	float speed_ = 0.0f;
 	float acceleration_ = 0.0f;
 	Vector2D horizontal_vector_ = { 0.0f, 0.0f };
@@ -31,5 +32,8 @@ public:
 	void SetVerticalVec(const Vector2D& vec);
 	void SetMovementVec(const Vector2D& vec);
 	void SyncSpritePosition();
+	void SetMaxSpeed(const float& maxspeed);
+	void SetAcceleration(const float& acceleration);
 	void SetSpeed(const float& speed);
+	Sprite& GetSprite();
 };

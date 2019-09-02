@@ -39,7 +39,22 @@ void ZombsEntity::SyncSpritePosition()
 	sprite_.SetY(int(position_.y_));
 }
 
+void ZombsEntity::SetMaxSpeed(const float & maxspeed)
+{
+	max_speed_ = maxspeed;
+}
+
+void ZombsEntity::SetAcceleration(const float & acceleration)
+{
+	acceleration_ = acceleration;
+}
+
 void ZombsEntity::SetSpeed(const float & speed)
 {
 	speed_ = speed;
+}
+
+Sprite & ZombsEntity::GetSprite()
+{
+	return sprite_;
 }

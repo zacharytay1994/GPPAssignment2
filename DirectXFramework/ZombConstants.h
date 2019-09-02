@@ -1,6 +1,9 @@
 #pragma once
+
+#include <DirectXMath.h>
 #include <math.h>
 
+/* Vector 2D Class*/
 class Vector2D {
 public:
 	float x_;
@@ -17,9 +20,6 @@ public:
 		y_ += rhs.y_;
 		return *this;
 	}
-	/*Vector2D& operator+=(const Vector2D& rhs) {
-		return *this + rhs;
-	}*/
 	Vector2D& operator*(const float& scalar) {
 		x_ *= scalar;
 		y_ *= scalar;

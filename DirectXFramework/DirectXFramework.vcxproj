@@ -48,6 +48,7 @@
     </FxCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="SourceFiles\Camera.cpp" />
     <ClCompile Include="SourceFiles\Game.cpp" />
     <ClCompile Include="SourceFiles\GameChild.cpp" />
     <ClCompile Include="SourceFiles\GDIPlusManager.cpp" />
@@ -61,6 +62,9 @@
     <ClCompile Include="ZombsPlayer.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Base\Camera.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
+    </ClInclude>
     <ClInclude Include="Base\Color.h" />
     <ClInclude Include="Base\Game.h" />
     <ClInclude Include="Base\GameChild.h" />

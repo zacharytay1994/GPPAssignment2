@@ -1,4 +1,5 @@
 #include "../Base/Sprite.h"
+#include "../Base/Camera.h"
 #include <assert.h>
 
 Sprite::Sprite(std::shared_ptr<Graphics> gfx, const std::wstring& filename, const int& width, const int& height)
@@ -32,7 +33,9 @@ dx::XMMATRIX Sprite::GetTransform()
 				dx::XMMatrixRotationZ(sprite_data_.angle_) *
 				dx::XMMatrixScaling((float)Graphics::viewport_height_/(float)Graphics::viewport_width_,1.0f,1.0f) *
 				dx::XMMatrixTranslation(-1.0f,1.0f,0.0f) *
-				dx::XMMatrixTranslation(sprite_data_.world_xoffset_, sprite_data_.world_yoffset_, 0.0f)
+				dx::XMMatrixTranslation(sprite_data_.world_xoffset_, sprite_data_.world_yoffset_, 0.0f) *
+				Camera::camera_translation_ *
+				Camera::camera_rotation_
 	);
 }
 
@@ -87,6 +90,16 @@ int Sprite::GetX()
 int Sprite::GetY()
 {
 	return sprite_data_.screen_yoffset_;
+}
+
+float Sprite::GetWorldX()
+{
+	return sprite_data_.world_xoffset_;
+}
+
+float Sprite::GetWorldY()
+{
+	return sprite_data_.world_yoffset_;
 }
 
 int Sprite::GetWidth()

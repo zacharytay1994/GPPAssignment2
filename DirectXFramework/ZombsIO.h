@@ -1,8 +1,8 @@
 #pragma once
 
 #include "Base/Game.h"
-#pragma once
 #include "Base/Sprite.h"
+#include "Base/Camera.h"
 #include "ZombsPlayer.h"
 
 struct ZombsIOState {
@@ -15,6 +15,7 @@ private:
 	ZombsIOState game_state_;
 	Sprite background_ = Sprite(graphics_, L"Images/zombsfloor.png", 800, 600);
 	ZombsPlayer player_ = ZombsPlayer(graphics_, L"Images/player.png", 100, 100);
+	Camera camera_;
 public:
 	ZombsIO(HWND hwnd);
 	virtual ~ZombsIO();
