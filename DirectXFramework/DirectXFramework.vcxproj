@@ -59,6 +59,7 @@
     <ClCompile Include="SourceFiles\WinMain.cpp" />
     <ClCompile Include="ZombsEntity.cpp" />
     <ClCompile Include="ZombsIO.cpp" />
+    <ClCompile Include="ZombsMouse.cpp" />
     <ClCompile Include="ZombsPlayer.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -76,6 +77,7 @@
     <ClInclude Include="ZombConstants.h" />
     <ClInclude Include="ZombsEntity.h" />
     <ClInclude Include="ZombsIO.h" />
+    <ClInclude Include="ZombsMouse.h" />
     <ClInclude Include="ZombsPlayer.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

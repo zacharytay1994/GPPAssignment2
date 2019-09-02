@@ -88,6 +88,9 @@
     <ClCompile Include="SourceFiles\Camera.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="ZombsMouse.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Base\Color.h">
@@ -128,6 +131,9 @@
     </ClInclude>
     <ClInclude Include="Base\Camera.h">
       <Filter>Header Files\Base</Filter>
+    </ClInclude>
+    <ClInclude Include="ZombsMouse.h">
+      <Filter>Header Files\ZombsIO</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

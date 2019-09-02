@@ -29,12 +29,19 @@ protected:
 	PAINTSTRUCT ps = { 0 };
 	RECT rect;
 public:
+	// handle window state, if window resize
+	int window_width_;
+	int window_height_;
+	int window_center_x_;
+	int window_center_y_;
+public:
 	Game(HWND hwnd);
 	virtual ~Game();
 	void Initialize(HWND hwnd);
 	LRESULT HandleMessage(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam);
 	bool HandleFrameTime();
 	void Run(HWND hwnd);
+	void UpdateWindowDimensions();
 	virtual void Update(std::shared_ptr<Input>& input, const float& dt) = 0;
 	virtual void AI() = 0;
 	virtual void Collisions() = 0;

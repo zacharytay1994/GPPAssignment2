@@ -8,4 +8,5 @@ public:
 	~ZombsPlayer();
 	virtual void Update(std::shared_ptr<Input>& input, const float& dt) override;
 	virtual void Draw() override;
+	void UpdateSpriteOrientation(const float& angle);
 };

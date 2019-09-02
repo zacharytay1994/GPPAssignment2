@@ -46,3 +46,8 @@ void ZombsPlayer::Draw()
 {
 	sprite_.Draw();
 }
+
+void ZombsPlayer::UpdateSpriteOrientation(const float & angle)
+{
+	sprite_.SetAngle(angle);
+}

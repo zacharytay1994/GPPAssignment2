@@ -26,7 +26,11 @@ void Game::Initialize(HWND hwnd)
 	QueryPerformanceFrequency(&timer_freqency_);
 	// sets time_start_ to current performance counter value
 	QueryPerformanceCounter(&time_start_);
-
+	// set window dimensions
+	window_width_ = Graphics::viewport_width_;
+	window_height_ = Graphics::viewport_height_;
+	window_center_x_ = window_width_ / 2;
+	window_center_y_ = window_height_ / 2;
 	// flag initialized_
 	initialized_ = true;
 }
@@ -158,4 +162,15 @@ void Game::Run(HWND hwnd)
 	input_->EndFrame();
 	// present frame
 	graphics_->EndFrame();
+}
+
+void Game::UpdateWindowDimensions()
+{
+	if (input_->KeyWasPressed('U')) {
+		RECT rect;
+		if (GetWindowRect(hwnd_, &rect)) {
+			window_width_ = rect.right - rect.left;
+			window_height_ = rect.bottom - rect.top;
+		}
+	}
 }

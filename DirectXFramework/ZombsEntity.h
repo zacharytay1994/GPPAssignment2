@@ -11,8 +11,9 @@ protected:
 	float x_ = 0.0f; 		  // default initialize world center
 	float y_ = 0.0f;		  // default initialize world center
 	Sprite sprite_;
+public:
 	Vector2D position_ = { x_, y_ };
-
+protected:
 	// Travelling variables
 	float max_speed_ = 0.0f;
 	float speed_ = 0.0f;

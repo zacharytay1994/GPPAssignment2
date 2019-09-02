@@ -4,6 +4,7 @@
 #include "Base/Sprite.h"
 #include "Base/Camera.h"
 #include "ZombsPlayer.h"
+#include "ZombsMouse.h"
 
 struct ZombsIOState {
 	int level_;
@@ -12,10 +13,11 @@ struct ZombsIOState {
 };
 class ZombsIO : public Game {
 private:
-	ZombsIOState game_state_;
-	Sprite background_ = Sprite(graphics_, L"Images/zombsfloor.png", 800, 600);
-	ZombsPlayer player_ = ZombsPlayer(graphics_, L"Images/player.png", 100, 100);
-	Camera camera_;
+	ZombsIOState	game_state_;
+	ZombsMouse		mouse_;
+	Camera			camera_;
+	Sprite			background_ = Sprite(graphics_, L"Images/zombsfloor.png", 800, 600);
+	ZombsPlayer		player_ = ZombsPlayer(graphics_, L"Images/player.png", 100, 100);
 public:
 	ZombsIO(HWND hwnd);
 	virtual ~ZombsIO();
