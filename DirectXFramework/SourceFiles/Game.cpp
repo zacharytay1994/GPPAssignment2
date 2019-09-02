@@ -3,7 +3,7 @@
 
 Game::Game(HWND hwnd)
 	:
-	input_(std::make_unique<Input>()),
+	input_(std::make_shared<Input>()),
 	graphics_(std::make_shared<Graphics>())
 {
 	Initialize(hwnd);
@@ -148,7 +148,7 @@ void Game::Run(HWND hwnd)
 
 	// process components
 	if (!paused_) {
-		Update();
+		Update(input_, frame_time_);
 		AI();
 		Collisions();
 		Render();

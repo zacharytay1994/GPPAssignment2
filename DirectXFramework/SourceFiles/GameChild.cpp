@@ -19,7 +19,7 @@ void GameChild::Initialize(HWND hwnd)
 	rocknroll_.InitializeAnimation(3, 2, 0, 5, 0.1f, true);
 }
 
-void GameChild::Update()
+void GameChild::Update(std::shared_ptr<Input>& input, const float& dt)
 {
 	if (input_->KeyIsDown('W')) {
 		mario_sprite_.SetY(mario_sprite_.GetY() - 5);

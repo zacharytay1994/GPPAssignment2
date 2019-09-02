@@ -39,6 +39,9 @@
     <Image Include="Images\testimage.png">
       <Filter>Resource Files\Images</Filter>
     </Image>
+    <Image Include="Images\zombsfloor.png">
+      <Filter>Resource Files\Images</Filter>
+    </Image>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shaders\SpritePixelShader.hlsl">
@@ -76,6 +79,12 @@
     <ClCompile Include="ZombsIO.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="ZombsEntity.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ZombsPlayer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Base\Color.h">
@@ -103,6 +112,15 @@
       <Filter>Header Files\Base</Filter>
     </ClInclude>
     <ClInclude Include="ZombsIO.h">
+      <Filter>Header Files\ZombsIO</Filter>
+    </ClInclude>
+    <ClInclude Include="ZombsPlayer.h">
+      <Filter>Header Files\ZombsIO</Filter>
+    </ClInclude>
+    <ClInclude Include="ZombsEntity.h">
+      <Filter>Header Files\ZombsIO</Filter>
+    </ClInclude>
+    <ClInclude Include="ZombConstants.h">
       <Filter>Header Files\ZombsIO</Filter>
     </ClInclude>
   </ItemGroup>

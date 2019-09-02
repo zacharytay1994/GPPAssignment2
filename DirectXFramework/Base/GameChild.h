@@ -14,7 +14,7 @@ public:
 	void Initialize(HWND hwnd);
 
 	// components
-	void Update() override;
+	void Update(std::shared_ptr<Input>& input, const float& dt) override;
 	void AI() override;
 	void Collisions() override;
 	void Render() override;

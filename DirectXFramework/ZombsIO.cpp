@@ -14,10 +14,9 @@ void ZombsIO::Initialize(HWND hwnd)
 {
 }
 
-void ZombsIO::Update()
+void ZombsIO::Update(std::shared_ptr<Input>& input, const float& dt)
 {
-	player_.SetX(400);
-	player_.SetY(300);
+	player_.Update(input, dt);
 }
 
 void ZombsIO::AI()
@@ -30,7 +29,6 @@ void ZombsIO::Collisions()
 
 void ZombsIO::Render()
 {
+	background_.Draw();
 	player_.Draw();
-	rocknroll_.Draw();
-	//mario_sprite_.Draw();
 }

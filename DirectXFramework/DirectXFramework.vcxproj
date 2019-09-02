@@ -23,6 +23,7 @@
     <Image Include="Images\alpha_donald.png" />
     <Image Include="Images\rocknroll.png" />
     <Image Include="Images\testimage.png" />
+    <Image Include="Images\zombsfloor.png" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shaders\SpritePixelShader.hlsl">
@@ -55,7 +56,9 @@
     <ClCompile Include="SourceFiles\Sprite.cpp" />
     <ClCompile Include="SourceFiles\Surface.cpp" />
     <ClCompile Include="SourceFiles\WinMain.cpp" />
+    <ClCompile Include="ZombsEntity.cpp" />
     <ClCompile Include="ZombsIO.cpp" />
+    <ClCompile Include="ZombsPlayer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Base\Color.h" />
@@ -66,7 +69,10 @@
     <ClInclude Include="Base\Input.h" />
     <ClInclude Include="Base\Sprite.h" />
     <ClInclude Include="Base\Surface.h" />
+    <ClInclude Include="ZombConstants.h" />
+    <ClInclude Include="ZombsEntity.h" />
     <ClInclude Include="ZombsIO.h" />
+    <ClInclude Include="ZombsPlayer.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>

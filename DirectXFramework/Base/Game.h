@@ -6,7 +6,7 @@
 
 class Game {
 protected:
-	std::unique_ptr<Input> input_;		   // pointer to input
+	std::shared_ptr<Input> input_;		   // pointer to input
 	std::shared_ptr<Graphics> graphics_;   // pointer to graphics
 	HWND  hwnd_;						   // window handle
 	bool  initialized_;					   // if game is initialized
@@ -35,7 +35,7 @@ public:
 	LRESULT HandleMessage(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam);
 	bool HandleFrameTime();
 	void Run(HWND hwnd);
-	virtual void Update() = 0;
+	virtual void Update(std::shared_ptr<Input>& input, const float& dt) = 0;
 	virtual void AI() = 0;
 	virtual void Collisions() = 0;
 	virtual void Render() = 0;

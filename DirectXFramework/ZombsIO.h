@@ -1,27 +1,27 @@
 #pragma once
 
 #include "Base/Game.h"
+#pragma once
 #include "Base/Sprite.h"
+#include "ZombsPlayer.h"
 
 struct ZombsIOState {
 	int level_;
 	int world_height_;
 	int world_width_;
-
 };
 class ZombsIO : public Game {
 private:
 	ZombsIOState game_state_;
-	Sprite player_ = Sprite(graphics_, L"Images/player.png", 254, 254);
-	Sprite rocknroll_ = Sprite(graphics_, L"Images/testimage.png", 400, 300);
-	Sprite mario_sprite_ = Sprite(graphics_, L"Images/alpha_donald.png", 400, 300);
+	Sprite background_ = Sprite(graphics_, L"Images/zombsfloor.png", 800, 600);
+	ZombsPlayer player_ = ZombsPlayer(graphics_, L"Images/player.png", 100, 100);
 public:
 	ZombsIO(HWND hwnd);
 	virtual ~ZombsIO();
 	void Initialize(HWND hwnd);
 
 	// components
-	void Update() override;
+	void Update(std::shared_ptr<Input>& input, const float& dt) override;
 	void AI() override;
 	void Collisions() override;
 	void Render() override;
