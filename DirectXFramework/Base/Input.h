@@ -56,8 +56,8 @@ public:
 	void SetMouseMiddleButton(bool flag);			// set middle mouse button state
 	void SetMouseRightButton(bool flag);			// set right mouse button state
 	void SetMouseXButton(WPARAM wparam);			// set x1 and x2 mouse button state
-	int  GetMouseX();								// return mouse x coordinate
-	int  GetMouseY();								// return mouse y coordinate
+	int  GetMouseX();								// return mouse x screen-coordinate
+	int  GetMouseY();								// return mouse y screen-coordinate
 	int  GetMouseRawX();							// return mouse raw x coordinate, for high definition mice
 	int  GetMouseRawY();							// return mouse raw y coordinate, for high definition mice
 	bool GetMouseLeftButton();						// return left mouse button state

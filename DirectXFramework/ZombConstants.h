@@ -15,20 +15,23 @@ public:
 		y_ = rhs.y_;
 		return *this;
 	}
-	Vector2D& operator+(const Vector2D& rhs) {
-		x_ += rhs.x_;
-		y_ += rhs.y_;
-		return *this;
+	Vector2D operator+(const Vector2D& rhs) {
+		float x = x_ + rhs.x_;
+		float y = y_ + rhs.y_;
+		return { x,y };
 	}
-	Vector2D& operator-(const Vector2D& rhs) {
-		x_ -= rhs.x_;
-		y_ -= rhs.y_;
-		return *this;
+	Vector2D operator-(const Vector2D& rhs) {
+		float x = x_ - rhs.x_;
+		float y = y_ - rhs.y_;
+		return { x,y };
 	}
-	Vector2D& operator*(const float& scalar) {
-		x_ *= scalar;
-		y_ *= scalar;
-		return *this;
+	Vector2D operator*(const float& scalar) {
+		float x = x_ * scalar;
+		float y = y_ * scalar;
+		return { x,y };
+	}
+	void operator*=(const float& scalar) {
+		*this = *this * scalar;
 	}
 	float operator*(const Vector2D& rhs) {
 		return (x_ * rhs.x_) + (y_ * rhs.y_);

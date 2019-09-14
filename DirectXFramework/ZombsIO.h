@@ -13,11 +13,11 @@ struct ZombsIOState {
 };
 class ZombsIO : public Game {
 private:
-	ZombsIOState	game_state_;
-	ZombsMouse		mouse_;
-	Camera			camera_;
-	Sprite			background_ = Sprite(graphics_, L"Images/zombsfloor.png", 800, 600);
-	ZombsPlayer		player_ = ZombsPlayer(graphics_, L"Images/player.png", 100, 100);
+	ZombsIOState			game_state_;
+	std::shared_ptr<Camera>	camera_;
+	ZombsMouse				mouse_;
+	Sprite					background_ = Sprite(graphics_, L"Images/zombsfloor.png", 800, 600);
+	ZombsPlayer				player_ = ZombsPlayer(graphics_, L"Images/player.png", 100, 100);
 public:
 	ZombsIO(HWND hwnd);
 	virtual ~ZombsIO();
