@@ -1,5 +1,6 @@
 #pragma once
 
+#include <memory>
 #include <Windows.h>
 #include "Input.h"
 #include "Graphics.h"

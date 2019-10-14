@@ -5,6 +5,8 @@
 #include <crtdbg.h>
 
 #include <Windows.h>
+#include <string>
+#include <sstream>
 #include "../Base/GameChild.h"
 #include "../Base/GDIPlusManager.h"
 
@@ -59,7 +61,7 @@ int WINAPI WinMain(HINSTANCE hInstance,
 	wce.hInstance = hInstance;
 	wce.hIcon = nullptr; // Default icon if null
 	wce.hCursor = nullptr; // Default cursor if null
-	wce.hbrBackground = (HBRUSH)GetStockObject(WHITE_BRUSH); // DirectX fills background, not windows
+	wce.hbrBackground = (HBRUSH)GetStockObject(BLACK_BRUSH); // DirectX fills background, not windows
 	wce.lpszMenuName = nullptr;
 	wce.lpszClassName = wndClassName;
 	wce.hIconSm = nullptr;
@@ -126,11 +128,15 @@ int WINAPI WinMain(HINSTANCE hInstance,
 	// Create msg struct, type LPMSG
 	MSG msg;
 	int done = 0;
+	std::wstringstream ss;
 	// Message loop
 	while (!done) {
 		// when window handle is null, PeekMessage() retrieves messages for any window that belongs to the current thread
 		if (PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE)) {
 			// check if quit message has been processed
+			ss << msg.message << std::endl;
+			OutputDebugStringW(ss.str().c_str());
+			ss.clear();
 			if (msg.message == WM_QUIT) {
 				done = 1;
 			}
