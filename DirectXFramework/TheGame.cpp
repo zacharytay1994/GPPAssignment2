@@ -24,6 +24,7 @@ void TheGame::Update()
 {
 	player_.Update(frame_time_);
 	i += 0.01;
+	player_.sprite_.FlipVertical(true);
 	player_.sprite_.SetAngle(i);
 }
 

@@ -79,6 +79,40 @@ void Sprite::SetAngle(const float & angle)
 	sprite_data_.angle_ = angle;
 }
 
+void Sprite::FlipHorizontal(const bool & flip)
+{
+	// if flip is not redundant, i.e. already flipped
+	if ((flip && !sprite_data_.flip_horizontal_) || (!flip && sprite_data_.flip_horizontal_)) {
+		sprite_data_.flip_horizontal_ = flip;
+		Coord tl = tc_.top_left;
+		Coord tr = tc_.top_right;
+		Coord bl = tc_.bottom_left;
+		Coord br = tc_.bottom_right;
+		tc_.top_left = tr;
+		tc_.top_right = tl;
+		tc_.bottom_left = br;
+		tc_.bottom_right = bl;
+		UpdateVB();
+	}
+}
+
+void Sprite::FlipVertical(const bool & flip)
+{
+	// if flip is not redundant, i.e. already flipped
+	if ((flip && !sprite_data_.flip_vertical_) || (!flip && sprite_data_.flip_vertical_)) {
+		sprite_data_.flip_vertical_ = flip;
+		Coord tl = tc_.top_left;
+		Coord tr = tc_.top_right;
+		Coord bl = tc_.bottom_left;
+		Coord br = tc_.bottom_right;
+		tc_.top_left = bl;
+		tc_.top_right = br;
+		tc_.bottom_left = tl;
+		tc_.bottom_right = tr;
+		UpdateVB();
+	}
+}
+
 int Sprite::GetX()
 {
 	return sprite_data_.screen_xoffset_;
@@ -278,6 +312,25 @@ TexCoord Sprite::FrameToTexcoord(const int& frame)
 	int col = frame % sprite_sheet_columns_;
 	float start_coord_x = col * unit_x_;
 	float start_coord_y = row * unit_y_;
+	// check flip orientation of sprite and return corresponding vertex order
+	if (sprite_data_.flip_horizontal_ && sprite_data_.flip_vertical_) {
+		return { {start_coord_x + unit_x_, start_coord_y + unit_y_},
+			{start_coord_x, start_coord_y + unit_y_},
+			{start_coord_x + unit_x_, start_coord_y},
+			{start_coord_x, start_coord_y} };
+	}
+	else if (sprite_data_.flip_horizontal_) {
+		return { {start_coord_x + unit_x_, start_coord_y},
+			{start_coord_x, start_coord_y},
+			{start_coord_x + unit_x_, start_coord_y + unit_y_},
+			{start_coord_x, start_coord_y + unit_y_} };
+	}
+	else if (sprite_data_.flip_vertical_) {
+		return { {start_coord_x, start_coord_y + unit_y_},
+			{start_coord_x + unit_x_, start_coord_y + unit_y_},
+			{start_coord_x, start_coord_y},
+			{start_coord_x + unit_x_, start_coord_y} };
+	}
 	return { {start_coord_x, start_coord_y},
 			{start_coord_x + unit_x_, start_coord_y},
 			{start_coord_x, start_coord_y + unit_y_},

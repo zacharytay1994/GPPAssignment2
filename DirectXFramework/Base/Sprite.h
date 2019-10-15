@@ -80,6 +80,8 @@ public:
 	void	SetScaleX(const float& scalex);
 	void	SetScaleY(const float& scaley);
 	void	SetAngle(const float& angle);
+	void	FlipHorizontal(const bool& flip);
+	void	FlipVertical(const bool& flip);
 	int		GetX();
 	int		GetY();
 	int		GetWidth();
