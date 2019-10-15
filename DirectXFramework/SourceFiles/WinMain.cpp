@@ -5,8 +5,6 @@
 #include <crtdbg.h>
 
 #include <Windows.h>
-#include <string>
-#include <sstream>
 #include "../Base/GameChild.h"
 #include "../Base/GDIPlusManager.h"
 
@@ -80,12 +78,14 @@ int WINAPI WinMain(HINSTANCE hInstance,
 	________________________________________ */
 
 	// Some window variables
-	const int wndX = 0; // x-coord of upper left corner
-	const int wndY = 0; // y-coord of upper left corner
+	const int wndX = 100; // x-coord of upper left corner
+	const int wndY = 100; // y-coord of upper left corner
 	const int wndWidth = 800; // in pixels
 	const int wndHeight = 600;
+	const int wndBotX = wndX + wndWidth;
+	const int wndRightY = wndY + wndHeight;
 	// Adjust window rect based on client region
-	RECT rect = { 0,0,wndWidth,wndHeight };
+	RECT rect = { wndX,wndY,wndBotX,wndRightY };
 	if (!AdjustWindowRect(&rect, WS_CAPTION | WS_SYSMENU | WS_THICKFRAME | WS_MINIMIZEBOX | WS_MAXIMIZEBOX, false)) {
 		return false;
 	};
@@ -128,15 +128,11 @@ int WINAPI WinMain(HINSTANCE hInstance,
 	// Create msg struct, type LPMSG
 	MSG msg;
 	int done = 0;
-	std::wstringstream ss;
 	// Message loop
 	while (!done) {
 		// when window handle is null, PeekMessage() retrieves messages for any window that belongs to the current thread
 		if (PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE)) {
 			// check if quit message has been processed
-			ss << msg.message << std::endl;
-			OutputDebugStringW(ss.str().c_str());
-			ss.clear();
 			if (msg.message == WM_QUIT) {
 				done = 1;
 			}

@@ -1,5 +1,6 @@
 #include "../Base/GameChild.h"
 
+
 GameChild::GameChild(HWND hwnd)
 	:
 	Game(hwnd)
