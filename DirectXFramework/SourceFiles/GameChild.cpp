@@ -14,7 +14,7 @@ GameChild::~GameChild()
 void GameChild::Initialize(HWND hwnd)
 {
 	mario_sprite_.InitializeAnimation(6, 4, 0, 23, 0.1f, true);
-	rocknroll_.SetX(400);
+	rocknroll_.SetX(200);
 	rocknroll_.SetY(300);
 	rocknroll_.InitializeAnimation(3, 2, 0, 5, 0.1f, true);
 }
