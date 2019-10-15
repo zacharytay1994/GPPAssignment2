@@ -84,9 +84,9 @@ int WINAPI WinMain(HINSTANCE hInstance,
 	const int wndWidth = 800; // in pixels
 	const int wndHeight = 600;
 	const int wndBotX = wndX + wndWidth;
-	const int wndRightY = wndY + wndHeight;
+	const int wndLeftY = wndY + wndHeight;
 	// Adjust window rect based on client region
-	RECT rect = { wndX,wndY,wndBotX,wndRightY };
+	RECT rect = { wndX,wndY,wndBotX,wndLeftY };
 	if (!AdjustWindowRect(&rect, WS_CAPTION | WS_SYSMENU | WS_THICKFRAME | WS_MINIMIZEBOX | WS_MAXIMIZEBOX, false)) {
 		return false;
 	};
