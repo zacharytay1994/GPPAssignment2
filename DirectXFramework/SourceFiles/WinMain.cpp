@@ -5,8 +5,6 @@
 #include <crtdbg.h>
 
 #include <Windows.h>
-#include <string>
-#include <sstream>
 #include "../Base/GameChild.h"
 #include "../TheGame.h"
 #include "../Base/GDIPlusManager.h"
@@ -131,15 +129,11 @@ int WINAPI WinMain(HINSTANCE hInstance,
 	// Create msg struct, type LPMSG
 	MSG msg;
 	int done = 0;
-	std::wstringstream ss;
 	// Message loop
 	while (!done) {
 		// when window handle is null, PeekMessage() retrieves messages for any window that belongs to the current thread
 		if (PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE)) {
 			// check if quit message has been processed
-			ss << msg.message << std::endl;
-			OutputDebugStringW(ss.str().c_str());
-			ss.clear();
 			if (msg.message == WM_QUIT) {
 				done = 1;
 			}

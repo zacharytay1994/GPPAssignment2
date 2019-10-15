@@ -58,6 +58,7 @@
     <ClCompile Include="TheGame.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="AnimationStatemachine.h" />
     <ClInclude Include="Base\Color.h" />
     <ClInclude Include="Base\Game.h" />
     <ClInclude Include="Base\GameChild.h" />
