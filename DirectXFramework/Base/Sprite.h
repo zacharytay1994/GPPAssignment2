@@ -80,6 +80,8 @@ public:
 	void	SetScaleX(const float& scalex);
 	void	SetScaleY(const float& scaley);
 	void	SetAngle(const float& angle);
+	void	FlipHorizontal(const bool& flip);	// flips sprite horizontally if called with true, default if false
+	void	FlipVertical(const bool& flip);		// flips do not stack, i.e. 2 flip trues do not result in original flip orientation
 	int		GetX();
 	int		GetY();
 	int		GetWidth();
