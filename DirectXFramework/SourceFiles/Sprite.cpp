@@ -64,7 +64,7 @@ void Sprite::SetHeight(const int & height)
 
 void Sprite::SetScaleX(const float & scalex)
 {
-	//assert(scalex > 0.0f);
+	assert(scalex > 0.0f);
 	sprite_data_.scale_x_ = scalex;
 }
 

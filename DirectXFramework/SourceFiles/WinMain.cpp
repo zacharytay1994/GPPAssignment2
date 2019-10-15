@@ -6,10 +6,11 @@
 
 #include <Windows.h>
 #include "../Base/GameChild.h"
+#include "../TheGame.h"
 #include "../Base/GDIPlusManager.h"
 
 // Pointer to a game instance
-std::unique_ptr<GameChild> game_;
+std::unique_ptr<TheGame> game_;
 
 // Function Prototypes
 LRESULT WINAPI WinProc(HWND, UINT, WPARAM, LPARAM);			   // defines custom windows procedure
@@ -116,7 +117,7 @@ int WINAPI WinMain(HINSTANCE hInstance,
 	FILL POINTER WITH INSTANTIATED GAME OBJECT 
 	AND INITIALIZE
 	________________________________________ */
-	game_ = std::make_unique<GameChild>(hwnd);
+	game_ = std::make_unique<TheGame>(hwnd);
 	//game_->Initialize(hwnd);
 
 	/*________________________________________
