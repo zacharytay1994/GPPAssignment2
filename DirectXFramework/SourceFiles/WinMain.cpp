@@ -81,12 +81,14 @@ int WINAPI WinMain(HINSTANCE hInstance,
 	________________________________________ */
 
 	// Some window variables
-	const int wndX = 0; // x-coord of upper left corner
-	const int wndY = 0; // y-coord of upper left corner
+	const int wndX = 100; // x-coord of upper left corner
+	const int wndY = 100; // y-coord of upper left corner
 	const int wndWidth = 800; // in pixels
 	const int wndHeight = 600;
+	const int wndBotX = wndX + wndWidth;
+	const int wndLeftY = wndY + wndHeight;
 	// Adjust window rect based on client region
-	RECT rect = { 0,0,wndWidth,wndHeight };
+	RECT rect = { wndX,wndY,wndBotX,wndLeftY };
 	if (!AdjustWindowRect(&rect, WS_CAPTION | WS_SYSMENU | WS_THICKFRAME | WS_MINIMIZEBOX | WS_MAXIMIZEBOX, false)) {
 		return false;
 	};

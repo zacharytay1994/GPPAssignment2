@@ -15,6 +15,8 @@ private:
 	bool has_sprite_;
 	const int sprite_width_ = 300;
 	const int sprite_height_ = 300;
+
+public:
 	Sprite sprite_;
 
 	// entity variables
