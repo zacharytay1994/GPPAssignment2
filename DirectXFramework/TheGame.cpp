@@ -17,11 +17,14 @@ void TheGame::Initialize(HWND hwnd)
 	player_.sprite_.SetX(400);
 	player_.sprite_.SetY(300);
 	player_.sprite_.SetScaleX(2);
+	player_.sprite_.SetAngle(i);
 }
 
 void TheGame::Update()
 {
 	player_.Update(frame_time_);
+	i += 0.01;
+	player_.sprite_.SetAngle(i);
 }
 
 void TheGame::AI()

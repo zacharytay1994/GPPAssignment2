@@ -6,6 +6,7 @@
 class TheGame : public Game {
 private:
 	Player player_ = Player(graphics_, L"Images/alpha_donald.png");
+	float i = 0.0f;
 public:
 	TheGame(HWND hwnd);
 	virtual ~TheGame();
