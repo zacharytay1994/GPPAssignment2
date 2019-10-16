@@ -22,9 +22,7 @@ void TheGame::Initialize(HWND hwnd)
 
 void TheGame::Update()
 {
-	player_.Update(frame_time_);
-	i += 0.01;
-	player_.sprite_.FlipVertical(true);
+	player_.CUpdate(frame_time_);
 	player_.sprite_.SetAngle(i);
 }
 
@@ -38,5 +36,5 @@ void TheGame::Collisions()
 
 void TheGame::Render()
 {
-	player_.Draw();
+	player_.CDraw();
 }

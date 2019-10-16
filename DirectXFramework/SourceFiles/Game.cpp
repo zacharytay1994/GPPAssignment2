@@ -3,7 +3,7 @@
 
 Game::Game(HWND hwnd)
 	:
-	input_(std::make_unique<Input>()),
+	input_(std::make_shared<Input>()),
 	graphics_(std::make_shared<Graphics>())
 {
 	Initialize(hwnd);

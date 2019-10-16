@@ -30,6 +30,12 @@
     <Image Include="Images\rocknroll.png">
       <Filter>Resource Files\Images</Filter>
     </Image>
+    <Image Include="..\..\GPPGAMEASSETS\adventuregirlrun.png">
+      <Filter>Resource Files\Images</Filter>
+    </Image>
+    <Image Include="..\..\GPPGAMEASSETS\adventuregirlidle.png">
+      <Filter>Resource Files\Images</Filter>
+    </Image>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shaders\SpritePixelShader.hlsl">
@@ -73,6 +79,9 @@
     <ClCompile Include="Player.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="AnimationStatemachine.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Base\Color.h">
@@ -112,6 +121,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="AnimationStatemachine.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GameConstants.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

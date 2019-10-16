@@ -199,6 +199,11 @@ bool Sprite::Visible()
 	return visible_;
 }
 
+void Sprite::ResetAnimation()
+{
+	SetCurrentFrame(start_frame_);
+}
+
 void Sprite::Draw()
 {
 	assert(initialized_ == true);
@@ -241,6 +246,8 @@ void Sprite::InitializeSprite(const int & x, const int & y, const float & scalex
 	SetScaleX(scalex);
 	SetScaleY(scaley);
 	SetAngle(angle);
+	FlipHorizontal(false);
+	FlipVertical(false);
 	CreateShaderResourceView();
 	initialized_ = true;
 }

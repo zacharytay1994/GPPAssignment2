@@ -7,7 +7,7 @@
 
 class Game {
 protected:
-	std::unique_ptr<Input> input_;		   // pointer to input
+	std::shared_ptr<Input> input_;		   // pointer to input
 	std::shared_ptr<Graphics> graphics_;   // pointer to graphics
 	HWND  hwnd_;						   // window handle
 	bool  initialized_;					   // if game is initialized

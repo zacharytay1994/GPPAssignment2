@@ -104,6 +104,7 @@ public:
 	int		GetCurrentFrame();
 	bool	Loop();
 	bool	Visible();
+	void	ResetAnimation();
 
 	/*___________________________________*/
 	// MISCELLENEOUS FUNCTIONS
