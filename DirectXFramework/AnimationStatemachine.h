@@ -1,8 +1,9 @@
 #pragma once
 
 #include "Base/Sprite.h"
+#include "Component.h"
 
-class AnimationStatemachine {
+class AnimationStatemachine : public Component {
 public:
 	// animation states for 2d platformer
 	enum class AnimationState {
@@ -12,7 +13,7 @@ public:
 	};
 private:
 	std::shared_ptr<Graphics>& graphics_;
-	std::shared_ptr<SpriteResources>& sr_;
+	std::shared_ptr<SpriteResources>& sprite_resource_;
 	static constexpr int animation_count_ = 3;
 	std::shared_ptr<Sprite> animation_array_[animation_count_] = { nullptr };
 
@@ -20,7 +21,7 @@ private:
 	int current_state_ = 0;
 
 public:
-	AnimationStatemachine(std::shared_ptr<Graphics>& graphics, std::shared_ptr<SpriteResources>& sr);
+	AnimationStatemachine(Entity* entity);
 	void BindSprite(const std::wstring& filename, const AnimationState& state);
 	bool InitializeAnimation(const int & cols, const int & rows, const int & startframe, const int & endframe, const float & framedelay, const bool & loop, const AnimationState& state);
 	void ChangeState(const AnimationState& newstate);
@@ -29,4 +30,12 @@ public:
 	std::shared_ptr<Sprite> GetSprite();
 	void Draw();
 	void Update(const float& frametime);
+
+private:
+	enum class MessageActions {
+		ChangeState
+	};
+public:
+	// component stuff
+	void ExecuteMessage(const int& msg) override;
 };

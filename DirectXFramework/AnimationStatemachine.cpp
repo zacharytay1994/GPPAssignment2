@@ -1,16 +1,17 @@
 #include "AnimationStatemachine.h"
 //#include "GameConstants.h"
 
-AnimationStatemachine::AnimationStatemachine(std::shared_ptr<Graphics>& graphics, std::shared_ptr<SpriteResources>& sr)
+AnimationStatemachine::AnimationStatemachine(Entity* entity)
 	:
-	graphics_(graphics),
-	sr_(sr)
+	Component(entity),
+	graphics_(owner_->GetGraphics()),
+	sprite_resource_(owner_->GetSpriteResources())
 {
 }
 
 void AnimationStatemachine::BindSprite(const std::wstring & filename, const AnimationState & state)
 {
-	animation_array_[static_cast<int>(state)] = std::make_shared<Sprite>(graphics_, filename, 100, 100, sr_);
+	animation_array_[static_cast<int>(state)] = std::make_shared<Sprite>(graphics_, filename, 100, 100, sprite_resource_);
 }
 
 bool AnimationStatemachine::InitializeAnimation(const int & cols, const int & rows, const int & startframe, const int & endframe, const float & framedelay, const bool & loop, const AnimationState& state)
@@ -68,5 +69,13 @@ void AnimationStatemachine::Update(const float& frametime)
 	// if there is a sprite to be updated
 	if (animation_array_[current_state_] != nullptr) {
 		animation_array_[current_state_]->Update(frametime);
+	}
+}
+
+void AnimationStatemachine::ExecuteMessage(const int & msg)
+{
+	switch (static_cast<MessageActions>(msg)) {
+	case MessageActions::ChangeState:
+		break;
 	}
 }

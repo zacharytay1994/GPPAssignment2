@@ -48,8 +48,10 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AnimationStatemachine.cpp" />
+    <ClCompile Include="Component.cpp" />
     <ClCompile Include="Entity.cpp" />
     <ClCompile Include="EntityHandler.cpp" />
+    <ClCompile Include="Physics.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="SourceFiles\Game.cpp" />
     <ClCompile Include="SourceFiles\GameChild.cpp" />
@@ -63,6 +65,7 @@
     <ClCompile Include="TheGame.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="AABB.h" />
     <ClInclude Include="AnimationStatemachine.h" />
     <ClInclude Include="Base\Color.h" />
     <ClInclude Include="Base\Game.h" />
@@ -72,9 +75,11 @@
     <ClInclude Include="Base\Input.h" />
     <ClInclude Include="Base\Sprite.h" />
     <ClInclude Include="Base\Surface.h" />
+    <ClInclude Include="Component.h" />
     <ClInclude Include="Entity.h" />
     <ClInclude Include="EntityHandler.h" />
     <ClInclude Include="GameConstants.h" />
+    <ClInclude Include="Physics.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="SpriteResources.h" />
     <ClInclude Include="TheGame.h" />

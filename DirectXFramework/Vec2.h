@@ -2,7 +2,7 @@
 
 template <class T>
 class Vec2 {
-private:
+public:
 	T x_;
 	T y_;
 public:

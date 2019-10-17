@@ -7,9 +7,10 @@
 #include <memory>
 
 class Entity {
-private:
+protected:
 	// graphics reference
 	std::shared_ptr<Graphics> sp_graphics_;
+	std::shared_ptr<SpriteResources> sp_sprite_resource_;
 
 	// sprite variables
 	std::string sprite_name_;
@@ -28,4 +29,8 @@ public:
 	void Update(const float& frametime);
 	virtual void CDraw() = 0;
 	virtual void CUpdate(const float& frametime) = 0;
+
+	// getter setters
+	std::shared_ptr<Graphics>& GetGraphics();
+	std::shared_ptr<SpriteResources>& GetSpriteResources();
 };

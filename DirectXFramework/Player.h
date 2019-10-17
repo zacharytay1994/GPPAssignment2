@@ -6,7 +6,7 @@
 
 class Player : public Entity {
 private:
-	AnimationStatemachine animation_;
+	std::unique_ptr<AnimationStatemachine> animation_;
 	std::shared_ptr<Input> input_;
 	int x_;
 	int y_;
