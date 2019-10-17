@@ -13,6 +13,7 @@ private:
 	bool changed = false;
 	bool is_idle_ = true;
 	bool is_running_ = false;
+	bool is_jumping_ = false;
 public:
 	Player(std::shared_ptr<Graphics> graphics, std::shared_ptr<Input> input, const std::wstring& spritename, std::shared_ptr<SpriteResources>& sr,
 	const int& x, const int& y);

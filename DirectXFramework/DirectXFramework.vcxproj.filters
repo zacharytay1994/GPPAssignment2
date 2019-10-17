@@ -24,16 +24,16 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <Image Include="Images\alpha_donald.png">
-      <Filter>Resource Files\Images</Filter>
-    </Image>
-    <Image Include="Images\rocknroll.png">
-      <Filter>Resource Files\Images</Filter>
-    </Image>
     <Image Include="..\..\GPPGAMEASSETS\adventuregirlrun.png">
       <Filter>Resource Files\Images</Filter>
     </Image>
     <Image Include="..\..\GPPGAMEASSETS\adventuregirlidle.png">
+      <Filter>Resource Files\Images</Filter>
+    </Image>
+    <Image Include="..\..\GPPGAMEASSETS\adventuregirljump.png">
+      <Filter>Resource Files\Images</Filter>
+    </Image>
+    <Image Include="..\..\GPPGAMEASSETS\defaultsprite.png">
       <Filter>Resource Files\Images</Filter>
     </Image>
   </ItemGroup>
@@ -85,6 +85,9 @@
     <ClCompile Include="SpriteResources.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="EntityHandler.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Base\Color.h">
@@ -130,6 +133,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="SpriteResources.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="EntityHandler.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -11,12 +11,12 @@ Entity::Entity(std::shared_ptr<Graphics> graphics, const std::wstring& spritenam
 
 void Entity::Draw()
 {
-	sprite_.Draw();
+	//sprite_.Draw(); not draw the default sprites for now
 	CDraw();
 }
 
 void Entity::Update(const float& frametime)
 {
-	sprite_.Update(frametime);
+	//sprite_.Update(frametime); not draw the default sprites for now
 	CUpdate(frametime);
 }
