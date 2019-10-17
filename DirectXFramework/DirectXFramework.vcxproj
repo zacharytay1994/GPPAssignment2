@@ -58,6 +58,7 @@
     <ClCompile Include="SourceFiles\Sprite.cpp" />
     <ClCompile Include="SourceFiles\Surface.cpp" />
     <ClCompile Include="SourceFiles\WinMain.cpp" />
+    <ClCompile Include="SpriteResources.cpp" />
     <ClCompile Include="TheGame.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -73,6 +74,7 @@
     <ClInclude Include="Entity.h" />
     <ClInclude Include="GameConstants.h" />
     <ClInclude Include="Player.h" />
+    <ClInclude Include="SpriteResources.h" />
     <ClInclude Include="TheGame.h" />
     <ClInclude Include="Vec2.h" />
   </ItemGroup>

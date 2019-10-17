@@ -1,17 +1,20 @@
 #include "Player.h"
 
-Player::Player(std::shared_ptr<Graphics> graphics, std::shared_ptr<Input> input, const std::wstring & spritename)
+Player::Player(std::shared_ptr<Graphics> graphics, std::shared_ptr<Input> input, const std::wstring & spritename, std::shared_ptr<SpriteResources>& sr,
+	const int& x, const int& y)
 	:
-	Entity(graphics, spritename),
-	animation_(graphics),
-	input_(input)
+	Entity(graphics, spritename, sr),
+	animation_(graphics, sr),
+	input_(input),
+	x_(x),
+	y_(y)
 {
 	animation_.BindSprite(L"Images/adventuregirlrun.png", AnimationStatemachine::AnimationState::Runright);
 	animation_.InitializeAnimation(4, 2, 0, 7, 0.1f, true, AnimationStatemachine::AnimationState::Runright);
 	animation_.BindSprite(L"Images/adventuregirlidle.png", AnimationStatemachine::AnimationState::Idle);
 	animation_.InitializeAnimation(5, 2, 0, 9, 0.1f, true, AnimationStatemachine::AnimationState::Idle);
-	animation_.SetAllSpritePositions(400.0f, 300.0f);
-	animation_.ChangeState(AnimationStatemachine::AnimationState::Runright);
+	animation_.SetAllSpritePositions(float(x_), float(y_));
+	animation_.ChangeState(AnimationStatemachine::AnimationState::Idle);
 }
 
 void Player::CDraw()
@@ -36,23 +39,4 @@ void Player::CUpdate(const float & frametime)
 			is_running_ = false;
 		}
 	}
-	/*counter_ += 0.02f;
-	if (counter_ > 15.0f) {
-		if (!changed) {
-			counter_ = 0.0f;
-			animation_.ChangeState(AnimationStatemachine::AnimationState::Idle);
-		}
-	}
-	else if (counter_ > 10.0f) {
-		if (changed) {
-			animation_.ChangeState(AnimationStatemachine::AnimationState::Runright);
-			changed = false;
-		}
-	}
-	else if (counter_ > 5.0f) {
-		if (!changed) {
-			animation_.ChangeState(AnimationStatemachine::AnimationState::Idle);
-			changed = true;
-		}
-	}*/
 }

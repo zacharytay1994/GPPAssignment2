@@ -2,6 +2,7 @@
 
 #include "Graphics.h"
 #include "Surface.h"
+#include "../SpriteResources.h"
 #include <memory>
 #include <vector>
 
@@ -23,6 +24,7 @@ struct SpriteData {
 	ID3D11ShaderResourceView* srv_sprite_;		// pointer to sprite image resource ready for pixel shader sampling
 	bool	flip_horizontal_;					// ---
 	bool	flip_vertical_;						// ---
+	std::wstring sprite_name_;					// sprite name in wide string
 };
 
 // Texture coordinate structs for pixel shader processing
@@ -31,9 +33,10 @@ struct	TexCoord { Coord top_left; Coord top_right; Coord bottom_left; Coord bott
 
 class Sprite {
 private:
-	Surface			image_resource_;			// array of color values representing an image, used to create a shader resource view to be bound to the pipeline (see CreateShaderResourceView())
 	SpriteData		sprite_data_;				// sprite data struct as above
 	std::shared_ptr<Graphics> gfx;				// graphics reference
+	std::shared_ptr<SpriteResources> sr_;
+	Surface&		image_resource_;			// array of color values representing an image, used to create a shader resource view to be bound to the pipeline (see CreateShaderResourceView())
 
 	// Stuff for sampling frames in sprites with multiple frames
 	TexCoord tc_ = { {0.0f,0.0f},{1.0f,0.0f},{0.0f,1.0f},{1.0f,1.0f} };
@@ -61,7 +64,7 @@ private:
 
 public:
 	Sprite(std::shared_ptr<Graphics> gfx, const std::wstring& filename,
-		const int& width, const int& height);
+		const int& width, const int& height, std::shared_ptr<SpriteResources>& sr);
 	~Sprite();
 
 	/*___________________________________*/
@@ -132,4 +135,8 @@ public:
 	void UpdateVB();
 	// Calculates and returns corresponding normalized texture coordinate with frame number
 	TexCoord FrameToTexcoord(const int& frame);
+
+	// Non-Base functions
+	Surface& GetSurfaceFromSpriteResources(const std::wstring& filename);
+	void GetSetSRVFromSpriteResources();
 };

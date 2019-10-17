@@ -4,6 +4,7 @@
 #include "Vec2.h"
 
 #include <string>
+#include <memory>
 
 class Entity {
 private:
@@ -22,7 +23,7 @@ public:
 	// entity variables
 	Vec2<float> world_position_;
 public:
-	Entity(std::shared_ptr<Graphics> graphics, const std::wstring& spritename);
+	Entity(std::shared_ptr<Graphics> graphics, const std::wstring& spritename, std::shared_ptr<SpriteResources>& sr);
 	void Draw();
 	void Update(const float& frametime);
 	virtual void CDraw() = 0;

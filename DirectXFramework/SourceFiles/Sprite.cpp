@@ -1,10 +1,11 @@
 #include "../Base/Sprite.h"
 #include <assert.h>
 
-Sprite::Sprite(std::shared_ptr<Graphics> gfx, const std::wstring& filename, const int& width, const int& height)
+Sprite::Sprite(std::shared_ptr<Graphics> gfx, const std::wstring& filename, const int& width, const int& height, std::shared_ptr<SpriteResources>& sr)
 	:
 	gfx(gfx),
-	image_resource_(filename)
+	sr_(sr),
+	image_resource_(GetSurfaceFromSpriteResources(filename))
 {
 	SetWidth(width);
 	SetHeight(height);
@@ -13,9 +14,14 @@ Sprite::Sprite(std::shared_ptr<Graphics> gfx, const std::wstring& filename, cons
 
 Sprite::~Sprite()
 {
-	if (sprite_data_.srv_sprite_ != nullptr) {
+	// sprite no longer in charge of releasing srv object
+	// now handled by spriteresources
+	/*if (sprite_data_.srv_sprite_ != nullptr) {
 		sprite_data_.srv_sprite_->Release();
-	}
+	}*/
+	// just delete the pointer
+	sprite_data_.srv_sprite_ = nullptr;
+	delete sprite_data_.srv_sprite_;
 }
 
 Surface Sprite::GetSurface()
@@ -248,7 +254,8 @@ void Sprite::InitializeSprite(const int & x, const int & y, const float & scalex
 	SetAngle(angle);
 	FlipHorizontal(false);
 	FlipVertical(false);
-	CreateShaderResourceView();
+	//CreateShaderResourceView();
+	GetSetSRVFromSpriteResources();
 	initialized_ = true;
 }
 
@@ -342,4 +349,17 @@ TexCoord Sprite::FrameToTexcoord(const int& frame)
 			{start_coord_x + unit_x_, start_coord_y},
 			{start_coord_x, start_coord_y + unit_y_},
 			{start_coord_x + unit_x_, start_coord_y + unit_y_} };
+}
+
+Surface& Sprite::GetSurfaceFromSpriteResources(const std::wstring& filename)
+{
+	sprite_data_.sprite_name_ = filename;
+	return sr_->GetSurfaceReference(filename);
+}
+
+void Sprite::GetSetSRVFromSpriteResources()
+{
+	// sprite name must be initialized first
+	assert(sprite_data_.sprite_name_ != L"");
+	sprite_data_.srv_sprite_ = sr_->GetSRVReference(sprite_data_.sprite_name_);
 }

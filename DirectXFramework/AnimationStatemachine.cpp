@@ -1,15 +1,16 @@
 #include "AnimationStatemachine.h"
 //#include "GameConstants.h"
 
-AnimationStatemachine::AnimationStatemachine(std::shared_ptr<Graphics>& graphics)
+AnimationStatemachine::AnimationStatemachine(std::shared_ptr<Graphics>& graphics, std::shared_ptr<SpriteResources>& sr)
 	:
-	graphics_(graphics)
+	graphics_(graphics),
+	sr_(sr)
 {
 }
 
 void AnimationStatemachine::BindSprite(const std::wstring & filename, const AnimationState & state)
 {
-	animation_array_[static_cast<int>(state)] = std::make_shared<Sprite>(graphics_, filename, 100, 100);
+	animation_array_[static_cast<int>(state)] = std::make_shared<Sprite>(graphics_, filename, 100, 100, sr_);
 }
 
 bool AnimationStatemachine::InitializeAnimation(const int & cols, const int & rows, const int & startframe, const int & endframe, const float & framedelay, const bool & loop, const AnimationState& state)
