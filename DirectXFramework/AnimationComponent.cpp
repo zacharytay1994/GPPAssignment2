@@ -1,7 +1,7 @@
-#include "AnimationStatemachine.h"
+#include "AnimationComponent.h"
 #include "Entity.h"
 
-AnimationStatemachine::AnimationStatemachine(Entity* entity)
+AnimationComponent::AnimationComponent(Entity* entity)
 	:
 	Component(entity),
 	graphics_(owner_->GetGraphics()),
@@ -9,12 +9,12 @@ AnimationStatemachine::AnimationStatemachine(Entity* entity)
 {
 }
 
-void AnimationStatemachine::BindSprite(const std::wstring & filename, const AnimationState & state)
+void AnimationComponent::BindSprite(const std::wstring & filename, const AnimationState & state)
 {
 	animation_array_[static_cast<int>(state)] = std::make_shared<Sprite>(graphics_, filename, 100, 100, sprite_resource_);
 }
 
-bool AnimationStatemachine::InitializeAnimation(const int & cols, const int & rows, const int & startframe, const int & endframe, const float & framedelay, const bool & loop, const AnimationState& state)
+bool AnimationComponent::InitializeAnimation(const int & cols, const int & rows, const int & startframe, const int & endframe, const float & framedelay, const bool & loop, const AnimationState& state)
 {
 	if (animation_array_[static_cast<int>(state)] != nullptr) {
 		animation_array_[static_cast<int>(state)]->InitializeAnimation(cols, rows, startframe, endframe, framedelay, loop);
@@ -23,7 +23,7 @@ bool AnimationStatemachine::InitializeAnimation(const int & cols, const int & ro
 	return false;
 }
 
-void AnimationStatemachine::ChangeState(const AnimationState & newstate)
+void AnimationComponent::ChangeState(const AnimationState & newstate)
 {
 	// reset current animation before changing animation state
 	if (animation_array_[current_state_] != nullptr) {
@@ -32,7 +32,7 @@ void AnimationStatemachine::ChangeState(const AnimationState & newstate)
 	current_state_ = static_cast<int>(newstate);
 }
 
-void AnimationStatemachine::SetAllSpritePositions(const float & x, const float & y)
+void AnimationComponent::SetAllSpritePositions(const float & x, const float & y)
 {
 	for (int i = 0; i < animation_count_; i++) {
 		if (animation_array_[i] != nullptr) {
@@ -42,12 +42,12 @@ void AnimationStatemachine::SetAllSpritePositions(const float & x, const float &
 	}
 }
 
-AnimationStatemachine::AnimationState AnimationStatemachine::GetCurrentState()
+AnimationComponent::AnimationState AnimationComponent::GetCurrentState()
 {
-	return static_cast<AnimationStatemachine::AnimationState>(current_state_);
+	return static_cast<AnimationComponent::AnimationState>(current_state_);
 }
 
-std::shared_ptr<Sprite> AnimationStatemachine::GetSprite()
+std::shared_ptr<Sprite> AnimationComponent::GetSprite()
 {
 	// if trying to get a null sprite
 	if (animation_array_[current_state_] != nullptr) {
@@ -56,7 +56,7 @@ std::shared_ptr<Sprite> AnimationStatemachine::GetSprite()
 	return nullptr;
 }
 
-void AnimationStatemachine::CDraw()
+void AnimationComponent::CDraw()
 {
 	// if there is a sprite to be drawn
 	if (animation_array_[current_state_] != nullptr) {
@@ -64,7 +64,7 @@ void AnimationStatemachine::CDraw()
 	}
 }
 
-void AnimationStatemachine::CUpdate(const float& frametime)
+void AnimationComponent::CUpdate(const float& frametime)
 {
 	// if there is a sprite to be updated
 	if (animation_array_[current_state_] != nullptr) {
@@ -72,7 +72,7 @@ void AnimationStatemachine::CUpdate(const float& frametime)
 	}
 }
 
-void AnimationStatemachine::ExecuteMessage(const int & msg)
+void AnimationComponent::ExecuteMessage(const int & msg)
 {
 	switch (static_cast<MessageActions>(msg)) {
 	case MessageActions::RunRight:

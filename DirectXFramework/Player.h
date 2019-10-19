@@ -4,12 +4,12 @@
 
 // Components
 #include "InputComponent.h"
-#include "AnimationStatemachine.h"
+#include "AnimationComponent.h"
 
 class Input;
 class Player : public Entity {
 private:
-	std::shared_ptr<AnimationStatemachine> animation_;
+	std::shared_ptr<AnimationComponent> animation_;
 	std::shared_ptr<InputComponent> input_;
 	//std::shared_ptr<Input> input_;
 	int x_;

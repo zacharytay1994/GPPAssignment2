@@ -3,7 +3,7 @@
 #include "Base/Sprite.h"
 #include "Component.h"
 
-class AnimationStatemachine : public Component {
+class AnimationComponent : public Component {
 public:
 	// animation states for 2d platformer
 	enum class AnimationState {
@@ -21,7 +21,7 @@ private:
 	int current_state_ = 0;
 
 public:
-	AnimationStatemachine(Entity* entity);
+	AnimationComponent(Entity* entity);
 	void BindSprite(const std::wstring& filename, const AnimationState& state);
 	bool InitializeAnimation(const int & cols, const int & rows, const int & startframe, const int & endframe, const float & framedelay, const bool & loop, const AnimationState& state);
 	void ChangeState(const AnimationState& newstate);
