@@ -51,8 +51,10 @@
     <ClCompile Include="Component.cpp" />
     <ClCompile Include="Entity.cpp" />
     <ClCompile Include="EntityHandler.cpp" />
+    <ClCompile Include="InputComponent.cpp" />
     <ClCompile Include="Physics.cpp" />
     <ClCompile Include="Player.cpp" />
+    <ClCompile Include="PlayerInput.cpp" />
     <ClCompile Include="SourceFiles\Game.cpp" />
     <ClCompile Include="SourceFiles\GameChild.cpp" />
     <ClCompile Include="SourceFiles\GDIPlusManager.cpp" />
@@ -79,8 +81,10 @@
     <ClInclude Include="Entity.h" />
     <ClInclude Include="EntityHandler.h" />
     <ClInclude Include="GameConstants.h" />
+    <ClInclude Include="InputComponent.h" />
     <ClInclude Include="Physics.h" />
     <ClInclude Include="Player.h" />
+    <ClInclude Include="PlayerInput.h" />
     <ClInclude Include="SpriteResources.h" />
     <ClInclude Include="TheGame.h" />
     <ClInclude Include="Vec2.h" />

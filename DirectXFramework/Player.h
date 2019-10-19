@@ -1,13 +1,17 @@
 #pragma once
 
 #include "Entity.h"
-#include "AnimationStatemachine.h"
-#include "Base/Input.h"
 
+// Components
+#include "InputComponent.h"
+#include "AnimationStatemachine.h"
+
+class Input;
 class Player : public Entity {
 private:
-	std::unique_ptr<AnimationStatemachine> animation_;
-	std::shared_ptr<Input> input_;
+	std::shared_ptr<AnimationStatemachine> animation_;
+	std::shared_ptr<InputComponent> input_;
+	//std::shared_ptr<Input> input_;
 	int x_;
 	int y_;
 	bool changed = false;

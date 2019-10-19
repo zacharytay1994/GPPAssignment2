@@ -1,12 +1,13 @@
 #include "Player.h"
+#include "PlayerInput.h"
 #include <stdlib.h>
 
 Player::Player(std::shared_ptr<Graphics> graphics, std::shared_ptr<Input> input, const std::wstring & spritename, std::shared_ptr<SpriteResources>& sr,
 	const int& x, const int& y)
 	:
 	Entity(graphics, spritename, sr),
-	animation_(std::make_unique<AnimationStatemachine>(this)),
-	input_(input),
+	animation_(std::make_shared<AnimationStatemachine>(this)),
+	input_(std::make_shared<PlayerInput>(input, this)),
 	x_(x),
 	y_(y)
 {
@@ -18,6 +19,8 @@ Player::Player(std::shared_ptr<Graphics> graphics, std::shared_ptr<Input> input,
 	animation_->InitializeAnimation(5, 2, 0, 9, 0.05f, true, AnimationStatemachine::AnimationState::Jump);
 	animation_->SetAllSpritePositions(float(x_), float(y_));
 	animation_->ChangeState(AnimationStatemachine::AnimationState::Idle);
+	components_.push_back(animation_);
+	components_.push_back(input_);
 }
 
 void Player::CDraw()
@@ -28,28 +31,5 @@ void Player::CDraw()
 void Player::CUpdate(const float & frametime)
 {
 	animation_->Update(frametime);
-	if (input_->KeyIsDown('D')) {
-		if (!is_running_) {
-			animation_->ChangeState(AnimationStatemachine::AnimationState::Runright);
-			is_idle_ = false;
-			is_running_ = true;
-			is_jumping_ = false;
-		}
-	}
-	else if (input_->KeyIsDown('W')) {
-		if (!is_jumping_) {
-			animation_->ChangeState(AnimationStatemachine::AnimationState::Jump);
-			is_idle_ = false;
-			is_running_ = false;
-			is_jumping_ = true;
-		}
-	}
-	else {
-		if (!is_idle_) {
-			animation_->ChangeState(AnimationStatemachine::AnimationState::Idle);
-			is_idle_ = true;
-			is_running_ = false;
-			is_jumping_ = false;
-		}
-	}
+	input_->Update(frametime);
 }

@@ -94,6 +94,12 @@
     <ClCompile Include="Component.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="InputComponent.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="PlayerInput.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Base\Color.h">
@@ -151,6 +157,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Component.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="InputComponent.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="PlayerInput.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

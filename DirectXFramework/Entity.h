@@ -2,6 +2,7 @@
 #include "Base/Sprite.h"
 #include "Base/Graphics.h"
 #include "Vec2.h"
+#include "Component.h"
 
 #include <string>
 #include <memory>
@@ -11,6 +12,9 @@ protected:
 	// graphics reference
 	std::shared_ptr<Graphics> sp_graphics_;
 	std::shared_ptr<SpriteResources> sp_sprite_resource_;
+
+	// component groups
+	std::vector<std::shared_ptr<Component>> components_;
 
 	// sprite variables
 	std::string sprite_name_;
@@ -29,8 +33,9 @@ public:
 	void Update(const float& frametime);
 	virtual void CDraw() = 0;
 	virtual void CUpdate(const float& frametime) = 0;
+	void TellComponents(Component::Message msg);
 
-	// getter setters
+	// getter, setters, and binders
 	std::shared_ptr<Graphics>& GetGraphics();
 	std::shared_ptr<SpriteResources>& GetSpriteResources();
 };

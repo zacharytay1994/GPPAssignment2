@@ -20,7 +20,7 @@ void TheGame::Initialize(HWND hwnd)
 	player_.sprite_.SetScaleX(2);
 	player_.sprite_.SetAngle(i);*/
 	entity_handler_.AddPlayer(200, 150);
-	entity_handler_.AddPlayer(600, 250);
+	//entity_handler_.AddPlayer(600, 250);
 }
 
 void TheGame::Update()

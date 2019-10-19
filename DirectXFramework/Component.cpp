@@ -1,4 +1,5 @@
 #include "Component.h"
+#include "Entity.h"
 
 Component::Component(Entity *& entity)
 	:
@@ -21,4 +22,14 @@ void Component::ReceiveMessage(const Message & msg)
 	case ComponentTypes::Physics:
 		break;
 	}
+}
+
+void Component::Update(const float& frametime)
+{
+	CUpdate(frametime);
+}
+
+void Component::Draw()
+{
+	CDraw();
 }

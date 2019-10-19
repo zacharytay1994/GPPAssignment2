@@ -1,12 +1,14 @@
 #pragma once
 
-#include "Entity.h"
+#include <memory>
 
+class Entity;
 class Component {
-private:
+public:
 	enum class ComponentTypes {
 		Animation,
-		Physics
+		Physics,
+		Input
 	};
 
 	struct Message {
@@ -22,4 +24,8 @@ public:
 	~Component();
 	void ReceiveMessage(const Message& msg);
 	virtual void ExecuteMessage(const int& msg) = 0;
+	void Update(const float& frametime);
+	void Draw();
+	virtual void CUpdate(const float& frametime) = 0; // child update and draw
+	virtual void CDraw() = 0;
 };

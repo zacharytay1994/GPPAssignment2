@@ -22,6 +22,13 @@ void Entity::Update(const float& frametime)
 	CUpdate(frametime);
 }
 
+void Entity::TellComponents(Component::Message msg)
+{
+	for (std::shared_ptr<Component> c : components_) {
+		c->ReceiveMessage(msg);
+	}
+}
+
 std::shared_ptr<Graphics>& Entity::GetGraphics()
 {
 	return sp_graphics_;

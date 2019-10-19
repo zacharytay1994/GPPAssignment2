@@ -28,12 +28,15 @@ public:
 	void SetAllSpritePositions(const float& x, const float& y);
 	AnimationState GetCurrentState();
 	std::shared_ptr<Sprite> GetSprite();
-	void Draw();
-	void Update(const float& frametime);
+	void CDraw() override;
+	void CUpdate(const float& frametime) override;
 
 private:
 	enum class MessageActions {
-		ChangeState
+		RunLeft,
+		RunRight,
+		Jump,
+		Idle
 	};
 public:
 	// component stuff

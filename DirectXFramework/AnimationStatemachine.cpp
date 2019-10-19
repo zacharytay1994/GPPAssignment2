@@ -1,5 +1,5 @@
 #include "AnimationStatemachine.h"
-//#include "GameConstants.h"
+#include "Entity.h"
 
 AnimationStatemachine::AnimationStatemachine(Entity* entity)
 	:
@@ -56,7 +56,7 @@ std::shared_ptr<Sprite> AnimationStatemachine::GetSprite()
 	return nullptr;
 }
 
-void AnimationStatemachine::Draw()
+void AnimationStatemachine::CDraw()
 {
 	// if there is a sprite to be drawn
 	if (animation_array_[current_state_] != nullptr) {
@@ -64,7 +64,7 @@ void AnimationStatemachine::Draw()
 	}
 }
 
-void AnimationStatemachine::Update(const float& frametime)
+void AnimationStatemachine::CUpdate(const float& frametime)
 {
 	// if there is a sprite to be updated
 	if (animation_array_[current_state_] != nullptr) {
@@ -75,7 +75,11 @@ void AnimationStatemachine::Update(const float& frametime)
 void AnimationStatemachine::ExecuteMessage(const int & msg)
 {
 	switch (static_cast<MessageActions>(msg)) {
-	case MessageActions::ChangeState:
+	case MessageActions::RunRight:
+		ChangeState(AnimationState::Runright);
+		break;
+	case MessageActions::Idle:
+		ChangeState(AnimationState::Idle);
 		break;
 	}
 }
