@@ -19,4 +19,9 @@ public:
 	Vec2 operator+(const Vec2& rhs) const {
 		return *this += rhs;
 	}
+	Vec2& operator*=(const float& val) {
+		x_ *= val;
+		y_ *= val;
+		return *this;
+	}
 };

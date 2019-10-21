@@ -72,9 +72,9 @@ void AnimationComponent::CUpdate(const float& frametime)
 	}
 }
 
-void AnimationComponent::ExecuteMessage(const int & msg)
+void AnimationComponent::ExecuteMessage(const Message& msg)
 {
-	switch (static_cast<MessageActions>(msg)) {
+	switch (static_cast<MessageActions>(msg.message_)) {
 	case MessageActions::RunRight:
 		ChangeState(AnimationState::Runright);
 		break;

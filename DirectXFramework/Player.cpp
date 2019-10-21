@@ -8,6 +8,7 @@ Player::Player(std::shared_ptr<Graphics> graphics, std::shared_ptr<Input> input,
 	Entity(graphics, spritename, sr),
 	animation_(std::make_shared<AnimationComponent>(this)),
 	input_(std::make_shared<PlayerInput>(input, this)),
+	physics_(std::make_shared<PhysicsComponent>(this)),
 	x_(x),
 	y_(y)
 {
@@ -21,6 +22,7 @@ Player::Player(std::shared_ptr<Graphics> graphics, std::shared_ptr<Input> input,
 	animation_->ChangeState(AnimationComponent::AnimationState::Idle);
 	components_.push_back(animation_);
 	components_.push_back(input_);
+	components_.push_back(physics_);
 }
 
 void Player::CDraw()
@@ -32,4 +34,6 @@ void Player::CUpdate(const float & frametime)
 {
 	animation_->Update(frametime);
 	input_->Update(frametime);
+	physics_->Update(frametime);
+	animation_->SetAllSpritePositions(world_position_.x_, world_position_.y_);
 }

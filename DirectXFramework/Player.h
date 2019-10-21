@@ -5,12 +5,14 @@
 // Components
 #include "InputComponent.h"
 #include "AnimationComponent.h"
+#include "PhysicsComponent.h"
 
 class Input;
 class Player : public Entity {
 private:
 	std::shared_ptr<AnimationComponent> animation_;
 	std::shared_ptr<InputComponent> input_;
+	std::shared_ptr <PhysicsComponent> physics_;
 	//std::shared_ptr<Input> input_;
 	int x_;
 	int y_;

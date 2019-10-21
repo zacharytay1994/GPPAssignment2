@@ -53,6 +53,7 @@
     <ClCompile Include="EntityHandler.cpp" />
     <ClCompile Include="InputComponent.cpp" />
     <ClCompile Include="Physics.cpp" />
+    <ClCompile Include="PhysicsComponent.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="PlayerInput.cpp" />
     <ClCompile Include="SourceFiles\Game.cpp" />
@@ -83,9 +84,11 @@
     <ClInclude Include="GameConstants.h" />
     <ClInclude Include="InputComponent.h" />
     <ClInclude Include="Physics.h" />
+    <ClInclude Include="PhysicsComponent.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="PlayerInput.h" />
     <ClInclude Include="SpriteResources.h" />
+    <ClInclude Include="StatemachineComponent.h" />
     <ClInclude Include="TheGame.h" />
     <ClInclude Include="Vec2.h" />
   </ItemGroup>

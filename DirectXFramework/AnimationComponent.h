@@ -40,5 +40,5 @@ private:
 	};
 public:
 	// component stuff
-	void ExecuteMessage(const int& msg) override;
+	void ExecuteMessage(const Message& msg) override;
 };

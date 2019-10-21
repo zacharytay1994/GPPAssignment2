@@ -10,5 +10,5 @@ public:
 	InputComponent(std::shared_ptr<Input> input, Entity* entity);
 	virtual void CDraw() = 0;
 	virtual void CUpdate(const float& frametime) = 0;
-	virtual void ExecuteMessage(const int& msg) = 0;
+	virtual void ExecuteMessage(const Message& msg) = 0;
 };

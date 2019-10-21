@@ -16,12 +16,14 @@ Component::~Component()
 
 void Component::ReceiveMessage(const Message & msg)
 {
-	switch (msg.type_) {
+	/*switch (msg.type_) {
 	case ComponentTypes::Animation:
 		ExecuteMessage(msg.message_);
 	case ComponentTypes::Physics:
+		ExecuteMessage(msg.message_);
 		break;
-	}
+	}*/
+	ExecuteMessage(msg);
 }
 
 void Component::Update(const float& frametime)
