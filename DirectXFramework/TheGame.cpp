@@ -21,6 +21,9 @@ void TheGame::Initialize(HWND hwnd)
 	player_.sprite_.SetAngle(i);*/
 	entity_handler_.AddPlayer(200, 150);
 	//entity_handler_.AddPlayer(600, 250);
+	for (int i = 0; i < 100; i++) {
+		entity_handler_.AddTestObject(rand() % 800 + 1, rand() % 600 + 1);
+	}
 }
 
 void TheGame::Update()

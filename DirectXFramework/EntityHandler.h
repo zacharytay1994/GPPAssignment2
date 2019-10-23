@@ -20,6 +20,7 @@ private:
 public:
 	EntityHandler(std::shared_ptr<Graphics>& graphics, std::shared_ptr<Input> input, std::shared_ptr<SpriteResources> sr);
 	void AddPlayer(const int& x, const int& y);
+	void AddTestObject(const int& x, const int& y);
 	void Draw();
 	void Update(const float& frametime);
 };

@@ -34,6 +34,9 @@
     <Filter Include="Header Files\Misc">
       <UniqueIdentifier>{48ec2ab0-1b58-4cb6-841e-40b8e59e6a55}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Testing">
+      <UniqueIdentifier>{a23f6939-5d6e-4dde-9de2-e7b5d7e25238}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Image Include="..\..\GPPGAMEASSETS\adventuregirlrun.png">
@@ -115,6 +118,15 @@
     <ClCompile Include="PhysicsComponent.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="CollisionComponent.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CollisionHandler.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="TestObject.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Base\Color.h">
@@ -185,6 +197,15 @@
     </ClInclude>
     <ClInclude Include="PhysicsComponent.h">
       <Filter>Header Files\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="CollisionComponent.h">
+      <Filter>Header Files\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="CollisionHandler.h">
+      <Filter>Header Files\Managers</Filter>
+    </ClInclude>
+    <ClInclude Include="TestObject.h">
+      <Filter>Header Files\Testing</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

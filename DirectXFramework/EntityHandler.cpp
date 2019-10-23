@@ -1,5 +1,6 @@
 #include "EntityHandler.h"
 #include "Player.h"
+#include "TestObject.h"
 
 EntityHandler::EntityHandler(std::shared_ptr<Graphics>& graphics, std::shared_ptr<Input> input, std::shared_ptr<SpriteResources> sr)
 	:
@@ -12,6 +13,12 @@ EntityHandler::EntityHandler(std::shared_ptr<Graphics>& graphics, std::shared_pt
 void EntityHandler::AddPlayer(const int & x, const int & y)
 {
 	entity_list_.emplace_back(std::make_unique<Player>(graphics_, input_, L"Images/defaultsprite.png", sprite_resources_, x, y));
+	entity_count_++;
+}
+
+void EntityHandler::AddTestObject(const int & x, const int & y)
+{
+	entity_list_.emplace_back(std::make_unique<TestObject>(graphics_, L"Images/defaultsprite.png", sprite_resources_, x, y));
 	entity_count_++;
 }
 
