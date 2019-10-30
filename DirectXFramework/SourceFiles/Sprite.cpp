@@ -287,7 +287,9 @@ void Sprite::CreateShaderResourceView()
 		srv_descriptor.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
 		srv_descriptor.Texture2D.MostDetailedMip = 0;
 		srv_descriptor.Texture2D.MipLevels = 1;
-		gfx->GetDevice().CreateShaderResourceView(p_texture, &srv_descriptor, &sprite_data_.srv_sprite_);
+		if (p_texture != 0) {
+			gfx->GetDevice().CreateShaderResourceView(p_texture, &srv_descriptor, &sprite_data_.srv_sprite_);
+		}
 		p_texture->Release();
 		gfx->BindShaderResourceView(sprite_data_.srv_sprite_);
 	}
@@ -301,10 +303,10 @@ void Sprite::DimensionsToScale()
 
 void Sprite::UpdateVB()
 {
-	vb.topleft = { -1.0f,1.0f,tc_.top_left.x,tc_.top_left.y };
-	vb.topright = { 1.0f,1.0f,tc_.top_right.x,tc_.top_right.y };
-	vb.bottomleft = { -1.0f,-1.0f,tc_.bottom_left.x,tc_.bottom_left.y };
-	vb.bottomright = { 1.0f,-1.0f,tc_.bottom_right.x,tc_.bottom_right.y };
+	vb.topleft = { vb.topleft.x,vb.topleft.y,tc_.top_left.x,tc_.top_left.y };
+	vb.topright = { vb.topright.x,vb.topright.y,tc_.top_right.x,tc_.top_right.y };
+	vb.bottomleft = { vb.bottomleft.x,vb.bottomleft.y,tc_.bottom_left.x,tc_.bottom_left.y };
+	vb.bottomright = { vb.bottomright.x,vb.bottomright.y,tc_.bottom_right.x,tc_.bottom_right.y };
 }
 
 TexCoord Sprite::FrameToTexcoord(const int& frame)
