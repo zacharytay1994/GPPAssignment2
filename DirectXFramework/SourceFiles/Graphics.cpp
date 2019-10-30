@@ -226,7 +226,7 @@ void Graphics::InitSpritePipeline()
 	// e.g. point list, line list, line strip, etc...
 	// https://docs.microsoft.com/en-us/windows/win32/direct3d11/d3d10-graphics-programming-guide-primitive-topologies
 	/*_______________________________________*/
-	p_device_context_->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
+	p_device_context_->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_LINESTRIP);
 
 	/*_______________________________________*/
 	// CONFIGURE AND BIND VIEWPORT

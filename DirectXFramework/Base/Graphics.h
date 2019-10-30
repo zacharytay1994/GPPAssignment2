@@ -46,4 +46,7 @@ public:
 	void UpdateCBTransformSubresource(const ConstantBuffer& cb);		  // used to update buffer data, e.g. transformations per frame (see Sprite::GetTransform())
 	void ClearBuffer();													  // fills back buffer with colour (e.g. white)
 	void Draw();
+
+	// Additional function
+	void DrawLineVertices();
 };
