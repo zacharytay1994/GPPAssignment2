@@ -16,7 +16,11 @@ public:
 		int message_;
 
 		// msg constructors
-		Message(ComponentTypes type, int message) {
+		Message(ComponentTypes type, int message) 
+			:
+			param_one_(0.0f),
+			param_two_(0.0f)
+		{
 			type_ = type;
 			message_ = message;
 		}

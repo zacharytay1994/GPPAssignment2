@@ -15,7 +15,7 @@ private:
 	ID3D11RenderTargetView* p_rtv_back_buffer_ = nullptr;	// render target: resource that can be written by pipeline, interfaces back buffer in swap chain
 	ID3D11Buffer*			p_vertex_buffer_ = nullptr;
 	ID3D11Buffer*			p_cb_transform_ = nullptr;				
-	bool initialized_;												   
+	bool initialized_ = false;												   
 	/*_______________________________________*/
 	// Defined vertex data type to render a 2D Quad (for sprites)
 	struct Vertex { float x; float y; float t_x; float t_y; };

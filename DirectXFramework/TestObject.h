@@ -22,6 +22,8 @@ private:
 	float speed_ = 500.0f;
 	Vec2<float> heading_normal_;
 	AABB aabb_;
+public:
+	Vec2<float> velocity_ = { 0.0f, 0.0f };
 
 public:
 	TestObject(std::shared_ptr<Graphics> graphics, const std::wstring& spritename, std::shared_ptr<SpriteResources>& sr, const int& x, const int& y);

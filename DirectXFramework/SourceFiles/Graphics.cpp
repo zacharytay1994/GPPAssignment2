@@ -76,11 +76,13 @@ void Graphics::Initialize(HWND hwnd)
 		reinterpret_cast<void**>(&p_back_buffer)		// pointer to back-buffer interface, type: void**
 		);
 	// create render target with back buffer resource
-	p_device_->CreateRenderTargetView(					
-		p_back_buffer,									// resource that represents a render target
-		nullptr,										// default descripton, access all subresources in mipmap level 0
-		&p_rtv_back_buffer_								// pointer to render target view, to be filled
-	);
+	if (p_back_buffer != nullptr) {
+		p_device_->CreateRenderTargetView(
+			p_back_buffer,									// resource that represents a render target
+			nullptr,										// default descripton, access all subresources in mipmap level 0
+			&p_rtv_back_buffer_								// pointer to render target view, to be filled
+		);
+	}
 	p_back_buffer->Release();
 	initialized_ = true;
 }

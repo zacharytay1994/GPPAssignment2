@@ -48,6 +48,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AnimationComponent.cpp" />
+    <ClCompile Include="BoundingVolume.cpp" />
     <ClCompile Include="CollisionComponent.cpp" />
     <ClCompile Include="CollisionHandler.cpp" />
     <ClCompile Include="Component.cpp" />
@@ -81,6 +82,7 @@
     <ClInclude Include="Base\Input.h" />
     <ClInclude Include="Base\Sprite.h" />
     <ClInclude Include="Base\Surface.h" />
+    <ClInclude Include="BoundingVolume.h" />
     <ClInclude Include="CollisionComponent.h" />
     <ClInclude Include="CollisionHandler.h" />
     <ClInclude Include="Component.h" />

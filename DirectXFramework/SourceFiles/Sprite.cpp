@@ -298,7 +298,9 @@ void Sprite::CreateShaderResourceView()
 		srv_descriptor.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
 		srv_descriptor.Texture2D.MostDetailedMip = 0;
 		srv_descriptor.Texture2D.MipLevels = 1;
-		gfx->GetDevice().CreateShaderResourceView(p_texture, &srv_descriptor, &sprite_data_.srv_sprite_);
+		if (p_texture != 0) {
+			gfx->GetDevice().CreateShaderResourceView(p_texture, &srv_descriptor, &sprite_data_.srv_sprite_);
+		}
 		p_texture->Release();
 		gfx->BindShaderResourceView(sprite_data_.srv_sprite_);
 	}

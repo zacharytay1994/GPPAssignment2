@@ -40,4 +40,7 @@ public:
 	Vec2 operator-(const Vec2& rhs) {
 		return { x_ - rhs.x_, y_ - rhs.y_ };
 	}
+	T operator*(const Vec2& rhs) {
+		return x_ * rhs.x_ + y_ * rhs.y_;
+	}
 };

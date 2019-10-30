@@ -37,6 +37,9 @@
     <Filter Include="Header Files\Testing">
       <UniqueIdentifier>{a23f6939-5d6e-4dde-9de2-e7b5d7e25238}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\ImpulseEngine">
+      <UniqueIdentifier>{01c6b170-eb5a-4089-9ec3-e9cc90ff44fe}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Image Include="..\..\GPPGAMEASSETS\adventuregirlrun.png">
@@ -127,6 +130,9 @@
     <ClCompile Include="TestObject.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="BoundingVolume.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Base\Color.h">
@@ -205,6 +211,9 @@
       <Filter>Header Files\Managers</Filter>
     </ClInclude>
     <ClInclude Include="TestObject.h">
+      <Filter>Header Files\Testing</Filter>
+    </ClInclude>
+    <ClInclude Include="BoundingVolume.h">
       <Filter>Header Files\Testing</Filter>
     </ClInclude>
   </ItemGroup>

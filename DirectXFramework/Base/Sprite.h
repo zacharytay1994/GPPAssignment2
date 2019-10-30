@@ -9,22 +9,22 @@
 namespace dx = DirectX;
 
 struct SpriteData {
-	int		width_;								// width of sprite in pixels 
-	int		height_;							// height..
-	float	world_xoffset_;						// normalized xoffset from origin top-left
-	float	world_yoffset_;						// normalized yoffset..
-	int		screen_xoffset_;					// pixel x-offset..
-	int		screen_yoffset_;					// pixel y-offset..
-	float	scale_x_;							// x-scale of sprite
-	float	scale_y_;							// y-scale..
-	float	scale_dimension_x_;					// x-scale to convert dimensions from normalized to screen coordinates
-	float	scale_dimension_y_;					// y-scale
-	float	angle_;								// rotation angle of sprite in radians
-	RECT	rect_;								// ---
-	ID3D11ShaderResourceView* srv_sprite_;		// pointer to sprite image resource ready for pixel shader sampling
-	bool	flip_horizontal_;					// ---
-	bool	flip_vertical_;						// ---
-	std::wstring sprite_name_;					// sprite name in wide string
+	int		width_ = 0;									// width of sprite in pixels 
+	int		height_ = 0;								// height..
+	float	world_xoffset_ = 0.0f;						// normalized xoffset from origin top-left
+	float	world_yoffset_ = 0.0f;						// normalized yoffset..
+	int		screen_xoffset_ = 0;						// pixel x-offset..
+	int		screen_yoffset_ = 0;						// pixel y-offset..
+	float	scale_x_ = 1.0f;							// x-scale of sprite
+	float	scale_y_ = 1.0f;							// y-scale..
+	float	scale_dimension_x_ = 1.0f;					// x-scale to convert dimensions from normalized to screen coordinates
+	float	scale_dimension_y_ = 1.0f;					// y-scale
+	float	angle_ = 0.0f;								// rotation angle of sprite in radians
+	//RECT	rect_;										// ---
+	ID3D11ShaderResourceView* srv_sprite_ = nullptr;	// pointer to sprite image resource ready for pixel shader sampling
+	bool	flip_horizontal_ = false;					// ---
+	bool	flip_vertical_ = false;						// ---
+	std::wstring sprite_name_ = L"";					// sprite name in wide string
 };
 
 // Texture coordinate structs for pixel shader processing

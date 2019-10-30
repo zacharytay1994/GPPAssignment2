@@ -10,6 +10,7 @@ TestObject::TestObject(std::shared_ptr<Graphics> graphics, const std::wstring & 
 	aabb_.radius_ = { w_radius_, h_radius_ };
 	sprite_.SetWidth(50);
 	sprite_.SetHeight(50);
+	velocity_ = heading_normal_ * speed_;
 }
 
 void TestObject::CDraw()
@@ -36,7 +37,7 @@ void TestObject::SyncAABBWorldPosition()
 	aabb_.center_ = world_position_;
 }
 
-#define PI 3.142
+#define PI 3.14f
 Vec2<float> TestObject::GenerateRandomHeadingNormal()
 {
 	// get random angle
