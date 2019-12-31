@@ -42,7 +42,9 @@ void SpriteResources::CreateShaderResourceView(const Surface& surface, const int
 		srv_descriptor.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
 		srv_descriptor.Texture2D.MostDetailedMip = 0;
 		srv_descriptor.Texture2D.MipLevels = 1;
-		gfx->GetDevice().CreateShaderResourceView(p_texture, &srv_descriptor, &(srv_array_[index]));
+		if (p_texture != 0) {
+			gfx->GetDevice().CreateShaderResourceView(p_texture, &srv_descriptor, &(srv_array_[index]));
+		}
 		p_texture->Release();
 	}
 }
