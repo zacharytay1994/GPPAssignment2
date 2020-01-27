@@ -1,6 +1,5 @@
 #include "../Base/GameChild.h"
 
-
 GameChild::GameChild(HWND hwnd)
 	:
 	Game(hwnd)
@@ -34,6 +33,13 @@ void GameChild::Update()
 	}
 	if (input_->KeyIsDown('D')) {
 		mario_sprite_.SetX(mario_sprite_.GetX() + 5);
+	}
+	if (input_->KeyWasPressed('P')) {
+		//ss.clear();
+		//// test vec
+		//Vec3<float> output;
+		//output = test_vec_ + Vec3<float>(0.1f, 0.3f, 0.5f);
+		//ss << output.X() << "," << output.Y() << "," << output.Z() << std::endl;
 	}
 
 	mario_sprite_.Update(frame_time_);
