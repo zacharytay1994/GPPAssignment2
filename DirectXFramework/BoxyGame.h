@@ -6,7 +6,7 @@
 
 class BoxyGame : public Game {
 private:
-	Cube cube_ = Cube(graphics_, L"Images/alpha_donald.png", 0, 0, 0);
+	Cube cube_ = Cube(graphics_, L"Images/grassblock.png", 0, 0, 0);
 public:
 	BoxyGame(HWND hwnd);
 	virtual ~BoxyGame();

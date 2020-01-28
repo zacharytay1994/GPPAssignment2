@@ -24,7 +24,11 @@ private:
 	// Defined vertex data type to render a 3D Cube
 	struct CubeVertex { float x; float y; float z; float t_x; float t_y; };
 	struct CubeVertexBuffer { CubeVertex ftopleft; CubeVertex ftopright; CubeVertex fbottomleft; CubeVertex fbottomright;
-	CubeVertex btopleft; CubeVertex btopright; CubeVertex bbottomleft; CubeVertex bbottomright; };
+	CubeVertex btopleft; CubeVertex btopright; CubeVertex bbottomleft; CubeVertex bbottomright;
+	CubeVertex rtopleft; CubeVertex rtopright; CubeVertex rbottomleft; CubeVertex rbottomright;
+	CubeVertex ltopleft; CubeVertex ltopright; CubeVertex lbottomleft; CubeVertex lbottomright;
+	CubeVertex ttopleft; CubeVertex ttopright; CubeVertex tbottomleft; CubeVertex tbottomright;
+	CubeVertex bttopleft; CubeVertex bttopright; CubeVertex btbottomleft; CubeVertex btbottomright; };
 	/*_______________________________________*/
 	// Defined buffer struct that represents a transformation matrix
 	// to be used in the vertex shader stage as generic world, view, transform
