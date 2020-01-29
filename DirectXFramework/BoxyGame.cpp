@@ -48,4 +48,5 @@ void BoxyGame::Collisions()
 void BoxyGame::Render()
 {
 	cube_.Draw();
+	cube1_.Draw();
 }

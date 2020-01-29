@@ -405,17 +405,6 @@ void Graphics::InitCubePipeline()
 	p_device_context_->VSSetConstantBuffers(0u, 1u, &p_cb_transform_);
 
 	/*_______________________________________*/
-	// BIND RENDER TARGET
-	// RenderTargetView object created using the swap chain's backbuffer.
-	// Defines where the pipeline will render to, i.e. fill the buffer with pixel data (color)
-	// The RenderTargetView was created during the initialization phase after creating the swap chain.
-	/*_______________________________________*/
-	p_device_context_->OMSetRenderTargets(
-		1u,
-		&p_rtv_back_buffer_,
-		nullptr);
-
-	/*_______________________________________*/
 	// SET PRIMITIVE TOPOLOGY OF INPUT ASSEMBLER
 	// How the vertices should be interpreted as
 	// e.g. point list, line list, line strip, etc...
@@ -452,6 +441,55 @@ void Graphics::InitCubePipeline()
 	p_device_->CreateSamplerState(&sampler_description, &p_sampler_state);
 	p_device_context_->PSSetSamplers(0u, 1u, &p_sampler_state);
 	p_sampler_state->Release();
+
+	// create depth stencil state
+	D3D11_DEPTH_STENCIL_DESC ds_desc = {};
+	ds_desc.DepthEnable = TRUE;
+	ds_desc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
+	ds_desc.DepthFunc = D3D11_COMPARISON_LESS;
+	ID3D11DepthStencilState* p_ds_state;
+	p_device_->CreateDepthStencilState(&ds_desc, &p_ds_state);
+
+	// bind depth state
+	p_device_context_->OMSetDepthStencilState(p_ds_state, 1u);
+
+	p_ds_state->Release();
+
+	// create depth stensil texture
+	ID3D11Texture2D* p_ds;
+	D3D11_TEXTURE2D_DESC desc_depth = {};
+	desc_depth.Width = viewport_width_;
+	desc_depth.Height = viewport_height_;
+	desc_depth.MipLevels = 1u;
+	desc_depth.ArraySize = 1u;
+	desc_depth.Format = DXGI_FORMAT_D32_FLOAT;
+	desc_depth.SampleDesc.Count = 1u;
+	desc_depth.SampleDesc.Quality = 0u;
+	desc_depth.Usage = D3D11_USAGE_DEFAULT;
+	desc_depth.BindFlags = D3D11_BIND_DEPTH_STENCIL;
+	p_device_->CreateTexture2D(&desc_depth, nullptr, &p_ds);
+
+	// create view of depth stencil texture
+	D3D11_DEPTH_STENCIL_VIEW_DESC ds_view_desc = {};
+	ds_view_desc.Format = DXGI_FORMAT_D32_FLOAT;
+	ds_view_desc.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
+	ds_view_desc.Texture2D.MipSlice = 0u;
+	p_device_->CreateDepthStencilView(p_ds, &ds_view_desc, &p_depth_stencil_view_);
+
+	p_ds->Release();
+
+	/*_______________________________________*/
+	// BIND RENDER TARGET
+	// RenderTargetView object created using the swap chain's backbuffer.
+	// Defines where the pipeline will render to, i.e. fill the buffer with pixel data (color)
+	// The RenderTargetView was created during the initialization phase after creating the swap chain.
+	/*_______________________________________*/
+	p_device_context_->OMSetRenderTargets(
+		1u,
+		&p_rtv_back_buffer_,
+		p_depth_stencil_view_);
+
+	has_depth_stencil_ = true;
 }
 
 void Graphics::EndFrame()
@@ -559,6 +597,9 @@ void Graphics::ClearBuffer()
 {
 	const float color[] = { 1.0f, 1.0f, 1.0f, 1.0f };
 	p_device_context_->ClearRenderTargetView(p_rtv_back_buffer_, color);
+	if (has_depth_stencil_) {
+		p_device_context_->ClearDepthStencilView(p_depth_stencil_view_, D3D11_CLEAR_DEPTH, 1.0f, 0u);
+	}
 }
 
 void Graphics::Draw()
