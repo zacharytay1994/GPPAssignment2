@@ -3,6 +3,7 @@
 #include "Base/Graphics.h"
 #include "Base/Surface.h"
 #include "Base/Input.h"
+#include "Vec3.h"
 #include <memory>
 #include <vector>
 
@@ -39,8 +40,7 @@ private:
 	bool	visible_ = true;					  // referenced in Sprite::Draw()
 
 public:
-	Cube(std::shared_ptr<Graphics> gfx, std::shared_ptr<Input> input, const std::wstring& filename,
-		const int& width, const int& height, const int& depth);
+	Cube(std::shared_ptr<Graphics> gfx, std::shared_ptr<Input> input, const std::wstring& filename, const Vecf3& scale);
 	~Cube();
 
 	/*___________________________________*/

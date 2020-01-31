@@ -18,12 +18,12 @@ void BoxyGame::Initialize(HWND hwnd)
 
 void BoxyGame::Update()
 {
-	if (input_->KeyIsDown('E')) {
-		cube_.SetAngleY(cube_.GetAngleY() + frame_time_);
+	if (input_->KeyIsDown('P')) {
+		Vecf3 v = block1.GetPosition();
+		v.y += 10.0f * frame_time_;
+		block1.SetPosition(v);
 	}
-	if (input_->KeyIsDown('Q')) {
-		cube_.SetAngleZ(cube_.GetAngleZ() + frame_time_);
-	}
+	block1.Update(frame_time_);
 	if (input_->KeyWasPressed('C')) {
 		if (cursor_enabled_) {
 			DisableCursor();
@@ -44,6 +44,5 @@ void BoxyGame::Collisions()
 
 void BoxyGame::Render()
 {
-	cube_.Draw();
-	cube1_.Draw();
+	block1.Render();
 }

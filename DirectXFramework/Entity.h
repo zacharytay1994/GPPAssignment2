@@ -5,6 +5,6 @@ private:
 public:
 	Entity();
 	~Entity();
-	void Update(const float& dt);
-	void Render();
+	virtual void Update(const float& dt);
+	virtual void Render();
 };
