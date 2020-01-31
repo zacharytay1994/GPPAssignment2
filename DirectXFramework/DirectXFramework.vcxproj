@@ -65,6 +65,8 @@
     <ClCompile Include="BoxyGame.cpp" />
     <ClCompile Include="Cube.cpp" />
     <ClCompile Include="Entity.cpp" />
+    <ClCompile Include="Level.cpp" />
+    <ClCompile Include="Scene.cpp" />
     <ClCompile Include="SourceFiles\Game.cpp" />
     <ClCompile Include="SourceFiles\GameChild.cpp" />
     <ClCompile Include="SourceFiles\GDIPlusManager.cpp" />
@@ -88,6 +90,7 @@
     <ClInclude Include="BoxyGame.h" />
     <ClInclude Include="Cube.h" />
     <ClInclude Include="Entity.h" />
+    <ClInclude Include="Level.h" />
     <ClInclude Include="MathStuff.h" />
     <ClInclude Include="MatTemplate.h" />
     <ClInclude Include="Scene.h" />

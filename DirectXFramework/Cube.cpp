@@ -15,7 +15,7 @@ Cube::Cube(std::shared_ptr<Graphics> gfx, std::shared_ptr<Input> input, const st
 Cube::~Cube()
 {
 	if (cube_data_.srv_sprite_ != nullptr) {
-		cube_data_.srv_sprite_->Release();
+		//cube_data_.srv_sprite_->Release();
 	}
 }
 
@@ -188,6 +188,7 @@ void Cube::InitializeCube(const int& x, const int& y, const int& z, const float&
 {
 	SetX(x);
 	SetY(y);
+	SetZ(z);
 	SetScaleX(scalex);
 	SetScaleY(scaley);
 	SetAngleZ(anglez);

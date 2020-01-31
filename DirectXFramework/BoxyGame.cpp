@@ -1,4 +1,5 @@
 #include "BoxyGame.h"
+#include "Level.h"
 
 BoxyGame::BoxyGame(HWND hwnd)
 	:
@@ -6,6 +7,8 @@ BoxyGame::BoxyGame(HWND hwnd)
 {
 	Initialize(hwnd);
 	EnableCursor();
+
+	current_scene_ = std::make_unique<Level>(graphics_, input_);
 }
 
 BoxyGame::~BoxyGame()
@@ -18,19 +21,16 @@ void BoxyGame::Initialize(HWND hwnd)
 
 void BoxyGame::Update()
 {
-	if (input_->KeyIsDown('P')) {
-		Vecf3 v = block1.GetPosition();
-		v.y += 10.0f * frame_time_;
-		block1.SetPosition(v);
-	}
-	block1.Update(frame_time_);
-	if (input_->KeyWasPressed('C')) {
+	if (input_->KeyWasPressed(VK_ESCAPE)) {
 		if (cursor_enabled_) {
 			DisableCursor();
 		}
 		else {
 			EnableCursor();
 		}
+	}
+	if (current_scene_ != nullptr) {
+		current_scene_->BaseUpdate(frame_time_);
 	}
 }
 
@@ -44,5 +44,7 @@ void BoxyGame::Collisions()
 
 void BoxyGame::Render()
 {
-	block1.Render();
+	if (current_scene_ != nullptr) {
+		current_scene_->Render();
+	}
 }
