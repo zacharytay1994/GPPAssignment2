@@ -7,7 +7,7 @@
 
 class Game {
 protected:
-	std::unique_ptr<Input> input_;		   // pointer to input
+	std::shared_ptr<Input> input_;		   // pointer to input
 	std::shared_ptr<Graphics> graphics_;   // pointer to graphics
 	HWND  hwnd_;						   // window handle
 	bool  initialized_;					   // if game is initialized
@@ -29,6 +29,8 @@ protected:
 	HDC hdc;
 	PAINTSTRUCT ps = { 0 };
 	RECT rect;
+	// cursor variables
+	bool cursor_enabled_ = true;
 public:
 	Game(HWND hwnd);
 	virtual ~Game();
@@ -40,4 +42,10 @@ public:
 	virtual void AI() = 0;
 	virtual void Collisions() = 0;
 	virtual void Render() = 0;
+
+	// mouse stuff
+	void EnableCursor();
+	void DisableCursor();
+	void ConfineCursor();
+	void FreeCursor();
 };

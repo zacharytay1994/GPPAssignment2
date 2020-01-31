@@ -1,8 +1,10 @@
 #pragma once
 
+#include <DirectXMath.h>
 #include <Windows.h>
 #include <windowsx.h>
 #include <string>
+#include <vector>
 
 namespace inputns {
 	// Size of keys array
@@ -32,10 +34,22 @@ private:
 	bool mouse_x1_button_;							// true if x1 mouse button down
 	bool mouse_x2_button_;							// true if x2 mouse button down
 	bool state_change_;
+
+	// Camera Variables
+	std::vector<char> raw_buffer_;
+	float cam_yaw_ = 0.0f;
+	float cam_pitch_ = 0.0f;
+	float cam_x_ = 0.0f;
+	float cam_y_ = 0.0f;
+	float cam_z_ = 0.0f;
+	float camera_translate_speed_ = 5.0f;
+
+	bool camera_engaged_ = true;
 public:
 	Input();										// default constructor
 	virtual ~Input();								// destructor
 	void Initialize(HWND hwnd, bool capture);		// initalize mouse input
+	void Update(const float& dt);
 	// Keys & Text
 	void SetKeyDown(WPARAM wparam);					// set key state of VIRTUAL KEY in keys_down_ and keys_pressed buffer
 	void SetKeyUp(WPARAM wparam);					// set key state of VIRTUAL KEY in keys_down_ buffer
@@ -69,4 +83,10 @@ public:
 	bool StateChanged();							// returns true if there is a change in buffer state in current frame
 	void TestKeys(HDC hdc, RECT rect);				// visible interface to test virtual key message processing
 	void EndFrame();								// handles all end of frame operations for input
+
+	// Camera Functions
+	void ResetCamera();
+	DirectX::XMMATRIX GetCameraMatrix();
+	DirectX::XMMATRIX GetInverseCameraRotation();
+	void TranslateCamera(DirectX::XMFLOAT3 translation, const float& dt);
 };

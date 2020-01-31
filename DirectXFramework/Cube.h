@@ -2,6 +2,7 @@
 
 #include "Base/Graphics.h"
 #include "Base/Surface.h"
+#include "Base/Input.h"
 #include <memory>
 #include <vector>
 
@@ -28,6 +29,7 @@ private:
 	Surface			image_resource_;			// array of color values representing an image, used to create a shader resource view to be bound to the pipeline (see CreateShaderResourceView())
 	CubeData		cube_data_;				// sprite data struct as above
 	std::shared_ptr<Graphics> gfx;				// graphics reference
+	std::shared_ptr<Input> input;
 
 	//// Vertex buffer ready to bind to graphics pipeline before drawing
 	//Graphics::CubeVertexBuffer cvb = gfx->GetDefaultCubeVB();
@@ -37,7 +39,7 @@ private:
 	bool	visible_ = true;					  // referenced in Sprite::Draw()
 
 public:
-	Cube(std::shared_ptr<Graphics> gfx, const std::wstring& filename,
+	Cube(std::shared_ptr<Graphics> gfx, std::shared_ptr<Input> input, const std::wstring& filename,
 		const int& width, const int& height, const int& depth);
 	~Cube();
 
