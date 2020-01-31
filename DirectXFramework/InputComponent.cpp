@@ -6,11 +6,6 @@ InputComponent::InputComponent(Entity& owner, Input& input):
 {
 }
 
-InputComponent::~InputComponent()
-{
-	Component::~Component();
-}
-
 void InputComponent::Update(const float& frametime)
 {
 	Component::Update(frametime);

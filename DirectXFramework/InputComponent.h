@@ -11,7 +11,6 @@ private:
 	Input& input_;
 public:
 	InputComponent(Entity& owner, Input& input);
-	~InputComponent();
 	void Update(const float& frametime) override;
 	void Render() override;
 };

@@ -1,13 +1,10 @@
 #include "Component.h"
+#include "Entity.h"
 
-Component::Component(Entity owner,const std::string& type) // owner
+Component::Component(Entity& owner,const std::string& type)
 	:
-	owner_(owner)
+	owner_(owner),
 	type_(type)
-{
-}
-
-Component::~Component()
 {
 }
 
@@ -19,7 +16,8 @@ void Component::Render()
 {
 }
 
-std::string Component::GetType()
-{
+std::string Component::GetType() {
 	return type_;
 }
+
+

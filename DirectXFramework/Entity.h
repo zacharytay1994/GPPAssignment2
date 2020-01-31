@@ -1,17 +1,19 @@
 #pragma once
 #include <vector>
+#include <memory>
 #include "Component.h"
+
+#define ComponentPtr std::shared_ptr<Component>
 
 class Entity {
 private:
-	std::vector<Component*> components_;
+	std::vector<ComponentPtr> components_;
 
 public:
 	Entity();
-	~Entity();
 	void Update(const float& dt);
 	void Render();
 
-	void AddComponent(Component* component);
-	Component* GetComponent(std::string type);
+	void AddComponent(ComponentPtr component);
+	ComponentPtr GetComponent(std::string type);
 };
