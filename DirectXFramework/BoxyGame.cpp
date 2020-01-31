@@ -1,8 +1,5 @@
 #include "BoxyGame.h"
 
-#include <string>
-#include <sstream>
-
 BoxyGame::BoxyGame(HWND hwnd)
 	:
 	Game(hwnd)
@@ -35,9 +32,6 @@ void BoxyGame::Update()
 			EnableCursor();
 		}
 	}
-	std::stringstream ss;
-	ss << input_->GetMouseRawX() << ',' << input_->GetMouseRawY() << std::endl;
-	OutputDebugString(ss.str().c_str());
 }
 
 void BoxyGame::AI()
