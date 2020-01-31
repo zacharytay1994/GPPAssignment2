@@ -96,7 +96,7 @@ int WINAPI WinMain(HINSTANCE hInstance,
 		0, // extended styles not needed, 0
 		wndClassName,
 		"any window name here", // just the name/title of the window, not to be confused with class name
-		WS_CAPTION | WS_SYSMENU | WS_THICKFRAME | WS_MINIMIZEBOX | WS_MAXIMIZEBOX, // base styles
+		WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX | WS_MAXIMIZEBOX, // base styles
 		rect.left,
 		rect.top,
 		width,

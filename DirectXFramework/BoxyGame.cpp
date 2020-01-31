@@ -8,6 +8,7 @@ BoxyGame::BoxyGame(HWND hwnd)
 	Game(hwnd)
 {
 	Initialize(hwnd);
+	EnableCursor();
 }
 
 BoxyGame::~BoxyGame()

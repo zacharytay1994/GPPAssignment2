@@ -1,5 +1,8 @@
 #include "../Base/Input.h"
 
+#include <string>
+#include <sstream>
+
 // makes sure key code is within buffer range
 inline bool ValidKeyCode(UCHAR vkey) { return vkey < inputns::kKeysArrayLength; }
 
@@ -394,7 +397,13 @@ void Input::ResetCamera()
 
 DirectX::XMMATRIX Input::GetCameraMatrix()
 {
+	// clamping x
 	cam_yaw_ = cam_yaw_ < 6.284f ? cam_yaw_ + mouse_raw_x_ * 0.002f : 0.0f;
+	// clamping y
+	float temp = (cam_pitch_ + mouse_raw_y_ * 0.002f);
+	temp = temp < -1.571f * 0.9f ? -1.571 * 0.9f : temp;
+	temp = temp > 1.571f * 0.9f ? 1.571f * 0.9f : temp;
+	cam_pitch_ = temp;
 	cam_pitch_ = cam_pitch_ + mouse_raw_y_ * 0.002f;
 	using namespace DirectX;
 	DirectX::XMVECTOR forward_base_vector = DirectX::XMVectorSet(0.0f, 0.0f, 1.0f, 0.0f);
@@ -408,7 +417,10 @@ DirectX::XMMATRIX Input::GetCameraMatrix()
 DirectX::XMMATRIX Input::GetInverseCameraRotation()
 {
 	cam_yaw_ = cam_yaw_ < 6.284f ? cam_yaw_ + mouse_raw_x_ * 0.002f : 0.0f;
-	cam_pitch_ = cam_pitch_ + mouse_raw_y_ * 0.002f;
+	float temp = (cam_pitch_ + mouse_raw_y_ * 0.002f);
+	temp = temp < -1.571f * 0.9f ? -1.571 * 0.9f : temp;
+	temp = temp > 1.571f * 0.9f ? 1.571f * 0.9f : temp;
+	cam_pitch_ = temp;
 	return DirectX::XMMatrixRotationRollPitchYaw(-cam_pitch_, -cam_yaw_, 0.0f);
 }
 
