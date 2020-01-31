@@ -395,26 +395,25 @@ void Input::ResetCamera()
 	mouse_raw_y_ = 0;
 }
 
-DirectX::XMMATRIX Input::GetCameraMatrix(const float& dt)
+void Input::UpdateMouseDelta()
 {
 	// clamping x
-	cam_yaw_ = cam_yaw_ < 6.284f ? cam_yaw_ + (float)mouse_raw_x_ * dt : 0.0f;
+	cam_yaw_ = cam_yaw_ < 6.284f ? cam_yaw_ + (float)mouse_raw_x_ * 0.01f : 0.0f;
 	// clamping y
-	float temp = (cam_pitch_ + (float)mouse_raw_y_ * dt);
+	float temp = (cam_pitch_ + (float)mouse_raw_y_ * 0.01f);
 	temp = temp < -1.571f * 0.9f ? -1.571 * 0.9f : temp;
 	temp = temp > 1.571f * 0.9f ? 1.571f * 0.9f : temp;
 	cam_pitch_ = temp;
-	//cam_pitch_ = cam_pitch_ + (float)mouse_raw_y_ / (dt * 1000.0f);
+}
+
+DirectX::XMMATRIX Input::GetCameraMatrix(const float& dt)
+{
 	using namespace DirectX;
 	DirectX::XMVECTOR forward_base_vector = DirectX::XMVectorSet(0.0f, 0.0f, 1.0f, 0.0f);
 	DirectX::XMVECTOR look_vector = DirectX::XMVector3Transform(forward_base_vector,
 		DirectX::XMMatrixRotationRollPitchYaw(cam_pitch_, cam_yaw_, 0.0f));
 	DirectX::XMVECTOR cam_position = DirectX::XMVectorSet(cam_x_, cam_y_, cam_z_, 0.0f);
 	DirectX::XMVECTOR cam_target = cam_position + look_vector;
-
-	std::stringstream ss;
-	ss << mouse_raw_x_ << " , " << mouse_raw_y_ << std::endl;
-	OutputDebugString(ss.str().c_str());
 	return DirectX::XMMatrixLookAtLH(cam_position, cam_target, DirectX::XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f));
 }
 
