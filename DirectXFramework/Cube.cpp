@@ -9,13 +9,13 @@ Cube::Cube(std::shared_ptr<Graphics> gfx, std::shared_ptr<Input> input, const st
 	SetScaleX(scale.x);
 	SetScaleY(scale.y);
 	SetScaleZ(scale.z);
-	InitializeCube(0, 0, 0, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f, 0.0f);
+	InitializeCube(0, 0, 0, 0.5f, 0.5f, 0.5f, 0.0f, 0.0f, 0.0f);
 }
 
 Cube::~Cube()
 {
 	if (cube_data_.srv_sprite_ != nullptr) {
-		cube_data_.srv_sprite_->Release();
+		//cube_data_.srv_sprite_->Release();
 	}
 }
 
@@ -24,7 +24,7 @@ Surface Cube::GetSurface()
 	return image_resource_;
 }
 
-dx::XMMATRIX Cube::GetTransform()
+dx::XMMATRIX Cube::GetTransform(const float& dt)
 {
 	// no scaling by 0
 	assert(cube_data_.scale_x_ != 0.0f || cube_data_.scale_y_ != 0.0f || cube_data_.scale_z_ != 0.0f);
@@ -34,8 +34,8 @@ dx::XMMATRIX Cube::GetTransform()
 		dx::XMMatrixRotationX(cube_data_.angle_x) *
 		dx::XMMatrixRotationY(cube_data_.angle_y) **/
 		dx::XMMatrixScaling(cube_data_.scale_x_, cube_data_.scale_y_, cube_data_.scale_z_) *
-		dx::XMMatrixTranslation(cube_data_.world_xoffset_, cube_data_.world_yoffset_, 8.0f) *
-		input->GetCameraMatrix() *
+		dx::XMMatrixTranslation(cube_data_.world_xoffset_, cube_data_.world_yoffset_, cube_data_.world_zoffset_) *
+		input->GetCameraMatrix(dt) *
 		dx::XMMatrixPerspectiveLH(1.0f,(float)Graphics::viewport_height_ / (float)Graphics::viewport_width_, 0.5f, 1000.0f) 
 	);
 }
@@ -82,7 +82,7 @@ void Cube::SetScaleY(const float& scaley)
 
 void Cube::SetScaleZ(const float& scalez)
 {
-	cube_data_.scale_z_;
+	cube_data_.scale_z_ = scalez;
 }
 
 void Cube::SetAngleZ(const float& angle)
@@ -170,12 +170,12 @@ bool Cube::Visible()
 	return visible_;
 }
 
-void Cube::Draw()
+void Cube::Draw(const float& dt)
 {
 	assert(initialized_ == true);
 	if (visible_) {
 		gfx->BindShaderResourceView(cube_data_.srv_sprite_);
-		gfx->UpdateCBTransformSubresource({ GetTransform() });
+		gfx->UpdateCBTransformSubresource({ GetTransform(dt) });
 		gfx->DrawIndexed();
 	}
 }
@@ -188,8 +188,10 @@ void Cube::InitializeCube(const int& x, const int& y, const int& z, const float&
 {
 	SetX(x);
 	SetY(y);
+	SetZ(z);
 	SetScaleX(scalex);
 	SetScaleY(scaley);
+	SetScaleZ(scalez);
 	SetAngleZ(anglez);
 	SetAngleX(anglex);
 	SetAngleY(angley);

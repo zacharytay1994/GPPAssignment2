@@ -12,6 +12,6 @@ void Entity::Update(const float& dt)
 {
 }
 
-void Entity::Render()
+void Entity::Render(const float& dt)
 {
 }

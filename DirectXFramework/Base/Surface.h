@@ -4,9 +4,9 @@
 #include <string>
 class Surface {
 private:
-	Color* p_pixels_ = nullptr;
 	int width_;
 	int height_;
+	Color* p_pixels_ = nullptr;
 public:
 	Surface(const std::wstring& filename);
 	Surface(int width, int height);

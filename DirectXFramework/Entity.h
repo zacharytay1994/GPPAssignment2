@@ -6,5 +6,5 @@ public:
 	Entity();
 	~Entity();
 	virtual void Update(const float& dt);
-	virtual void Render();
+	virtual void Render(const float& dt);
 };

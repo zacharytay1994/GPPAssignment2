@@ -58,7 +58,7 @@ Surface::Surface(int width, int height)
 	:
 	width_(width),
 	height_(height),
-	p_pixels_(new Color[width_*height_])
+	p_pixels_(new Color[width_ * height_])
 {
 }
 

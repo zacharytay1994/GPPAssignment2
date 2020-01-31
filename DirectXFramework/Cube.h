@@ -47,7 +47,7 @@ public:
 	// GET AND SET FUNCTIONS
 	/*___________________________________*/
 	Surface GetSurface();
-	dx::XMMATRIX GetTransform();
+	dx::XMMATRIX GetTransform(const float& dt);
 
 	/*___________________________________*/
 	// SPRITE DATA
@@ -85,7 +85,7 @@ public:
 	// MISCELLENEOUS FUNCTIONS
 	/*___________________________________*/
 	// Pre: initialized_ == true
-	void Draw();
+	void Draw(const float& dt);
 	void Update(const float& frametime);
 	/*___________________________________*/
 	// BACK-END FUNCTIONS

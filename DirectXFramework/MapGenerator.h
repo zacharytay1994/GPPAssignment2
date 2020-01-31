@@ -15,8 +15,8 @@ private:
 	PerlinNoise* pn_;
 
 	// Dimensions of maps that get generated
-	int width_ = 10;
-	int height_ = 5;
+	int width_ = 100;
+	int height_ = 100;
 
 	// Factors affecting the granity of the generated maps
 	double frequency_ = 8.0;
