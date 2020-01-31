@@ -61,6 +61,7 @@
     </FxCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Block.cpp" />
     <ClCompile Include="BoxyGame.cpp" />
     <ClCompile Include="Cube.cpp" />
     <ClCompile Include="Entity.cpp" />
@@ -82,12 +83,14 @@
     <ClInclude Include="Base\Input.h" />
     <ClInclude Include="Base\Sprite.h" />
     <ClInclude Include="Base\Surface.h" />
+    <ClInclude Include="Block.h" />
     <ClInclude Include="Box.h" />
     <ClInclude Include="BoxyGame.h" />
     <ClInclude Include="Cube.h" />
     <ClInclude Include="Entity.h" />
     <ClInclude Include="MathStuff.h" />
     <ClInclude Include="MatTemplate.h" />
+    <ClInclude Include="Scene.h" />
     <ClInclude Include="Vec2.h" />
     <ClInclude Include="Vec3.h" />
     <ClInclude Include="Vec4.h" />

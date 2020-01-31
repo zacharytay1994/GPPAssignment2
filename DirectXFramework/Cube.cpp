@@ -1,15 +1,15 @@
 #include "Cube.h"
 
-Cube::Cube(std::shared_ptr<Graphics> gfx, std::shared_ptr<Input> input, const std::wstring& filename, const int& width, const int& height, const int& depth)
+Cube::Cube(std::shared_ptr<Graphics> gfx, std::shared_ptr<Input> input, const std::wstring& filename, const Vecf3& scale)
 	:
 	gfx(gfx),
 	input(input),
 	image_resource_(filename)
 {
-	SetWidth(width);
-	SetHeight(height);
-	SetDepth(depth);
-	InitializeCube(0, 0, 0, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f, 0.0f);
+	SetScaleX(scale.x);
+	SetScaleY(scale.y);
+	SetScaleZ(scale.z);
+	InitializeCube(0, 0, 0, 2.0f, 1.0f, 1.0f, 0.0f, 0.0f, 0.0f);
 }
 
 Cube::~Cube()
