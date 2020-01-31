@@ -1,5 +1,7 @@
 #include "BoxyGame.h"
 
+#include "MapGenerator.h"
+
 BoxyGame::BoxyGame(HWND hwnd)
 	:
 	Game(hwnd)
@@ -14,6 +16,10 @@ BoxyGame::~BoxyGame()
 
 void BoxyGame::Initialize(HWND hwnd)
 {
+	block1.SetPosition(Vecf3(0.0, 0.0, 2.0f));
+
+	MapGenerator* mapGen_ = new MapGenerator(graphics_, input_);
+	mapGen_->GenerateMap(entities_);
 }
 
 void BoxyGame::Update()
@@ -32,6 +38,9 @@ void BoxyGame::Update()
 			EnableCursor();
 		}
 	}
+
+	for (std::shared_ptr<Entity> e : entities_)
+	{ e->Update(frame_time_); }
 }
 
 void BoxyGame::AI()
@@ -45,4 +54,7 @@ void BoxyGame::Collisions()
 void BoxyGame::Render()
 {
 	block1.Render();
+
+	for (std::shared_ptr<Entity> e : entities_)
+	{ e->Render(); }
 }

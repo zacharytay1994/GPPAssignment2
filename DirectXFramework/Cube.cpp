@@ -9,7 +9,7 @@ Cube::Cube(std::shared_ptr<Graphics> gfx, std::shared_ptr<Input> input, const st
 	SetScaleX(scale.x);
 	SetScaleY(scale.y);
 	SetScaleZ(scale.z);
-	InitializeCube(0, 0, 0, 2.0f, 1.0f, 1.0f, 0.0f, 0.0f, 0.0f);
+	InitializeCube(0, 0, 0, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f, 0.0f);
 }
 
 Cube::~Cube()
