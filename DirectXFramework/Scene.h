@@ -17,6 +17,6 @@ public:
 	Scene(std::shared_ptr<Graphics> gfx, std::shared_ptr<Input> input);
 	void BaseUpdate(const float& dt);
 	virtual void Update(const float& dt);
-	virtual void Render();
+	virtual void Render(const float& dt);
 	void AddEntity(const std::shared_ptr<Entity>& entity);
 };

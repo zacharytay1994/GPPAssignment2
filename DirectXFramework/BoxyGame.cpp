@@ -45,6 +45,6 @@ void BoxyGame::Collisions()
 void BoxyGame::Render()
 {
 	if (current_scene_ != nullptr) {
-		current_scene_->Render();
+		current_scene_->Render(frame_time_);
 	}
 }

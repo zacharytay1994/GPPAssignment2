@@ -16,12 +16,12 @@ void Level::Update(const float& dt)
 	}
 	if (input_->KeyIsDown('P')) {
 		Vecf3 v = test_block_->GetPosition();
-		v.y += 10.0f * dt;
+		v.z += 10.0f * dt;
 		test_block_->SetPosition(v);
 	}
 }
 
-void Level::Render()
+void Level::Render(const float& dt)
 {
-	Scene::Render();
+	Scene::Render(dt);
 }

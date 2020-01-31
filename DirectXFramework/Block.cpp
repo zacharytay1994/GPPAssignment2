@@ -25,9 +25,9 @@ void Block::Update(const float& dt)
 	cube_.SetZ(position_.z);
 }
 
-void Block::Render()
+void Block::Render(const float& dt)
 {
-	cube_.Draw();
+	cube_.Draw(dt);
 }
 
 
