@@ -3,10 +3,18 @@
 
 Game::Game(HWND hwnd)
 	:
-	input_(std::make_unique<Input>()),
+	input_(std::make_shared<Input>()),
 	graphics_(std::make_shared<Graphics>())
 {
 	Initialize(hwnd);
+
+	// register mouse raw input
+	RAWINPUTDEVICE raw_input_device_;
+	raw_input_device_.usUsagePage = 0x01;
+	raw_input_device_.usUsage = 0x02;
+	raw_input_device_.dwFlags = 0;
+	raw_input_device_.hwndTarget = nullptr;
+	RegisterRawInputDevices(&raw_input_device_, 1, sizeof(raw_input_device_));
 }
 
 Game::~Game()
@@ -105,6 +113,14 @@ LRESULT Game::HandleMessage(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 		//input_->TestKeys(hdc, rect);
 		EndPaint(hwnd, &ps);
 		return 0;
+	case WM_ACTIVATE:
+		if (wparam & WA_ACTIVE || wparam & WA_CLICKACTIVE) {
+			if (!cursor_enabled_) { ConfineCursor(); };
+		}
+		else {
+			if (!cursor_enabled_) { FreeCursor(); };
+		}
+		return 0;
 	}
 	return DefWindowProc(hwnd, msg, wparam, lparam);
 }
@@ -155,7 +171,35 @@ void Game::Run(HWND hwnd)
 	}
 
 	// clear keys_pressed_ buffer of input
+	input_->Update(frame_time_);
 	input_->EndFrame();
 	// present frame
 	graphics_->EndFrame();
+}
+
+void Game::EnableCursor()
+{
+	cursor_enabled_ = true;
+	while (ShowCursor(false) >= 0);
+	ConfineCursor();
+}
+
+void Game::DisableCursor()
+{
+	cursor_enabled_ = false;
+	while (ShowCursor(true) < 0);
+	FreeCursor();
+}
+
+void Game::ConfineCursor()
+{
+	RECT rect;
+	GetClientRect(hwnd_, &rect);
+	MapWindowPoints(hwnd_, nullptr, reinterpret_cast<POINT*>(&rect), 2);
+	ClipCursor(&rect);
+}
+
+void Game::FreeCursor()
+{
+	ClipCursor(nullptr);
 }

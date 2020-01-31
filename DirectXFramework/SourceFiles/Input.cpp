@@ -46,6 +46,31 @@ void Input::Initialize(HWND hwnd, bool capture)
 	}
 }
 
+void Input::Update(const float& dt)
+{
+	ResetCamera();
+	if (camera_engaged_) {
+		if (KeyIsDown('W')) {
+			TranslateCamera({0.0f, 0.0f, 1.0f}, dt);
+		}
+		if (KeyIsDown('S')) {
+			TranslateCamera({ 0.0f, 0.0f, -1.0f }, dt);
+		}
+		if (KeyIsDown('A')) {
+			TranslateCamera({ -1.0f, 0.0f, 0.0f }, dt);
+		}
+		if (KeyIsDown('D')) {
+			TranslateCamera({ 1.0f, 0.0f, 0.0f }, dt);
+		}
+		if (KeyIsDown(VK_SHIFT)) {
+			TranslateCamera({ 0.0f, -1.0f, 0.0f }, dt);
+		}
+		if (KeyIsDown(VK_SPACE)) {
+			TranslateCamera({ 0.0f, 1.0f, 0.0f }, dt);
+		}
+	}
+}
+
 void Input::SetKeyDown(WPARAM wparam)
 {
 	// make sure key code is within buffer range
@@ -219,19 +244,44 @@ void Input::FillMousePosition(LPARAM lparam)
 
 void Input::FillMouseRawPosition(LPARAM lparam)
 {
-	// data size
-	UINT dw_size = 40;
-	// data
-	static BYTE lpb[40];
+	//// data size
+	//UINT dw_size = 40;
+	//// data
+	//static BYTE lpb[40];
 
-	GetRawInputData((HRAWINPUT)lparam, RID_INPUT,
-		lpb, &dw_size, sizeof(RAWINPUTHEADER));
+	//GetRawInputData((HRAWINPUT)lparam, RID_INPUT,
+	//	lpb, &dw_size, sizeof(RAWINPUTHEADER));
 
-	RAWINPUT* raw = (RAWINPUT*)lpb;
+	//RAWINPUT* raw = (RAWINPUT*)lpb;
 
-	if (raw->header.dwType == RIM_TYPEMOUSE) {
-		mouse_raw_x_ = raw->data.mouse.lLastX;
-		mouse_raw_y_ = raw->data.mouse.lLastY;
+	//if (raw->header.dwType == RIM_TYPEMOUSE) {
+	//	mouse_raw_x_ = raw->data.mouse.lLastX;
+	//	mouse_raw_y_ = raw->data.mouse.lLastY;
+	//}
+	UINT size;
+	// frst gt the size of the input data
+	if (GetRawInputData(reinterpret_cast<HRAWINPUT>(lparam),
+		RID_INPUT,
+		nullptr,
+		&size,
+		sizeof(RAWINPUTHEADER)) == -1) {
+		return;
+	}
+	raw_buffer_.resize(size);
+	// read in the input data
+	if (GetRawInputData(
+		reinterpret_cast<HRAWINPUT>(lparam),
+		RID_INPUT,
+		raw_buffer_.data(),
+		&size,
+		sizeof(RAWINPUTHEADER)) != size) {
+		return;
+	}
+	auto& raw_input = reinterpret_cast<const RAWINPUT&>(*raw_buffer_.data());
+	if (raw_input.header.dwType == RIM_TYPEMOUSE &&
+		(raw_input.data.mouse.lLastX != 0 || raw_input.data.mouse.lLastY != 0)) {
+		mouse_raw_x_ = raw_input.data.mouse.lLastX;
+		mouse_raw_y_ = raw_input.data.mouse.lLastY;
 	}
 }
 
@@ -334,4 +384,43 @@ void Input::EndFrame()
 {
 	ClearBuffer(inputns::kKeysPressed);
 	state_change_ = false;
+}
+
+void Input::ResetCamera()
+{
+	mouse_raw_x_ = 0;
+	mouse_raw_y_ = 0;
+}
+
+DirectX::XMMATRIX Input::GetCameraMatrix()
+{
+	cam_yaw_ = cam_yaw_ < 6.284f ? cam_yaw_ + mouse_raw_x_ * 0.002f : 0.0f;
+	cam_pitch_ = cam_pitch_ + mouse_raw_y_ * 0.002f;
+	using namespace DirectX;
+	DirectX::XMVECTOR forward_base_vector = DirectX::XMVectorSet(0.0f, 0.0f, 1.0f, 0.0f);
+	DirectX::XMVECTOR look_vector = DirectX::XMVector3Transform(forward_base_vector,
+		DirectX::XMMatrixRotationRollPitchYaw(cam_pitch_, cam_yaw_, 0.0f));
+	DirectX::XMVECTOR cam_position = DirectX::XMVectorSet(cam_x_, cam_y_, cam_z_, 0.0f);
+	DirectX::XMVECTOR cam_target = cam_position + look_vector;
+	return DirectX::XMMatrixLookAtLH(cam_position, cam_target, DirectX::XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f));
+}
+
+DirectX::XMMATRIX Input::GetInverseCameraRotation()
+{
+	cam_yaw_ = cam_yaw_ < 6.284f ? cam_yaw_ + mouse_raw_x_ * 0.002f : 0.0f;
+	cam_pitch_ = cam_pitch_ + mouse_raw_y_ * 0.002f;
+	return DirectX::XMMatrixRotationRollPitchYaw(-cam_pitch_, -cam_yaw_, 0.0f);
+}
+
+void Input::TranslateCamera(DirectX::XMFLOAT3 translation, const float& dt)
+{
+	using namespace DirectX;
+	XMStoreFloat3(&translation, XMVector3Transform(
+		XMLoadFloat3(&translation),
+		XMMatrixRotationRollPitchYaw(cam_pitch_, cam_yaw_, 0.0f) *
+		XMMatrixScaling(camera_translate_speed_ * dt, camera_translate_speed_ * dt, camera_translate_speed_ * dt)
+	));
+	cam_x_ += translation.x;
+	cam_y_ += translation.y;
+	cam_z_ += translation.z;
 }

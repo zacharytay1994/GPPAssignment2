@@ -19,6 +19,7 @@ private:
 	ID3D11DepthStencilView*	p_depth_stencil_view_ = nullptr;
 	bool initialized_;
 	bool has_depth_stencil_ = false;
+
 	/*_______________________________________*/
 	// Defined vertex data type to render a 2D Quad (for sprites)
 	struct Vertex { float x; float y; float t_x; float t_y; };

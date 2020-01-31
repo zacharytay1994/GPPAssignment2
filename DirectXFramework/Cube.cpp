@@ -1,8 +1,9 @@
 #include "Cube.h"
 
-Cube::Cube(std::shared_ptr<Graphics> gfx, const std::wstring& filename, const int& width, const int& height, const int& depth)
+Cube::Cube(std::shared_ptr<Graphics> gfx, std::shared_ptr<Input> input, const std::wstring& filename, const int& width, const int& height, const int& depth)
 	:
 	gfx(gfx),
+	input(input),
 	image_resource_(filename)
 {
 	SetWidth(width);
@@ -28,12 +29,14 @@ dx::XMMATRIX Cube::GetTransform()
 	// no scaling by 0
 	assert(cube_data_.scale_x_ != 0.0f || cube_data_.scale_y_ != 0.0f || cube_data_.scale_z_ != 0.0f);
 	return	dx::XMMatrixTranspose(
-		dx::XMMatrixRotationZ(cube_data_.angle_z) *
+		dx::XMMatrixRotationRollPitchYaw(cube_data_.angle_x, cube_data_.angle_y, cube_data_.angle_z) *
+		/*dx::XMMatrixRotationZ(cube_data_.angle_z) *
 		dx::XMMatrixRotationX(cube_data_.angle_x) *
-		dx::XMMatrixRotationY(cube_data_.angle_y) *
+		dx::XMMatrixRotationY(cube_data_.angle_y) **/
 		dx::XMMatrixScaling(cube_data_.scale_x_, cube_data_.scale_y_, cube_data_.scale_z_) *
-		dx::XMMatrixTranslation(cube_data_.world_xoffset_, cube_data_.world_yoffset_, 4.0f) *
-		dx::XMMatrixPerspectiveLH(1.0f, (float)Graphics::viewport_height_ / (float)Graphics::viewport_width_,0.5f, 10.0f)
+		dx::XMMatrixTranslation(cube_data_.world_xoffset_, cube_data_.world_yoffset_, 8.0f) *
+		input->GetCameraMatrix() *
+		dx::XMMatrixPerspectiveLH(1.0f,(float)Graphics::viewport_height_ / (float)Graphics::viewport_width_, 0.5f, 1000.0f) 
 	);
 }
 
