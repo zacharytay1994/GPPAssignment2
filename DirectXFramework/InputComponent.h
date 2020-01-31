@@ -9,12 +9,10 @@ class InputComponent :
 {
 private:
 	Input& input_;
-
 public:
-	InputComponent(Input& input);
+	InputComponent(Entity& owner, Input& input);
 	~InputComponent();
 	void Update(const float& frametime) override;
-	void Draw() override;
-
+	void Render() override;
 };
 

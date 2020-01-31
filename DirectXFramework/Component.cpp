@@ -1,8 +1,8 @@
 #include "Component.h"
 
-Component::Component(const std::string& type) // owner
+Component::Component(Entity owner,const std::string& type) // owner
 	:
-	// owner
+	owner_(owner)
 	type_(type)
 {
 }
@@ -15,7 +15,7 @@ void Component::Update(const float& frametime)
 {
 }
 
-void Component::Draw()
+void Component::Render()
 {
 }
 
