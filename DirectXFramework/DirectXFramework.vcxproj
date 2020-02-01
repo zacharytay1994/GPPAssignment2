@@ -70,6 +70,7 @@
     <ClCompile Include="Level.cpp" />
     <ClCompile Include="MainMenu.cpp" />
     <ClCompile Include="Player.cpp" />
+    <ClCompile Include="Rail.cpp" />
     <ClCompile Include="Scene.cpp" />
     <ClCompile Include="SourceFiles\Game.cpp" />
     <ClCompile Include="SourceFiles\GameChild.cpp" />
@@ -101,6 +102,7 @@
     <ClInclude Include="MathStuff.h" />
     <ClInclude Include="MatTemplate.h" />
     <ClInclude Include="Player.h" />
+    <ClInclude Include="Rail.h" />
     <ClInclude Include="Scene.h" />
     <ClInclude Include="Vec2.h" />
     <ClInclude Include="Vec3.h" />
