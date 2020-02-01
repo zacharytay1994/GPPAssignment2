@@ -11,8 +11,6 @@ private:
 
 public:
 	Entity();
-	void Update(const float& dt);
-	void Render();
 
 	void AddComponent(ComponentPtr component);
 	ComponentPtr GetComponent(std::string type);
