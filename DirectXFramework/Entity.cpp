@@ -12,7 +12,7 @@ void Entity::Update(const float& dt)
 	}
 }
 
-void Entity::Render()
+void Entity::Render(const float& dt)
 {
 	for (ComponentPtr c : components_) {
 		c->Render();
@@ -24,9 +24,7 @@ void Entity::AddComponent(ComponentPtr component)
 	components_.push_back(component);
 }
 
-ComponentPtr Entity::GetComponent(std::string type)
-void Entity::Render(const float& dt)
-{
+ComponentPtr Entity::GetComponent(std::string type) {
 	for (ComponentPtr c : components_) {
 		if (c->GetType() == type) {
 			return c;
