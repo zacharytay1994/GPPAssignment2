@@ -17,6 +17,13 @@ Vecf3 Block::GetPosition()
 	return position_;
 }
 
+void Block::SetScale(const Vecf3& scale)
+{
+	cube_.SetScaleX(scale.x);
+	cube_.SetScaleY(scale.y);
+	cube_.SetScaleZ(scale.z);
+}
+
 void Block::Update(const float& dt)
 {
 	// updating cube

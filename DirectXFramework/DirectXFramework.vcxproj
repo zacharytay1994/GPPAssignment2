@@ -68,6 +68,8 @@
     <ClCompile Include="Entity.cpp" />
     <ClCompile Include="InputComponent.cpp" />
     <ClCompile Include="Level.cpp" />
+    <ClCompile Include="MainMenu.cpp" />
+    <ClCompile Include="Player.cpp" />
     <ClCompile Include="Scene.cpp" />
     <ClCompile Include="SourceFiles\Game.cpp" />
     <ClCompile Include="SourceFiles\GameChild.cpp" />
@@ -95,8 +97,10 @@
     <ClInclude Include="Entity.h" />
     <ClInclude Include="InputComponent.h" />
     <ClInclude Include="Level.h" />
+    <ClInclude Include="MainMenu.h" />
     <ClInclude Include="MathStuff.h" />
     <ClInclude Include="MatTemplate.h" />
+    <ClInclude Include="Player.h" />
     <ClInclude Include="Scene.h" />
     <ClInclude Include="Vec2.h" />
     <ClInclude Include="Vec3.h" />
