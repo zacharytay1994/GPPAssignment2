@@ -1,13 +1,14 @@
 #include "BoxyGame.h"
-
-#include <string>
-#include <sstream>
+#include "Level.h"
 
 BoxyGame::BoxyGame(HWND hwnd)
 	:
 	Game(hwnd)
 {
 	Initialize(hwnd);
+	EnableCursor();
+
+	current_scene_ = std::make_unique<Level>(graphics_, input_);
 }
 
 BoxyGame::~BoxyGame()
@@ -20,13 +21,7 @@ void BoxyGame::Initialize(HWND hwnd)
 
 void BoxyGame::Update()
 {
-	if (input_->KeyIsDown('E')) {
-		cube_.SetAngleY(cube_.GetAngleY() + frame_time_);
-	}
-	if (input_->KeyIsDown('Q')) {
-		cube_.SetAngleZ(cube_.GetAngleZ() + frame_time_);
-	}
-	if (input_->KeyWasPressed('C')) {
+	if (input_->KeyWasPressed(VK_ESCAPE)) {
 		if (cursor_enabled_) {
 			DisableCursor();
 		}
@@ -34,9 +29,9 @@ void BoxyGame::Update()
 			EnableCursor();
 		}
 	}
-	std::stringstream ss;
-	ss << input_->GetMouseRawX() << ',' << input_->GetMouseRawY() << std::endl;
-	OutputDebugString(ss.str().c_str());
+	if (current_scene_ != nullptr) {
+		current_scene_->BaseUpdate(frame_time_);
+	}
 }
 
 void BoxyGame::AI()
@@ -49,6 +44,7 @@ void BoxyGame::Collisions()
 
 void BoxyGame::Render()
 {
-	cube_.Draw();
-	cube1_.Draw();
+	if (current_scene_ != nullptr) {
+		current_scene_->Render(frame_time_);
+	}
 }

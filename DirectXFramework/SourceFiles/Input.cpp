@@ -1,5 +1,8 @@
 #include "../Base/Input.h"
 
+#include <string>
+#include <sstream>
+
 // makes sure key code is within buffer range
 inline bool ValidKeyCode(UCHAR vkey) { return vkey < inputns::kKeysArrayLength; }
 
@@ -51,22 +54,22 @@ void Input::Update(const float& dt)
 	ResetCamera();
 	if (camera_engaged_) {
 		if (KeyIsDown('W')) {
-			TranslateCamera({0.0f, 0.0f, 1.0f}, dt);
+			TranslateNoY({0.0f, 0.0f, 1.0f}, dt);
 		}
 		if (KeyIsDown('S')) {
-			TranslateCamera({ 0.0f, 0.0f, -1.0f }, dt);
+			TranslateNoY({ 0.0f, 0.0f, -1.0f }, dt);
 		}
 		if (KeyIsDown('A')) {
-			TranslateCamera({ -1.0f, 0.0f, 0.0f }, dt);
+			TranslateNoY({ -1.0f, 0.0f, 0.0f }, dt);
 		}
 		if (KeyIsDown('D')) {
-			TranslateCamera({ 1.0f, 0.0f, 0.0f }, dt);
+			TranslateNoY({ 1.0f, 0.0f, 0.0f }, dt);
 		}
 		if (KeyIsDown(VK_SHIFT)) {
-			TranslateCamera({ 0.0f, -1.0f, 0.0f }, dt);
+			TranslateNoRotation({ 0.0f, -1.0f, 0.0f }, dt);
 		}
 		if (KeyIsDown(VK_SPACE)) {
-			TranslateCamera({ 0.0f, 1.0f, 0.0f }, dt);
+			TranslateNoRotation({ 0.0f, 1.0f, 0.0f }, dt);
 		}
 	}
 }
@@ -392,10 +395,19 @@ void Input::ResetCamera()
 	mouse_raw_y_ = 0;
 }
 
-DirectX::XMMATRIX Input::GetCameraMatrix()
+void Input::UpdateMouseDelta()
 {
-	cam_yaw_ = cam_yaw_ < 6.284f ? cam_yaw_ + mouse_raw_x_ * 0.002f : 0.0f;
-	cam_pitch_ = cam_pitch_ + mouse_raw_y_ * 0.002f;
+	// clamping x
+	cam_yaw_ = cam_yaw_ < 6.284f ? cam_yaw_ + (float)mouse_raw_x_ * 0.01f : 0.0f;
+	// clamping y
+	float temp = (cam_pitch_ + (float)mouse_raw_y_ * 0.01f);
+	temp = temp < -1.571f * 0.9f ? -1.571 * 0.9f : temp;
+	temp = temp > 1.571f * 0.9f ? 1.571f * 0.9f : temp;
+	cam_pitch_ = temp;
+}
+
+DirectX::XMMATRIX Input::GetCameraMatrix(const float& dt)
+{
 	using namespace DirectX;
 	DirectX::XMVECTOR forward_base_vector = DirectX::XMVectorSet(0.0f, 0.0f, 1.0f, 0.0f);
 	DirectX::XMVECTOR look_vector = DirectX::XMVector3Transform(forward_base_vector,
@@ -408,7 +420,10 @@ DirectX::XMMATRIX Input::GetCameraMatrix()
 DirectX::XMMATRIX Input::GetInverseCameraRotation()
 {
 	cam_yaw_ = cam_yaw_ < 6.284f ? cam_yaw_ + mouse_raw_x_ * 0.002f : 0.0f;
-	cam_pitch_ = cam_pitch_ + mouse_raw_y_ * 0.002f;
+	float temp = (cam_pitch_ + mouse_raw_y_ * 0.002f);
+	temp = temp < -1.571f * 0.9f ? -1.571 * 0.9f : temp;
+	temp = temp > 1.571f * 0.9f ? 1.571f * 0.9f : temp;
+	cam_pitch_ = temp;
 	return DirectX::XMMatrixRotationRollPitchYaw(-cam_pitch_, -cam_yaw_, 0.0f);
 }
 
@@ -418,6 +433,30 @@ void Input::TranslateCamera(DirectX::XMFLOAT3 translation, const float& dt)
 	XMStoreFloat3(&translation, XMVector3Transform(
 		XMLoadFloat3(&translation),
 		XMMatrixRotationRollPitchYaw(cam_pitch_, cam_yaw_, 0.0f) *
+		XMMatrixScaling(camera_translate_speed_ * dt, camera_translate_speed_ * dt, camera_translate_speed_ * dt)
+	));
+	cam_x_ += translation.x;
+	cam_y_ += translation.y;
+	cam_z_ += translation.z;
+}
+
+void Input::TranslateNoY(DirectX::XMFLOAT3 translation, const float& dt)
+{
+	using namespace DirectX;
+	XMStoreFloat3(&translation, XMVector3Transform(
+		XMLoadFloat3(&translation),
+		XMMatrixRotationRollPitchYaw(cam_pitch_, cam_yaw_, 0.0f) *
+		XMMatrixScaling(camera_translate_speed_ * dt, camera_translate_speed_ * dt, camera_translate_speed_ * dt)
+	));
+	cam_x_ += translation.x;
+	cam_z_ += translation.z;
+}
+
+void Input::TranslateNoRotation(DirectX::XMFLOAT3 translation, const float& dt)
+{
+	using namespace DirectX;
+	XMStoreFloat3(&translation, XMVector3Transform(
+		XMLoadFloat3(&translation),
 		XMMatrixScaling(camera_translate_speed_ * dt, camera_translate_speed_ * dt, camera_translate_speed_ * dt)
 	));
 	cam_x_ += translation.x;

@@ -1,13 +1,12 @@
 #pragma once
 #include "Base/Game.h"
-#include "Cube.h"
+#include "Scene.h"
 #include <string>
 #include <sstream>
 
 class BoxyGame : public Game {
 private:
-	Cube cube_ = Cube(graphics_, input_, L"Images/grassblock.png", 0, 0, 0);
-	Cube cube1_ = Cube(graphics_, input_, L"Images/grassblock.png", 0, 0, 0);
+	std::unique_ptr<Scene> current_scene_ = nullptr;
 public:
 	BoxyGame(HWND hwnd);
 	virtual ~BoxyGame();

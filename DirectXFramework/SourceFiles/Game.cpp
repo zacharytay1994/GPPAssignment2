@@ -162,6 +162,7 @@ void Game::Run(HWND hwnd)
 
 	graphics_->ClearBuffer();
 
+	input_->UpdateMouseDelta();
 	// process components
 	if (!paused_) {
 		Update();

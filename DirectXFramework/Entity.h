@@ -16,4 +16,7 @@ public:
 
 	void AddComponent(ComponentPtr component);
 	ComponentPtr GetComponent(std::string type);
+  
+	virtual void Update(const float& dt);
+	virtual void Render(const float& dt);
 };

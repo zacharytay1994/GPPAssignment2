@@ -3,6 +3,7 @@
 #include "Base/Graphics.h"
 #include "Base/Surface.h"
 #include "Base/Input.h"
+#include "Vec3.h"
 #include <memory>
 #include <vector>
 
@@ -39,15 +40,14 @@ private:
 	bool	visible_ = true;					  // referenced in Sprite::Draw()
 
 public:
-	Cube(std::shared_ptr<Graphics> gfx, std::shared_ptr<Input> input, const std::wstring& filename,
-		const int& width, const int& height, const int& depth);
+	Cube(std::shared_ptr<Graphics> gfx, std::shared_ptr<Input> input, const std::wstring& filename);
 	~Cube();
 
 	/*___________________________________*/
 	// GET AND SET FUNCTIONS
 	/*___________________________________*/
 	Surface GetSurface();
-	dx::XMMATRIX GetTransform();
+	dx::XMMATRIX GetTransform(const float& dt);
 
 	/*___________________________________*/
 	// SPRITE DATA
@@ -85,7 +85,7 @@ public:
 	// MISCELLENEOUS FUNCTIONS
 	/*___________________________________*/
 	// Pre: initialized_ == true
-	void Draw();
+	void Draw(const float& dt);
 	void Update(const float& frametime);
 	/*___________________________________*/
 	// BACK-END FUNCTIONS

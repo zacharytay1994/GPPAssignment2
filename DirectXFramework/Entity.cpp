@@ -25,6 +25,7 @@ void Entity::AddComponent(ComponentPtr component)
 }
 
 ComponentPtr Entity::GetComponent(std::string type)
+void Entity::Render(const float& dt)
 {
 	for (ComponentPtr c : components_) {
 		if (c->GetType() == type) {
