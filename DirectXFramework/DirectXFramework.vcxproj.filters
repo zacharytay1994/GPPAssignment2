@@ -82,6 +82,10 @@
     <ClCompile Include="Entity.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Component.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="InputComponent.cpp">
     <ClCompile Include="Block.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -92,6 +96,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Level.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="MainMenu.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Player.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -147,6 +157,10 @@
     <ClInclude Include="Entity.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Component.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="InputComponent.h">
     <ClInclude Include="Block.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -157,6 +171,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="MapGenerator.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="MainMenu.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Player.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

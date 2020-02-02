@@ -30,7 +30,7 @@ void MapGenerator::GenerateMap(std::vector<std::shared_ptr<Entity>>& ents)
 			else { image = L"Images/grassblock.png"; }
 
 			// Spawn floor
-			std::shared_ptr<Block> fb = std::make_shared<Block>(image, Vecf3(1.0f, 1.0f, 1.0f), graphics_, input_);
+			std::shared_ptr<Block> fb = std::make_shared<Block>(image, graphics_, input_);
 			fb->SetPosition(Vecf3(x, -1.0, z));
 			ents.push_back(fb);
 
@@ -43,7 +43,7 @@ void MapGenerator::GenerateMap(std::vector<std::shared_ptr<Entity>>& ents)
 			// Don't spawn anything above the checkpoint
 			if (abs(x - checkpoint.x) <= 1 && abs(z - checkpoint.z) <= 1) { continue; }
 
-			std::shared_ptr<Block> b = std::make_shared<Block>(image, Vecf3(1.0f, 1.0f, 1.0f), graphics_, input_);
+			std::shared_ptr<Block> b = std::make_shared<Block>(image, graphics_, input_);
 			b->SetPosition(Vecf3(x, 0.0, z));
 			ents.push_back(b);
 		}

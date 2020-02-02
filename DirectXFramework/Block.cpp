@@ -1,9 +1,9 @@
 #include "Block.h"
 
-Block::Block(const std::wstring& image, const Vecf3& scale, std::shared_ptr<Graphics> gfx, std::shared_ptr<Input> input)
+Block::Block(const std::wstring& image, std::shared_ptr<Graphics> gfx, std::shared_ptr<Input> input)
 	:
 	Entity(),
-	cube_(gfx, input, image, scale)
+	cube_(gfx, input, image)
 {
 }
 
@@ -15,6 +15,13 @@ void Block::SetPosition(const Vecf3& position)
 Vecf3 Block::GetPosition()
 {
 	return position_;
+}
+
+void Block::SetScale(const Vecf3& scale)
+{
+	cube_.SetScaleX(scale.x);
+	cube_.SetScaleY(scale.y);
+	cube_.SetScaleZ(scale.z);
 }
 
 void Block::Update(const float& dt)
