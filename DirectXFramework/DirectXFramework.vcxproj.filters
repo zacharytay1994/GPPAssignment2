@@ -1,183 +1,81 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="Source Files">
-      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
-      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
-    </Filter>
-    <Filter Include="Header Files">
-      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
-      <Extensions>h;hh;hpp;hxx;hm;inl;inc;ipp;xsd</Extensions>
-    </Filter>
-    <Filter Include="Resource Files">
-      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
-      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
-    </Filter>
-    <Filter Include="Shaders">
-      <UniqueIdentifier>{57108a8c-587f-4942-b277-29336dde4549}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Resource Files\Images">
-      <UniqueIdentifier>{80209a2a-4c15-4c8b-afdd-c04b90e6b175}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\Base">
-      <UniqueIdentifier>{f9787f64-a445-4241-9b33-f45618756ebc}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\Math">
-      <UniqueIdentifier>{20f9e3fc-e180-4396-8c1e-c3fc721b7fdb}</UniqueIdentifier>
-    </Filter>
+    <FxCompile Include="CubePixelShader.hlsl" />
+    <FxCompile Include="Shaders\SpritePixelShader.hlsl" />
+    <FxCompile Include="Shaders\SpriteVertexShader.hlsl" />
+    <FxCompile Include="CubeVertexShader.hlsl" />
   </ItemGroup>
   <ItemGroup>
-    <Image Include="Images\alpha_donald.png">
-      <Filter>Resource Files\Images</Filter>
-    </Image>
-    <Image Include="Images\rocknroll.png">
-      <Filter>Resource Files\Images</Filter>
-    </Image>
+    <ClCompile Include="Block.cpp" />
+    <ClCompile Include="BoxyGame.cpp" />
+    <ClCompile Include="Component.cpp" />
+    <ClCompile Include="Cube.cpp" />
+    <ClCompile Include="Entity.cpp" />
+    <ClCompile Include="MapGenerator.cpp" />
+    <ClCompile Include="InputComponent.cpp" />
+    <ClCompile Include="Level.cpp" />
+    <ClCompile Include="MainMenu.cpp" />
+    <ClCompile Include="Player.cpp" />
+    <ClCompile Include="Scene.cpp" />
+    <ClCompile Include="SourceFiles\Game.cpp" />
+    <ClCompile Include="SourceFiles\GameChild.cpp" />
+    <ClCompile Include="SourceFiles\GDIPlusManager.cpp" />
+    <ClCompile Include="SourceFiles\Graphics.cpp" />
+    <ClCompile Include="SourceFiles\Input.cpp" />
+    <ClCompile Include="SourceFiles\Sprite.cpp" />
+    <ClCompile Include="SourceFiles\Surface.cpp" />
+    <ClCompile Include="SourceFiles\WinMain.cpp" />
+    <ClCompile Include="VertexBuffer.cpp" />
+    <ClCompile Include="Bindable.cpp" />
+    <ClCompile Include="IndexBuffer.cpp" />
+    <ClCompile Include="VertexShader.cpp" />
+    <ClCompile Include="PixelShader.cpp" />
+    <ClCompile Include="Topology.cpp" />
+    <ClCompile Include="InputLayout.cpp" />
+    <ClCompile Include="TransformCbuf.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <FxCompile Include="Shaders\SpritePixelShader.hlsl">
-      <Filter>Shaders</Filter>
-    </FxCompile>
-    <FxCompile Include="Shaders\SpriteVertexShader.hlsl">
-      <Filter>Shaders</Filter>
-    </FxCompile>
-    <FxCompile Include="CubeVertexShader.hlsl">
-      <Filter>Shaders</Filter>
-    </FxCompile>
-    <FxCompile Include="CubePixelShader.hlsl">
-      <Filter>Shaders</Filter>
-    </FxCompile>
+    <ClInclude Include="Base\Color.h" />
+    <ClInclude Include="Base\Game.h" />
+    <ClInclude Include="Base\GameChild.h" />
+    <ClInclude Include="Base\GDIPlusManager.h" />
+    <ClInclude Include="Base\Graphics.h" />
+    <ClInclude Include="Base\Input.h" />
+    <ClInclude Include="Base\Sprite.h" />
+    <ClInclude Include="Base\Surface.h" />
+    <ClInclude Include="Block.h" />
+    <ClInclude Include="Box.h" />
+    <ClInclude Include="BoxyGame.h" />
+    <ClInclude Include="Component.h" />
+    <ClInclude Include="Cube.h" />
+    <ClInclude Include="Entity.h" />
+    <ClInclude Include="InputComponent.h" />
+    <ClInclude Include="Level.h" />
+    <ClInclude Include="MapGenerator.h" />
+    <ClInclude Include="MainMenu.h" />
+    <ClInclude Include="MathStuff.h" />
+    <ClInclude Include="MatTemplate.h" />
+    <ClInclude Include="Player.h" />
+    <ClInclude Include="Scene.h" />
+    <ClInclude Include="Vec2.h" />
+    <ClInclude Include="Vec3.h" />
+    <ClInclude Include="Vec4.h" />
+    <ClInclude Include="assimp\include\assimp\config.h" />
+    <ClInclude Include="assimp\include\assimp\fast_atof.h" />
+    <ClInclude Include="Drawable.h" />
+    <ClInclude Include="VertexBuffer.h" />
+    <ClInclude Include="Bindable.h" />
+    <ClInclude Include="IndexBuffer.h" />
+    <ClInclude Include="VertexShader.h" />
+    <ClInclude Include="PixelShader.h" />
+    <ClInclude Include="Topology.h" />
+    <ClInclude Include="InputLayout.h" />
+    <ClInclude Include="ConstantBuffers.h" />
+    <ClInclude Include="TransformCbuf.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="SourceFiles\Game.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="SourceFiles\GameChild.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="SourceFiles\GDIPlusManager.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="SourceFiles\Graphics.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="SourceFiles\Input.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="SourceFiles\Sprite.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="SourceFiles\Surface.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="SourceFiles\WinMain.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Cube.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="BoxyGame.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Entity.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Component.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="InputComponent.cpp">
-    <ClCompile Include="Block.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="MapGenerator.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Scene.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Level.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="MainMenu.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Player.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="Base\Color.h">
-      <Filter>Header Files\Base</Filter>
-    </ClInclude>
-    <ClInclude Include="Base\Game.h">
-      <Filter>Header Files\Base</Filter>
-    </ClInclude>
-    <ClInclude Include="Base\GameChild.h">
-      <Filter>Header Files\Base</Filter>
-    </ClInclude>
-    <ClInclude Include="Base\GDIPlusManager.h">
-      <Filter>Header Files\Base</Filter>
-    </ClInclude>
-    <ClInclude Include="Base\Graphics.h">
-      <Filter>Header Files\Base</Filter>
-    </ClInclude>
-    <ClInclude Include="Base\Input.h">
-      <Filter>Header Files\Base</Filter>
-    </ClInclude>
-    <ClInclude Include="Base\Sprite.h">
-      <Filter>Header Files\Base</Filter>
-    </ClInclude>
-    <ClInclude Include="Base\Surface.h">
-      <Filter>Header Files\Base</Filter>
-    </ClInclude>
-    <ClInclude Include="Box.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Vec3.h">
-      <Filter>Header Files\Math</Filter>
-    </ClInclude>
-    <ClInclude Include="Vec2.h">
-      <Filter>Header Files\Math</Filter>
-    </ClInclude>
-    <ClInclude Include="MathStuff.h">
-      <Filter>Header Files\Math</Filter>
-    </ClInclude>
-    <ClInclude Include="Vec4.h">
-      <Filter>Header Files\Math</Filter>
-    </ClInclude>
-    <ClInclude Include="MatTemplate.h">
-      <Filter>Header Files\Math</Filter>
-    </ClInclude>
-    <ClInclude Include="Cube.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="BoxyGame.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Entity.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Component.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="InputComponent.h">
-    <ClInclude Include="Block.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Scene.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Level.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="MapGenerator.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="MainMenu.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Player.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
+    <Image Include="Images\alpha_donald.png" />
+    <Image Include="Images\rocknroll.png" />
   </ItemGroup>
 </Project>
