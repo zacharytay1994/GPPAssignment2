@@ -38,7 +38,7 @@ std::vector<std::shared_ptr<Entity>> MapGenerator::GenerateMap()
 
 			n = pn_->octaveNoise0_1(x / fx_, z / fz_, octaves_);
 
-			if (n < .3) { image = L"Images/woodblock.png"; }
+			if (n < .4) { image = L"Images/woodblock.png"; }
 			else if (n < .6) { continue; } 
 			else { image = L"Images/stoneblock.png"; }
 
