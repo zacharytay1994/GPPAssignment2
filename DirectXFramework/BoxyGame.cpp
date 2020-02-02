@@ -1,7 +1,6 @@
 #include "BoxyGame.h"
 #include "Level.h"
 
-#include "MapGenerator.h"
 #include "Vec3.h"
 
 
@@ -23,7 +22,7 @@ void BoxyGame::Initialize(HWND hwnd)
 {
 	// block1.SetPosition(Vecf3(0.0, 0.0, 2.0f));
 
-	MapGenerator* mapGen_ = new MapGenerator(graphics_, input_);
+	mapGen_ = std::make_unique<MapGenerator>(graphics_, input_);
 	mapGen_->GenerateMap(entities_);
 }
 
@@ -37,6 +36,8 @@ void BoxyGame::Update()
 			EnableCursor();
 		}
 	}
+
+	if (input_->KeyWasPressed('G')) { mapGen_->GenerateMap(entities_); }
 
 	if (current_scene_ != nullptr) 
 	{ current_scene_->BaseUpdate(frame_time_); }

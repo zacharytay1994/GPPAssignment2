@@ -86,6 +86,7 @@ public:
 
 	// Camera Functions
 	void ResetCamera();
+	void UpdateMouseDelta();
 	DirectX::XMMATRIX GetCameraMatrix(const float& dt);
 	DirectX::XMMATRIX GetInverseCameraRotation();
 	void TranslateCamera(DirectX::XMFLOAT3 translation, const float& dt);
