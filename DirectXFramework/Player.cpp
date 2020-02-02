@@ -3,7 +3,7 @@
 Player::Player(std::shared_ptr<Graphics> gfx, std::shared_ptr<Input> input) :
 	Entity(),
 	//cube_(gfx, input, L"Images/alex.png"),
-	position_({ 1,0.75,5 }),
+	position_({ 1,2.25,5 }),
 	cubeModel_({1,2,0})
 {
 
@@ -56,12 +56,13 @@ Vecf3 Player::GetPosition()
 
 void Player::Update(const float& dt)
 {
+	cubeModel_.SetPosition(position_);
 	//cubeModel_.SetPosition(cubeModel_.GetPosition() + (Vecf3(0, 0, 1) * dt));
 	//cubeModel_.RotateXTo("head", PI / 2 * dt);
 	cubeModel_.RotateYTo("head", PI / 2 * dt);
 	//cubeModel_.RotateZTo("head", PI / 2 * dt);
 	//cubeModel_.RotateYTo("larm", PI / 2 * dt);
-	cubeModel_.RotateXTo("rarm", PI / 2 * dt);
+	//cubeModel_.RotateXTo("rarm", PI / 2 * dt);
 }
 
 void Player::Render(const float& dt)
