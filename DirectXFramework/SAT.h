@@ -27,11 +27,25 @@ public:
 class SAT {
 public:
 	static bool OBBToOBB(Manifold& m, std::shared_ptr<OBB> A, std::shared_ptr<OBB> B) {
+
+		// testing code
+		/*A->transform_.position_ = {0.0f, -10.0f, 0.0f};
+		A->transform_.rotation_.x_ = { 1.0f, 0.0f, 0.0f };
+		A->transform_.rotation_.y_ = { 0.0f, 1.0f, 0.0f };
+		A->transform_.rotation_.z_ = { 0.0f, 0.0f, 1.0f };
+
+		B->transform_.position_ = {-0.18, -4.63, -2.82};
+		B->transform_.rotation_.x_ = { 0.8666f, 0.0f, -0.5f };
+		B->transform_.rotation_.y_ = { 0.250f, 0.866f, 0.433f };
+		B->transform_.rotation_.z_ = { 0.433f, -0.5f, 0.7499f };*/
+
 		PMat3 A_rotation = A->transform_.rotation_;
 		PMat3 B_rotation = B->transform_.rotation_;
 
 		Vecf3 A_extents = A->extents_;
 		Vecf3 B_extents = B->extents_;
+		/*A_extents = { 5.0f, 5.0f, 5.0f };
+		B_extents = { 0.5f, 0.5f, 0.5f };*/
 
 		// rotation to represent B in A's coordinate frame C = A^T * B
 		// C in qu3e
@@ -46,8 +60,8 @@ public:
 
 		// query states
 		float s;
-		float aMax = -std::numeric_limits<float>::max();
-		float bMax = -std::numeric_limits<float>::max();
+		float aMax = -(std::numeric_limits<float>::max)();
+		float bMax = -(std::numeric_limits<float>::max)();
 		int aAxis = -1;
 		int bAxis = -1;
 		Vecf3 normalA = { 0.0f, 0.0f, 0.0f };
@@ -90,6 +104,7 @@ public:
 
 		if (bMax > aMax) {
 			axis = bAxis;
+			normal = normalB;
 		}
 		else {
 			axis = aAxis;
@@ -236,7 +251,7 @@ public:
 				output[2] = 7;
 				output[3] = 9;
 
-				extent = { referenceextent.x, referenceextent.z, referenceextent.z };
+				extent = { referenceextent.y, referenceextent.z, referenceextent.x };
 				basis.x_ = referencetransform.rotation_.y_;
 				basis.y_ = referencetransform.rotation_.z_;
 				basis.z_ = referencetransform.rotation_.x_;
@@ -248,9 +263,9 @@ public:
 				output[3] = 5;
 
 				extent = { referenceextent.z, referenceextent.y, referenceextent.x };
-				basis.x_ = referencetransform.rotation_.z_;
-				basis.y_ = referencetransform.rotation_.y_;
-				basis.z_ = referencetransform.rotation_.x_;
+				basis.x_ =  referencetransform.rotation_.z_;
+				basis.y_ =  referencetransform.rotation_.y_;
+				basis.z_ = -referencetransform.rotation_.x_;
 			}
 			break;
 		case 1:
@@ -272,9 +287,9 @@ public:
 				output[3] = 7;
 
 				extent = { referenceextent.z, referenceextent.x, referenceextent.y };
-				basis.x_ = referencetransform.rotation_.z_;
-				basis.y_ = referencetransform.rotation_.x_;
-				basis.z_ = referencetransform.rotation_.y_;
+				basis.x_ =  referencetransform.rotation_.z_;
+				basis.y_ = -referencetransform.rotation_.x_;
+				basis.z_ = -referencetransform.rotation_.y_;
 			}
 			break;
 		case 2:
@@ -285,9 +300,9 @@ public:
 				output[3] = 0;
 
 				extent = { referenceextent.y, referenceextent.x, referenceextent.z };
-				basis.x_ = referencetransform.rotation_.y_;
-				basis.y_ = referencetransform.rotation_.x_;
-				basis.z_ = referencetransform.rotation_.z_;
+				basis.x_ = -referencetransform.rotation_.y_;
+				basis.y_ =  referencetransform.rotation_.x_;
+				basis.z_ =  referencetransform.rotation_.z_;
 			}
 			else {
 				output[0] = 6;
@@ -296,9 +311,9 @@ public:
 				output[3] = 9;
 
 				extent = { referenceextent.y, referenceextent.x, referenceextent.z };
-				basis.x_ = referencetransform.rotation_.y_;
-				basis.y_ = referencetransform.rotation_.x_;
-				basis.z_ = referencetransform.rotation_.z_;
+				basis.x_ = -referencetransform.rotation_.y_;
+				basis.y_ = -referencetransform.rotation_.x_;
+				basis.z_ = -referencetransform.rotation_.z_;
 			}
 			break;
 		}

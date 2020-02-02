@@ -25,8 +25,8 @@ public:
 	{}
 
 	Vecf3 operator*(const Vecf3& v) {
-		return { x_.x * v.x + y_.x * v.y + z_.z * v.z,
-				x_.x * v.x + y_.y * v.y + z_.y * v.z,
+		return { x_.x * v.x + y_.x * v.y + z_.x * v.z,
+				x_.y * v.x + y_.y * v.y + z_.y * v.z,
 				x_.z * v.x + y_.z * v.y + z_.z * v.z };
 	};
 
@@ -91,6 +91,7 @@ public:
 	PMat3 rotation_;
 
 	Vecf3 operator*(const Vecf3& v) {
+		Vecf3 test = (rotation_ * v) + position_;
 		return (rotation_ * v) + position_;
 	}
 };
@@ -134,7 +135,7 @@ public:
 		old.z += q.z * 0.5f;
 		old.w += q.w * 0.5f;
 
-		return NormalizeQuart(q);
+		return NormalizeQuart(old);
 	}
 
 	static QuaternionUWU NormalizeQuart(const QuaternionUWU& q) {
@@ -142,7 +143,7 @@ public:
 		float y = q.y;
 		float z = q.z;
 		float w = q.w;
-		float d = q.w * q.w + q.x * q.x + q.y * q.y * q.z * q.z;
+		float d = q.w * q.w + q.x * q.x + q.y * q.y + q.z * q.z;
 
 		if (d == 0)
 		{

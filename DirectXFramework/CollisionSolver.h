@@ -105,7 +105,8 @@ public:
 			c.tangent_mass_b_ = PhysicsMath::Invert(tm2);
 
 			// precalculate bias factor
-			c.bias_ = -0.2f * (1.0f / dt) * std::min(0.0f, c.penetration_ + 0.05f);
+			float testfloat = (std::min)(0.0f, c.penetration_ + 0.05f);
+			c.bias_ = -0.2f * (1.0f / dt) * (std::min)(0.0f, c.penetration_ + 0.05f);
 			ccs.contacts_[i] = c;
 		}
 	}
@@ -123,7 +124,7 @@ public:
 			Vecf3 dv = vb + (wb % c.rb_) - va - (wa % c.ra_);
 
 			// friction
-			float friction_coefficient = 0.1f;
+			float friction_coefficient = 0.3f;
 			float lambda1 = -(dv * ccs.tangent_a_) * c.tangent_mass_a_;
 			Vecf3 impulse1 = ccs.tangent_a_ * lambda1;
 			va -= impulse1 * ccs.mass_a_ * friction_coefficient;
@@ -144,7 +145,7 @@ public:
 			// not friction stuff
 			float vn = dv * ccs.normal_;
 
-			float lambda = std::max(c.normal_mass_ * (-vn + c.bias_), 0.0f);
+			float lambda = (std::max)(c.normal_mass_ * (-vn + c.bias_), 0.0f);
 
 			Vecf3 impulse = ccs.normal_ * lambda;
 			va -= impulse * ccs.mass_a_;
@@ -155,12 +156,12 @@ public:
 		}
 
 		// if velocities are small, set to 0
-		float threshold = 0.1f;
-		float ang_thres = 0.1f;
+		float threshold = 0.01f;
+		float ang_thres = 0.05f;
 
-		ccs.A->vs_.velocity_ = va.Len < threshold ? Vecf3(0.0f, 0.0f, 0.0f) : va;
+		ccs.A->vs_.velocity_ = va.Len() < threshold ? Vecf3(0.0f, 0.0f, 0.0f) : va;
 		ccs.A->vs_.angular_velocity_ = (std::abs(wa.x) < ang_thres && std::abs(wa.y) < ang_thres && std::abs(wa.z) < ang_thres) ? Vecf3(0.0f, 0.0f, 0.0f) : wa;
-		ccs.B->vs_.velocity_ = vb.Len < threshold ? Vecf3(0.0f, 0.0f, 0.0f) : vb;
+		ccs.B->vs_.velocity_ = vb.Len() < threshold ? Vecf3(0.0f, 0.0f, 0.0f) : vb;
 		ccs.B->vs_.angular_velocity_ = (std::abs(wb.x) < ang_thres && std::abs(wb.y) < ang_thres && std::abs(wb.z) < ang_thres) ? Vecf3(0.0f, 0.0f, 0.0f) : wb;
 	}
 };

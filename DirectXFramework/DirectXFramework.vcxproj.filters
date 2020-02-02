@@ -25,6 +25,7 @@
     <ClCompile Include="SourceFiles\Sprite.cpp" />
     <ClCompile Include="SourceFiles\Surface.cpp" />
     <ClCompile Include="SourceFiles\WinMain.cpp" />
+    <ClCompile Include="CollisionManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Base\Color.h" />
@@ -55,6 +56,7 @@
     <ClInclude Include="OBB.h" />
     <ClInclude Include="SAT.h" />
     <ClInclude Include="CollisionSolver.h" />
+    <ClInclude Include="CollisionManager.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Images\alpha_donald.png" />

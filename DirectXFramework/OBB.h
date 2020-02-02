@@ -22,6 +22,7 @@ public:
 	Vecf3 torque_ = {0.0f, 0.0f, 0.0f};
 
 	OBB(const Vecf3& extents, const float& mass) {
+		extents_ = extents;
 		transform_.position_ = { 0.0f, 0.0f, 0.0f };
 		transform_.rotation_ = PMat3();
 		vs_.velocity_ = { 0.0f, 0.0f, 0.0f };
@@ -29,6 +30,21 @@ public:
 		float ih = 1.0f / 12.0f * mass * ((extents.x * 2) * (extents.x * 2) + (extents.z * 2) * (extents.z * 2));
 		float iw = 1.0f / 12.0f * mass * ((extents.z * 2) * (extents.z * 2) + (extents.y * 2) * (extents.y * 2));
 		float id = 1.0f / 12.0f * mass * ((extents.x * 2) * (extents.x * 2) + (extents.y * 2) * (extents.y * 2));
+		inv_inertia_.x_ = { 1.0f / ih, 0.0f, 0.0f };
+		inv_inertia_.y_ = { 0.0f, 1.0f / iw, 0.0f };
+		inv_inertia_.z_ = { 0.0f, 0.0f, 1.0f / id };
+		mass_ = mass;
+		inv_mass_ = 1.0f / mass;
+	}
+
+	void UpdateExtents(const Vecf3& extents) {
+		extents_ = extents;
+	}
+
+	void UpdateMass(const float& mass) {
+		float ih = 1.0f / 12.0f * mass * ((extents_.x * 2) * (extents_.x * 2) + (extents_.z * 2) * (extents_.z * 2));
+		float iw = 1.0f / 12.0f * mass * ((extents_.z * 2) * (extents_.z * 2) + (extents_.y * 2) * (extents_.y * 2));
+		float id = 1.0f / 12.0f * mass * ((extents_.x * 2) * (extents_.x * 2) + (extents_.y * 2) * (extents_.y * 2));
 		inv_inertia_.x_ = { 1.0f / ih, 0.0f, 0.0f };
 		inv_inertia_.y_ = { 0.0f, 1.0f / iw, 0.0f };
 		inv_inertia_.z_ = { 0.0f, 0.0f, 1.0f / id };
