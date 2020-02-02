@@ -21,8 +21,6 @@ BoxyGame::~BoxyGame()
 
 void BoxyGame::Initialize(HWND hwnd)
 {
-	// block1.SetPosition(Vecf3(0.0, 0.0, 2.0f));
-
 	mapGen_ = std::make_unique<MapGenerator>(graphics_, input_);
 	mapGen_->GenerateMap(entities_);
 }
@@ -59,8 +57,6 @@ void BoxyGame::Render()
 {
 	if (current_scene_ != nullptr) 
 	{ current_scene_->Render(frame_time_); }
-
-	// block1.Render();
 
 	for (std::shared_ptr<Entity> e : entities_)
 	{ e->Render(frame_time_); }
