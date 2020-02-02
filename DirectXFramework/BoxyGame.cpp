@@ -12,7 +12,11 @@ BoxyGame::BoxyGame(HWND hwnd)
 	Initialize(hwnd);
 	EnableCursor();
 
+	// Go to main menu
 	current_scene_ = std::make_unique<MainMenu>(graphics_, input_);
+
+	// Go to level
+	current_scene_ = std::make_unique<Level>(graphics_, input_);
 }
 
 BoxyGame::~BoxyGame()
@@ -21,8 +25,6 @@ BoxyGame::~BoxyGame()
 
 void BoxyGame::Initialize(HWND hwnd)
 {
-	mapGen_ = std::make_unique<MapGenerator>(graphics_, input_);
-	mapGen_->GenerateMap(entities_);
 }
 
 void BoxyGame::Update()
@@ -36,13 +38,8 @@ void BoxyGame::Update()
 		}
 	}
 
-	if (input_->KeyWasPressed('G')) { mapGen_->GenerateMap(entities_); }
-
 	if (current_scene_ != nullptr) 
 	{ current_scene_->BaseUpdate(frame_time_); }
-
-	for (std::shared_ptr<Entity> e : entities_)
-	{ e->Update(frame_time_); }
 }
 
 void BoxyGame::AI()
@@ -57,8 +54,4 @@ void BoxyGame::Render()
 {
 	if (current_scene_ != nullptr) 
 	{ current_scene_->Render(frame_time_); }
-
-	for (std::shared_ptr<Entity> e : entities_)
-	{ e->Render(frame_time_); }
-	
 }

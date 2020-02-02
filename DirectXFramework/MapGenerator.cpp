@@ -12,8 +12,10 @@ MapGenerator::MapGenerator(std::shared_ptr<Graphics> graphics, std::shared_ptr<I
 {
 }
 
-void MapGenerator::GenerateMap(std::vector<std::shared_ptr<Entity>>& ents)
+std::vector<std::shared_ptr<Entity>> MapGenerator::GenerateMap()
 {
+
+	std::vector<std::shared_ptr<Entity>> ents;
 
 	// Generate checkpoint
 	Vecf3 checkpoint = Vecf3((curr_chunk_size_ * width_)+2, 0, dist(rng_));
@@ -51,5 +53,7 @@ void MapGenerator::GenerateMap(std::vector<std::shared_ptr<Entity>>& ents)
 
 	// Increment curr_chunk_size_
 	curr_chunk_size_++;
+
+	return(ents);
 
 }

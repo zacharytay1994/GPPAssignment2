@@ -57,7 +57,7 @@ public:
 	MapGenerator(std::shared_ptr<Graphics> graphics, std::shared_ptr<Input> input);
 
 	// Generates a map based on the WIDTH & HEIGHT attributes & modifies the provided entity vector
-	void GenerateMap(std::vector<std::shared_ptr<Entity>>& ents);
+	std::vector<std::shared_ptr<Entity>> GenerateMap();
 
 	// Set the dimensions of the maps that get generated
 	void setWidth(int w) 
