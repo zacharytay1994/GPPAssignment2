@@ -27,6 +27,7 @@
     <ClCompile Include="SourceFiles\WinMain.cpp" />
     <ClCompile Include="CollisionManager.cpp" />
     <ClCompile Include="CollisionComponent.cpp" />
+    <ClCompile Include="CubeModel.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Base\Color.h" />
@@ -59,6 +60,7 @@
     <ClInclude Include="CollisionSolver.h" />
     <ClInclude Include="CollisionManager.h" />
     <ClInclude Include="CollisionComponent.h" />
+    <ClInclude Include="CubeModel.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Images\alpha_donald.png" />

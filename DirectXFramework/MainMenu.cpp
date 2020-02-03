@@ -57,7 +57,15 @@ MainMenu::MainMenu(std::shared_ptr<Graphics> gfx, std::shared_ptr<Input> input):
 		AddEntity(std::dynamic_pointer_cast<Entity>(tempBlock));
 	}
 
-	
+	//tempBlock = std::make_shared<Block>(Block(L"Images/glassblock.png", graphics_, input_));
+	//tempBlock->SetPosition({ 0,0,0 });
+	//AddEntity(std::dynamic_pointer_cast<Entity>(tempBlock));
+	//tempBlock = std::make_shared<Block>(Block(L"Images/glassblock.png", graphics_, input_));
+	//tempBlock->SetPosition({ 0,1,0 });
+	//AddEntity(std::dynamic_pointer_cast<Entity>(tempBlock));
+	//tempBlock = std::make_shared<Block>(Block(L"Images/glassblock.png", graphics_, input_));
+	//tempBlock->SetPosition({ 0,2,0 });
+	//AddEntity(std::dynamic_pointer_cast<Entity>(tempBlock));
 
 
 	AddEntity(std::make_shared<Player>(Player(graphics_, input_)));
