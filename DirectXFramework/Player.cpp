@@ -1,8 +1,7 @@
 #include "Player.h"
 
 Player::Player(std::shared_ptr<Graphics> gfx, std::shared_ptr<Input> input) :
-	Entity(),
-	cube_(gfx, input, L"Images/alex.png"),
+	Entity(L"Images/alex.png", gfx, input),
 	position_({ 1,0.75,5 })
 {
 	SetScale({ 0.25,0.25,0.25 });

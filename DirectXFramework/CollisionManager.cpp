@@ -1,9 +1,6 @@
 #include "CollisionManager.h"
 #include "OBB.h"
 
-#include <string>
-#include <sstream>
-
 CollisionManager::CollisionManager()
 {
 }
@@ -22,10 +19,6 @@ void CollisionManager::TestAllOBBS()
 			std::shared_ptr<OBB> obb2 = obb_list_[x];
 			if (SAT::OBBToOBB(m, obb, obb2)) {
 				manifold_list_.push_back(m);
-				std::stringstream ss;
-				ss << "Detected + " << testcounter << std::endl;
-				testcounter++;
-				OutputDebugString(ss.str().c_str());
 			}
 		}
 	}
