@@ -50,8 +50,8 @@ public:
 	// GET AND SET FUNCTIONS
 	/*___________________________________*/
 	Surface GetSurface();
-	dx::XMMATRIX GetTransform(const float& dt);
-	dx::XMMATRIX GetQuaternionTransform(const float& dt);
+	dx::XMMATRIX GetTransform();
+	dx::XMMATRIX GetQuaternionTransform();
 
 	/*___________________________________*/
 	// SPRITE DATA
@@ -90,7 +90,7 @@ public:
 	// MISCELLENEOUS FUNCTIONS
 	/*___________________________________*/
 	// Pre: initialized_ == true
-	void Draw(const float& dt);
+	void Draw();
 	void DrawWithQuaternion();
 	void Update(const float& frametime);
 	/*___________________________________*/

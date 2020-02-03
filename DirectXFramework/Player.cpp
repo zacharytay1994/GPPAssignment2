@@ -64,8 +64,8 @@ void Player::Update(const float& dt)
 	//cubeModel_.RotateXTo("rarm", PI / 2 * dt);
 }
 
-void Player::Render(const float& dt)
+void Player::Render()
 {
 	//cube_.Draw(dt);
-	cubeModel_.Draw(dt);
+	cubeModel_.Draw();
 }

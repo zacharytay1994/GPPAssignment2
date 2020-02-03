@@ -18,5 +18,5 @@ public:
 	void SetScale(const Vecf3& scale);
 	void SetQuatRotate(const bool& b);
 	void Update(const float& dt) override;
-	void Render(const float& dt) override;
+	void Render() override;
 };

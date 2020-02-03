@@ -406,7 +406,7 @@ void Input::UpdateMouseDelta()
 	cam_pitch_ = temp;
 }
 
-DirectX::XMMATRIX Input::GetCameraMatrix(const float& dt)
+DirectX::XMMATRIX Input::GetCameraMatrix()
 {
 	using namespace DirectX;
 	DirectX::XMVECTOR forward_base_vector = DirectX::XMVectorSet(0.0f, 0.0f, 1.0f, 0.0f);

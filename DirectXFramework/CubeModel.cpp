@@ -96,13 +96,13 @@ void CubeModelNode::TranslateTo(std::string id, Vecf3 v)
 
 
 
-void CubeModelNode::Draw(const float& dt, Vecf3 totalOffSet, Vecf3 absPos)
+void CubeModelNode::Draw(Vecf3 totalOffSet, Vecf3 absPos)
 {
 	totalOffSet.x += offset_.x * rotationMatrix_[0][0] + offset_.y * rotationMatrix_[0][1] + offset_.z * rotationMatrix_[0][2];
 	totalOffSet.y += offset_.x * rotationMatrix_[1][0] + offset_.y * rotationMatrix_[1][1] + offset_.z * rotationMatrix_[1][2];
 	totalOffSet.z += offset_.x * rotationMatrix_[2][0] + offset_.y * rotationMatrix_[2][1] + offset_.z * rotationMatrix_[2][2];
 	for (std::shared_ptr<CubeModelNode> ptr : childNodes_) {
-		ptr->Draw(dt, totalOffSet, absPos);
+		ptr->Draw(totalOffSet, absPos);
 	}
 	for (std::shared_ptr<CubeModelData> cmd : cubes_) {
 		cmd->cube->SetX(totalOffSet.x + cmd->position.x + absPos.x);
@@ -113,7 +113,7 @@ void CubeModelNode::Draw(const float& dt, Vecf3 totalOffSet, Vecf3 absPos)
 		cmd->cube->SetAngleY(orientation_.y);
 		cmd->cube->SetAngleZ(orientation_.z);
 
-		cmd->cube->Draw(dt);
+		cmd->cube->Draw();
 	}
 
 }
@@ -166,10 +166,10 @@ void CubeModel::AddCubeToRootNode(std::shared_ptr<Cube> cube, Vecf3 scale, Vecf3
 	rootNode_->AddCube(cube, scale, position);
 }
 
-void CubeModel::Draw(const float& dt)
+void CubeModel::Draw()
 {
 	if (rootNode_ != nullptr) {
-		rootNode_->Draw(dt, {0,0,0}, position_);
+		rootNode_->Draw({0,0,0}, position_);
 	}
 }
 

@@ -27,7 +27,7 @@ public:
 	std::shared_ptr<T> GetComponentOfType(std::string type);
   
 	virtual void Update(const float& dt);
-	virtual void Render(const float& dt);
+	virtual void Render();
 
 	Vecf3 GetPosition();
 	QuaternionUWU GetRotation();

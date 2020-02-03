@@ -40,10 +40,10 @@ void Block::Update(const float& dt)
 	cube_.SetQuatRotation(rotation_);
 }
 
-void Block::Render(const float& dt)
+void Block::Render()
 {
 	if (!quaternion_rotate_) {
-		cube_.Draw(dt);
+		cube_.Draw();
 	}
 	else {
 		cube_.DrawWithQuaternion();

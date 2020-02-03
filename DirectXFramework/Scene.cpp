@@ -51,7 +51,7 @@ void Scene::Render(const float& dt)
 {
 	std::vector<std::shared_ptr<Entity>>::iterator we;
 	for (we = world_entities_.begin(); we != world_entities_.end(); we++) {
-		(*we)->Render(dt);
+		(*we)->Render();
 	}
 }
 
