@@ -3,7 +3,7 @@
 #include "Base/Graphics.h"
 #include "Base/Surface.h"
 #include "Base/Input.h"
-#include "Vec3.h"
+#include "PhysicsMath.h"
 #include <memory>
 #include <vector>
 
@@ -23,6 +23,9 @@ struct CubeData {
 	float	angle_x = 0.0f;
 	float	angle_y = 0.0f;
 	ID3D11ShaderResourceView* srv_sprite_ = nullptr;	// pointer to sprite image resource ready for pixel shader sampling
+
+	// quaternion rotation
+	QuaternionUWU rotation_ = QuaternionUWU(0.0f, 0.0f, 0.0f, 1.0f);
 };
 
 class Cube {
@@ -48,6 +51,7 @@ public:
 	/*___________________________________*/
 	Surface GetSurface();
 	dx::XMMATRIX GetTransform(const float& dt);
+	dx::XMMATRIX GetQuaternionTransform(const float& dt);
 
 	/*___________________________________*/
 	// SPRITE DATA
@@ -64,6 +68,7 @@ public:
 	void	SetAngleZ(const float& angle);
 	void	SetAngleX(const float& angle);
 	void	SetAngleY(const float& angle);
+	void	SetQuatRotation(const QuaternionUWU& q);
 	float	GetX();
 	float	GetY();
 	float	GetZ();
@@ -86,6 +91,7 @@ public:
 	/*___________________________________*/
 	// Pre: initialized_ == true
 	void Draw(const float& dt);
+	void DrawWithQuaternion();
 	void Update(const float& frametime);
 	/*___________________________________*/
 	// BACK-END FUNCTIONS

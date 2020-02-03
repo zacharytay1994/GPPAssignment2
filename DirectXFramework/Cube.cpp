@@ -28,13 +28,22 @@ dx::XMMATRIX Cube::GetTransform(const float& dt)
 	return	dx::XMMatrixTranspose(
 		dx::XMMatrixScaling(cube_data_.scale_x_, cube_data_.scale_y_, cube_data_.scale_z_) *
 		dx::XMMatrixRotationRollPitchYaw(cube_data_.angle_x, cube_data_.angle_y, cube_data_.angle_z) *
-		/*dx::XMMatrixRotationZ(cube_data_.angle_z) *
-		dx::XMMatrixRotationX(cube_data_.angle_x) *
-		dx::XMMatrixRotationY(cube_data_.angle_y) **/
-		
 		dx::XMMatrixTranslation(cube_data_.world_xoffset_, cube_data_.world_yoffset_, cube_data_.world_zoffset_) *
 		input->GetCameraMatrix(dt) *
 		dx::XMMatrixPerspectiveLH(1.0f,(float)Graphics::viewport_height_ / (float)Graphics::viewport_width_, 0.5f, 1000.0f) 
+	);
+}
+
+dx::XMMATRIX Cube::GetQuaternionTransform(const float& dt)
+{
+	// no scaling by 0
+	assert(cube_data_.scale_x_ != 0.0f || cube_data_.scale_y_ != 0.0f || cube_data_.scale_z_ != 0.0f);
+	return	dx::XMMatrixTranspose(
+		dx::XMMatrixScaling(cube_data_.scale_x_, cube_data_.scale_y_, cube_data_.scale_z_) *
+		dx::XMMatrixRotationQuaternion({ cube_data_.rotation_.x, cube_data_.rotation_.y, cube_data_.rotation_.z, cube_data_.rotation_.w }) *
+		dx::XMMatrixTranslation(cube_data_.world_xoffset_, cube_data_.world_yoffset_, cube_data_.world_zoffset_) *
+		input->GetCameraMatrix(dt) *
+		dx::XMMatrixPerspectiveLH(1.0f, (float)Graphics::viewport_height_ / (float)Graphics::viewport_width_, 0.5f, 1000.0f)
 	);
 }
 
@@ -96,6 +105,11 @@ void Cube::SetAngleX(const float& angle)
 void Cube::SetAngleY(const float& angle)
 {
 	cube_data_.angle_y = angle;
+}
+
+void Cube::SetQuatRotation(const QuaternionUWU& q)
+{
+	cube_data_.rotation_ = q;
 }
 
 float Cube::GetX()
@@ -174,6 +188,16 @@ void Cube::Draw(const float& dt)
 	if (visible_) {
 		gfx->BindShaderResourceView(cube_data_.srv_sprite_);
 		gfx->UpdateCBTransformSubresource({ GetTransform(dt) });
+		gfx->DrawIndexed();
+	}
+}
+
+void Cube::DrawWithQuaternion()
+{
+	assert(initialized_ == true);
+	if (visible_) {
+		gfx->BindShaderResourceView(cube_data_.srv_sprite_);
+		gfx->UpdateCBTransformSubresource({ GetQuaternionTransform(1.0f) });
 		gfx->DrawIndexed();
 	}
 }

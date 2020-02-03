@@ -63,6 +63,7 @@
   <ItemGroup>
     <ClCompile Include="Block.cpp" />
     <ClCompile Include="BoxyGame.cpp" />
+    <ClCompile Include="CollisionManager.cpp" />
     <ClCompile Include="Component.cpp" />
     <ClCompile Include="Cube.cpp" />
     <ClCompile Include="CubeModel.cpp" />
@@ -93,6 +94,8 @@
     <ClInclude Include="Block.h" />
     <ClInclude Include="Box.h" />
     <ClInclude Include="BoxyGame.h" />
+    <ClInclude Include="CollisionManager.h" />
+    <ClInclude Include="CollisionSolver.h" />
     <ClInclude Include="Component.h" />
     <ClInclude Include="Cube.h" />
     <ClInclude Include="CubeModel.h" />
@@ -102,7 +105,10 @@
     <ClInclude Include="MainMenu.h" />
     <ClInclude Include="MathStuff.h" />
     <ClInclude Include="MatTemplate.h" />
+    <ClInclude Include="OBB.h" />
+    <ClInclude Include="PhysicsMath.h" />
     <ClInclude Include="Player.h" />
+    <ClInclude Include="SAT.h" />
     <ClInclude Include="Scene.h" />
     <ClInclude Include="Vec2.h" />
     <ClInclude Include="Vec3.h" />
