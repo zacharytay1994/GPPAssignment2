@@ -6,7 +6,6 @@
 MainMenu::MainMenu(std::shared_ptr<Graphics> gfx, std::shared_ptr<Input> input):
 	Scene(gfx, input)
 {
-
 	std::shared_ptr<Block> tempBlock;
 	std::shared_ptr<Rail> tempRail;
 	//for (float z = 3.0f; z < 15.0f; z++) {
@@ -181,7 +180,9 @@ MainMenu::MainMenu(std::shared_ptr<Graphics> gfx, std::shared_ptr<Input> input):
 
 void MainMenu::Update(const float& dt)
 {
-
+	if (input_->KeyWasPressed('B')) {
+		AddEntity(std::dynamic_pointer_cast<Entity>(std::make_shared<Block>((Block(L"Images/grassblock.png", graphics_, input_)))));
+	}
 }
 
 void MainMenu::Render(const float& dt)

@@ -25,7 +25,8 @@
     <ClCompile Include="SourceFiles\Sprite.cpp" />
     <ClCompile Include="SourceFiles\Surface.cpp" />
     <ClCompile Include="SourceFiles\WinMain.cpp" />
-    <ClCompile Include="Rail.cpp" />
+    <ClCompile Include="CollisionManager.cpp" />
+    <ClCompile Include="CubeModel.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Base\Color.h" />
@@ -52,7 +53,12 @@
     <ClInclude Include="Vec2.h" />
     <ClInclude Include="Vec3.h" />
     <ClInclude Include="Vec4.h" />
-    <ClInclude Include="Rail.h" />
+    <ClInclude Include="PhysicsMath.h" />
+    <ClInclude Include="OBB.h" />
+    <ClInclude Include="SAT.h" />
+    <ClInclude Include="CollisionSolver.h" />
+    <ClInclude Include="CollisionManager.h" />
+    <ClInclude Include="CubeModel.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Images\alpha_donald.png" />
