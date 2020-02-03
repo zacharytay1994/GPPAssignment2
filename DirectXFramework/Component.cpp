@@ -1,7 +1,7 @@
 #include "Component.h"
 #include "Entity.h"
 
-Component::Component(Entity& owner,const std::string& type)
+Component::Component(Entity& owner, const std::string& type)
 	:
 	owner_(owner),
 	type_(type)
