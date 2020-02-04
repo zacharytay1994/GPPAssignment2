@@ -12,6 +12,7 @@ private:
 	std::unique_ptr<MapGenerator> mapGen_ = nullptr;
 
 	std::shared_ptr<TestObject> test_object_;
+	std::shared_ptr<TestObject> test_object_2_;
 public:
 	Level(std::shared_ptr<Graphics> gfx, std::shared_ptr<Input> input);
 	void Update(const float& dt) override;

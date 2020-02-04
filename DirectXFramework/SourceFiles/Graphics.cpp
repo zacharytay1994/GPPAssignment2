@@ -695,7 +695,7 @@ void Graphics::BindVertexBuffer(ID3D11Buffer* vertices)
 {
 	UINT stride = sizeof(DirectX::XMFLOAT3);
 	UINT offset = 0u;
-	p_device_context_->IAGetVertexBuffers(0u, 1u, &vertices, &stride, &offset);
+	p_device_context_->IASetVertexBuffers(0u, 1u, &vertices, &stride, &offset);
 }
 
 void Graphics::BindIndicesBuffer(ID3D11Buffer* indices)

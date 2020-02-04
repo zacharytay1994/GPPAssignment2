@@ -365,8 +365,12 @@ private:
 	ID3D11Buffer* p_index_buffer_ = nullptr;
 
 public:
+	float temp_x = 0.0f;
+	float temp_scale_ = 1.0f;
+	float temp_pos_x_ = 0.0f;
+	float temp_pos_y_ = 0.0f;
 	int index_count_ = 0;
-	TestObject(std::shared_ptr<Graphics> graphics_, std::shared_ptr<Input> input_, DirectX::XMFLOAT3 material)
+	TestObject(std::shared_ptr<Graphics> graphics_, std::shared_ptr<Input> input_, DirectX::XMFLOAT3 material, const std::string& objfile)
 		:
 		Drawable(graphics_, material),
 		graphics_(graphics_),
@@ -378,27 +382,27 @@ public:
 		};
 
 		Assimp::Importer imp;
-		const auto pModel = imp.ReadFile("Models\\dog.obj",
+		const auto pModel = imp.ReadFile(objfile,
 			aiProcess_Triangulate |
 			aiProcess_JoinIdenticalVertices
 		);
 		const auto pMesh = pModel->mMeshes[0];
 
-		//vertices.reserve(pMesh->mNumVertices);
-		//for (unsigned int i = 0; i < pMesh->mNumVertices; i++)
-		//{
-		//	vertices.push_back(
-		//		{ pMesh->mVertices[i].x /** scale*/,pMesh->mVertices[i].y /** scale*/,pMesh->mVertices[i].z /** scale*/ }
-		//		/**reinterpret_cast<DirectX::XMFLOAT3*>(&pMesh->mNormals[i])*/
-		//		);
-		//}
+		vertices.reserve(pMesh->mNumVertices);
+		for (unsigned int i = 0; i < pMesh->mNumVertices; i++)
+		{
+			vertices.push_back(
+				{ pMesh->mVertices[i].x /** scale*/,pMesh->mVertices[i].y /** scale*/,pMesh->mVertices[i].z /** scale*/ }
+				/**reinterpret_cast<DirectX::XMFLOAT3*>(&pMesh->mNormals[i])*/
+				);
+		}
 
 		D3D11_BUFFER_DESC buffer_description = {};
 		buffer_description.BindFlags = D3D11_BIND_VERTEX_BUFFER;		// how buffer will be bound to pipeline, i.e. type
-		buffer_description.Usage = D3D11_USAGE_DEFAULT;					// how buffer is expected to be read from and written to
-		buffer_description.CPUAccessFlags = 0u;		// cpu access, allow cpu to change buffer content
+		buffer_description.Usage = D3D11_USAGE_DYNAMIC;					// how buffer is expected to be read from and written to
+		buffer_description.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;		// cpu access, allow cpu to change buffer content
 		buffer_description.MiscFlags = 0u;								// 0 i.e. unused
-		buffer_description.ByteWidth = sizeof(vertices.size() * sizeof(DirectX::XMFLOAT3));				// size of buffer
+		buffer_description.ByteWidth = vertices.size() * sizeof(DirectX::XMFLOAT3);				// size of buffer
 		buffer_description.StructureByteStride = sizeof(DirectX::XMFLOAT3);	// size of each element in buffer
 		D3D11_SUBRESOURCE_DATA subresource_data = {};					// subresource used to create the buffer
 		subresource_data.pSysMem = &(vertices[0]);							// pointer to initialization data
@@ -455,13 +459,14 @@ public:
 			indices.push_back(face.mIndices[2]);
 		}
 		index_count_ = pMesh->mNumFaces * 3;
-
+		int test1 = indices.size();
+		int test2 = sizeof(unsigned short);
 		D3D11_BUFFER_DESC index_buffer_desc = {};
 		index_buffer_desc.BindFlags = D3D11_BIND_INDEX_BUFFER;
 		index_buffer_desc.Usage = D3D11_USAGE_DEFAULT;
 		index_buffer_desc.CPUAccessFlags = 0u;
 		index_buffer_desc.MiscFlags = 0u;
-		index_buffer_desc.ByteWidth = sizeof(indices.size() * sizeof(unsigned short));
+		index_buffer_desc.ByteWidth = indices.size() * sizeof(unsigned short);
 		index_buffer_desc.StructureByteStride = sizeof(unsigned short);
 		D3D11_SUBRESOURCE_DATA index_subresource_data = {};				// subresource used to create the buffer
 		index_subresource_data.pSysMem = &(indices[0]);
@@ -529,9 +534,9 @@ public:
 	void Draw()
 	{
 		// Bind vertices
-		//graphics_->BindVertexBuffer(p_vertex_buffer_);
+		graphics_->BindVertexBuffer(p_vertex_buffer_);
 		// Bind indices
-		//graphics_->BindIndicesBuffer(p_index_buffer_);
+		graphics_->BindIndicesBuffer(p_index_buffer_);
 		graphics_->UpdateCBTransformSubresource({ GetTransform(0) });
 		graphics_->DrawIndexed(index_count_);
 	}
@@ -541,12 +546,12 @@ public:
 		// no scaling by 0
 		//assert(cube_data_.scale_x_ != 0.0f || cube_data_.scale_y_ != 0.0f || cube_data_.scale_z_ != 0.0f);
 		return DirectX::XMMatrixTranspose(
-			DirectX::XMMatrixScaling(1.0f, 1.0f, 1.0f) *
-			DirectX::XMMatrixRotationRollPitchYaw(0, 0, 0) *
+			DirectX::XMMatrixScaling(temp_scale_, temp_scale_, temp_scale_) *
+			DirectX::XMMatrixRotationRollPitchYaw(temp_x, 0, 0) *
 			/*dx::XMMatrixRotationZ(cube_data_.angle_z) *
 			dx::XMMatrixRotationX(cube_data_.angle_x) *
 			dx::XMMatrixRotationY(cube_data_.angle_y) **/
-			DirectX::XMMatrixTranslation(0, 0, 10) *
+			DirectX::XMMatrixTranslation(temp_pos_x_, temp_pos_y_, 10) *
 			input_->GetCameraMatrix(dt) *
 			DirectX::XMMatrixPerspectiveLH(1.0f, (float)Graphics::viewport_height_ / (float)Graphics::viewport_width_, 0.5f, 1000.0f)
 		);
