@@ -5,6 +5,7 @@
 #include <assimp/postprocess.h>
 
 #include "Base/Graphics.h"
+#include "Base/Input.h"
 #include "D3dcompiler.h"
 #include "Entity.h"
 #include <memory>
@@ -240,7 +241,7 @@ public:
 };
 
 
-class Drawable : public Entity
+class Drawable
 {
 private:
 	std::shared_ptr<Graphics> graphics_;
@@ -276,7 +277,7 @@ public:
 		return staticBinds_;
 	}
 
-	void Render(const float& dt) override
+	void Draw()
 	{
 		for (auto& b : binds_)
 		{
@@ -353,10 +354,18 @@ private:
 };
 
 class TestObject : public Drawable {
+private:
+	std::shared_ptr<Graphics> graphics_;
+	std::shared_ptr<Input> input_;
+
+	std::vector<DirectX::XMFLOAT3> vertices;
+	std::vector<unsigned short> indices;
 public:
-	TestObject(std::shared_ptr<Graphics> graphics_, DirectX::XMFLOAT3 material)
+	TestObject(std::shared_ptr<Graphics> graphics_, std::shared_ptr<Input> input_, DirectX::XMFLOAT3 material)
 		:
-		Drawable(graphics_, material)
+		Drawable(graphics_, material),
+		graphics_(graphics_),
+		input_(input_)
 	{
 		struct Vertex
 		{
@@ -370,7 +379,6 @@ public:
 		);
 		const auto pMesh = pModel->mMeshes[0];
 
-		std::vector<DirectX::XMFLOAT3> vertices;
 		vertices.reserve(pMesh->mNumVertices);
 		for (unsigned int i = 0; i < pMesh->mNumVertices; i++)
 		{
@@ -380,7 +388,44 @@ public:
 				);
 		}
 
-		std::vector<unsigned short> indices;
+		vertices = std::vector<DirectX::XMFLOAT3> {
+			// Back face
+			{1.0f, -1.0f, -1.0f},
+			{-1.0f, -1.0f, -1.0f},
+			{1.0f, 1.0f, -1.0f},
+			{-1.0f, 1.0f, -1.0f},
+
+			// Front face
+			{-1.0f, -1.0f, 1.0f},
+			{1.0f, -1.0f, 1.0f},
+			{-1.0f, 1.0f, 1.0f},
+			{1.0f, 1.0f, 1.0f},
+
+			// Right face
+			{1.0f, -1.0f, 1.0f},
+			{1.0f, -1.0f, -1.0f},
+			{1.0f, 1.0f, 1.0f},
+			{1.0f, 1.0f, -1.0f},
+
+			// Left face
+			{-1.0f, -1.0f, -1.0f},
+			{-1.0f, -1.0f, 1.0f},
+			{-1.0f, 1.0f, -1.0f},
+			{-1.0f, 1.0f, 1.0f},
+
+			// Top face
+			{-1.0f, 1.0f, 1.0f},
+			{1.0f, 1.0f, 1.0f},
+			{-1.0f, 1.0f, -1.0f},
+			{1.0f, 1.0f, -1.0f},
+
+			// Bottom face
+			{-1.0f, -1.0f, -1.0f},
+			{1.0f, -1.0f, -1.0f},
+			{-1.0f, -1.0f, 1.0f},
+			{1.0f, -1.0f, 1.0f}
+		};
+
 		indices.reserve(pMesh->mNumFaces * 3);
 		for (unsigned int i = 0; i < pMesh->mNumFaces; i++)
 		{
@@ -391,7 +436,16 @@ public:
 			indices.push_back(face.mIndices[2]);
 		}
 
-		AddStaticBind(std::make_unique<VertexBuffer>(graphics_, vertices));
+		//// Set IED
+		//graphics_->SetModelIED();
+
+		// Bind vertices
+		graphics_->BindModelVertices(vertices);
+
+		// Bind indices
+		//graphics_->BindModelIndices(indices);
+
+		/*AddStaticBind(std::make_unique<VertexBuffer>(graphics_, vertices));
 
 		AddStaticIndexBuffer(std::make_unique<IndexBuffer>(graphics_, indices));
 
@@ -399,18 +453,20 @@ public:
 		auto pvsbc = pvs->GetBytecode();
 		AddStaticBind(std::move(pvs));
 
-		AddStaticBind(std::make_unique<PixelShader>(graphics_, L"PhongPS.cso"));
+		AddStaticBind(std::make_unique<PixelShader>(graphics_, L"PhongPS.cso"));*/
 
 		// Create Pixel Shader
 		/*Microsoft::WRL::ComPtr<ID3DBlob> pBlob;
 		D3DReadFileToBlob(path.c_str(), &pBlob);
 		graphics_GetDevice()->CreatePixelShader(pBlob->GetBufferPointer(), pBlob->GetBufferSize(), nullptr, &pPixelShader);*/
 
-		/*const std::vector<D3D11_INPUT_ELEMENT_DESC> ied =
+		/*
+		const std::vector<D3D11_INPUT_ELEMENT_DESC> ied =
 		{
 			{ "Position",0,DXGI_FORMAT_R32G32B32_FLOAT,0,0,D3D11_INPUT_PER_VERTEX_DATA,0 },
-			{ "Normal",0,DXGI_FORMAT_R32G32B32_FLOAT,0,12,D3D11_INPUT_PER_VERTEX_DATA,0 },
+			{ "Normal",0,DXGI_FORMAT_R32G32B32_FLOAT,0,12,D3D11_INPUT_PER_VERTEX_DATA,0 }
 		};
+
 		AddStaticBind(std::make_unique<InputLayout>(graphics_, ied, pvsbc));
 
 		AddStaticBind(std::make_unique<Topology>(graphics_, D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST));
@@ -426,5 +482,27 @@ public:
 		AddStaticBind(std::make_unique<PixelConstantBuffer<PSMaterialConstant>>(graphics_, pmc, 1u));
 
 		AddBind(std::make_unique<TransformCbuf>(graphics_, *this));*/
+	}
+
+	void Draw()
+	{
+		graphics_->UpdateCBTransformSubresource({ GetTransform(0) });
+		graphics_->DrawIndexed();
+	}
+	
+	DirectX::XMMATRIX GetTransform(const float& dt)
+	{
+		// no scaling by 0
+		//assert(cube_data_.scale_x_ != 0.0f || cube_data_.scale_y_ != 0.0f || cube_data_.scale_z_ != 0.0f);
+		return DirectX::XMMatrixTranspose(
+			DirectX::XMMatrixScaling(1, 1, 1) *
+			DirectX::XMMatrixRotationRollPitchYaw(0, 0, 0) *
+			/*dx::XMMatrixRotationZ(cube_data_.angle_z) *
+			dx::XMMatrixRotationX(cube_data_.angle_x) *
+			dx::XMMatrixRotationY(cube_data_.angle_y) **/
+			DirectX::XMMatrixTranslation(0, 0, 10) *
+			input_->GetCameraMatrix(dt) *
+			DirectX::XMMatrixPerspectiveLH(1.0f, (float)Graphics::viewport_height_ / (float)Graphics::viewport_width_, 0.5f, 1000.0f)
+		);
 	}
 };

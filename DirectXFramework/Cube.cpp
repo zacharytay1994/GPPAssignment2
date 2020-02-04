@@ -171,6 +171,55 @@ void Cube::Draw(const float& dt)
 {
 	assert(initialized_ == true);
 	if (visible_) {
+		Graphics::CubeVertexBuffer vertices = {
+			// Back face
+			{1.0f, -1.0f, -1.0f, 2.0f / 3.0f, 0.0f},
+			{-1.0f, -1.0f, -1.0f, 1.0f / 3.0f, 0.0f},
+			{1.0f, 1.0f, -1.0f, 2.0f / 3.0f, 0.25f},
+			{-1.0f, 1.0f, -1.0f, 1.0f / 3.0f, 0.25f},
+
+			// Front face
+			{-1.0f, -1.0f, 1.0f, 1.0f / 3.0f, 0.75f},
+			{1.0f, -1.0f, 1.0f, 2.0f / 3.0f, 0.75f},
+			{-1.0f, 1.0f, 1.0f, 1.0f / 3.0f, 0.5f},
+			{1.0f, 1.0f, 1.0f, 2.0f / 3.0f, 0.5f},
+
+			// Right face
+			{1.0f, -1.0f, 1.0f, 1.0f, 0.5f},
+			{1.0f, -1.0f, -1.0f, 1.0f, 0.25f},
+			{1.0f, 1.0f, 1.0f, 2.0f / 3.0f, 0.5f},
+			{1.0f, 1.0f, -1.0f, 2.0f / 3.0f, 0.25f},
+
+			// Left face
+			{-1.0f, -1.0f, -1.0f, 0.0f, 0.25f},
+			{-1.0f, -1.0f, 1.0f, 0.0f, 0.5f},
+			{-1.0f, 1.0f, -1.0f, 1.0f / 3.0f, 0.25f},
+			{-1.0f, 1.0f, 1.0f, 1.0f / 3.0f, 0.5f},
+
+			// Top face
+			{-1.0f, 1.0f, 1.0f, 1.0f / 3.0f, 0.5f},
+			{1.0f, 1.0f, 1.0f, 2.0f / 3.0f, 0.5f},
+			{-1.0f, 1.0f, -1.0f, 1.0f / 3.0f, 0.25f},
+			{1.0f, 1.0f, -1.0f, 2.0f / 3.0f, 0.25f},
+
+			// Bottom face
+			{-1.0f, -1.0f, -1.0f, 1.0f / 3.0f, 1.0f},
+			{1.0f, -1.0f, -1.0f, 2.0f / 3.0f, 1.0f},
+			{-1.0f, -1.0f, 1.0f, 1.0f / 3.0f, 0.75f},
+			{1.0f, -1.0f, 1.0f, 2.0f / 3.0f, 0.75f}
+		};
+		gfx->BindCubeVertices(vertices);
+
+		const unsigned short indices[] = {
+		0,1,2, 2,1,3,
+		4,5,6, 6,5,7,
+		8,9,10, 10,9,11,
+		12,13,14, 14,13,15,
+		16,17,18, 18,17,19,
+		20,21,22, 22,21,23
+		};
+		gfx->BindCubeIndices(indices, sizeof(indices));
+
 		gfx->BindShaderResourceView(cube_data_.srv_sprite_);
 		gfx->UpdateCBTransformSubresource({ GetTransform(dt) });
 		gfx->DrawIndexed();

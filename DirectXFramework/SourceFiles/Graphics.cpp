@@ -307,8 +307,8 @@ void Graphics::InitCubePipeline()
 	ID3D11Buffer* pIndexBuffer;
 	D3D11_BUFFER_DESC index_buffer_desc = {};
 	index_buffer_desc.BindFlags = D3D11_BIND_INDEX_BUFFER;
-	index_buffer_desc.Usage = D3D11_USAGE_DEFAULT;
-	index_buffer_desc.CPUAccessFlags = 0u;
+	index_buffer_desc.Usage = D3D11_USAGE_DYNAMIC;
+	index_buffer_desc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
 	index_buffer_desc.MiscFlags = 0u;
 	index_buffer_desc.ByteWidth = sizeof(indices);
 	index_buffer_desc.StructureByteStride = sizeof(unsigned short);
@@ -318,7 +318,8 @@ void Graphics::InitCubePipeline()
 	p_device_->CreateBuffer(&index_buffer_desc, &index_subresource_data, &pIndexBuffer);
 	p_device_context_->IASetIndexBuffer(pIndexBuffer, DXGI_FORMAT_R16_UINT, 0u);
 
-	pIndexBuffer->Release();
+	p_index_buffer_ = pIndexBuffer;
+	//pIndexBuffer->Release();
 
 	/*_______________________________________*/
 	// CREATE AND BIND PIXEL SHADER
@@ -368,7 +369,7 @@ void Graphics::InitCubePipeline()
 	ID3D11InputLayout* p_input_layout;
 	const D3D11_INPUT_ELEMENT_DESC input_element_description[] = {
 		{"Position", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0},
-		{"TexCoord", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0},
+		/*{"TexCoord", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0},*/
 	};
 	p_device_->CreateInputLayout(
 		input_element_description,						// specifies how input vertex data structure should be read as types, and processed by the vertex shader through semantic names e.g. "Position"
@@ -591,6 +592,7 @@ void Graphics::SetModelIED()
 	const D3D11_INPUT_ELEMENT_DESC input_element_description[] = {
 		{"Position", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0}
 	};
+
 	p_device_->CreateInputLayout(
 		input_element_description,						// specifies how input vertex data structure should be read as types, and processed by the vertex shader through semantic names e.g. "Position"
 		(UINT)std::size(input_element_description),		// number of input data types
@@ -628,29 +630,58 @@ void Graphics::DrawIndexed() {
 	p_device_context_->DrawIndexed(36u, 0u, 0);
 }
 
-void Graphics::BindModelVertices(const std::vector<DirectX::XMFLOAT3>& v)
+void Graphics::BindCubeVertices(const CubeVertexBuffer v)
 {
 	D3D11_MAPPED_SUBRESOURCE mapped_subresource;
 	p_device_context_->Map(p_vertex_buffer_, 0u, D3D11_MAP_WRITE_DISCARD, 0u, &mapped_subresource);
 	memcpy(mapped_subresource.pData, &v, sizeof(v));
 	p_device_context_->Unmap(p_vertex_buffer_, 0u);
+
+	const UINT stride = sizeof(CubeVertex);
+	const UINT offset = 0u;
+	p_device_context_->IASetVertexBuffers(
+		0u,								   // start slot, multiple vertex buffers can be bound to various slots
+		1u,								   // number of buffers
+		&p_vertex_buffer_,				   // buffer to be bound
+		&stride,						   // pointer to array of stride values, i.e. 1 stride for each buffer, pointer to UINT is the same as an array of 1
+		&offset							   // pointer to array of offset values, 0u offset for first and only buffer
+	);
 }
 
-void Graphics::BindModelIndices(const std::vector<unsigned short>& i)
+void Graphics::BindCubeIndices(const unsigned short* i, int size)
 {
-	ID3D11Buffer* pIndexBuffer;
-	D3D11_BUFFER_DESC index_buffer_desc = {};
-	index_buffer_desc.BindFlags = D3D11_BIND_INDEX_BUFFER;
-	index_buffer_desc.Usage = D3D11_USAGE_DEFAULT;
-	index_buffer_desc.CPUAccessFlags = 0u;
-	index_buffer_desc.MiscFlags = 0u;
-	index_buffer_desc.ByteWidth = sizeof(i);
-	index_buffer_desc.StructureByteStride = sizeof(unsigned short);
-	D3D11_SUBRESOURCE_DATA index_subresource_data = {};				// subresource used to create the buffer
-	index_subresource_data.pSysMem = &i;
+	D3D11_MAPPED_SUBRESOURCE mapped_subresource;
+	p_device_context_->Map(p_index_buffer_, 0u, D3D11_MAP_WRITE_DISCARD, 0u, &mapped_subresource);
+	memcpy(mapped_subresource.pData, i, size);
+	p_device_context_->Unmap(p_index_buffer_, 0u);
 
-	p_device_->CreateBuffer(&index_buffer_desc, &index_subresource_data, &pIndexBuffer);
-	p_device_context_->IASetIndexBuffer(pIndexBuffer, DXGI_FORMAT_R16_UINT, 0u);
+	p_device_context_->IASetIndexBuffer(p_index_buffer_, DXGI_FORMAT_R16_UINT, 0u);
+}
 
-	pIndexBuffer->Release();
+void Graphics::BindModelVertices(std::vector<DirectX::XMFLOAT3>& v)
+{
+	D3D11_MAPPED_SUBRESOURCE mapped_subresource;
+	p_device_context_->Map(p_vertex_buffer_, 0u, D3D11_MAP_WRITE_DISCARD, 0u, &mapped_subresource);
+	memcpy(mapped_subresource.pData, &v[0], v.size()*sizeof(DirectX::XMFLOAT3));
+	p_device_context_->Unmap(p_vertex_buffer_, 0u);
+
+	const UINT stride = sizeof(DirectX::XMFLOAT3);
+	const UINT offset = 0u;
+	p_device_context_->IASetVertexBuffers(
+		0u,								   // start slot, multiple vertex buffers can be bound to various slots
+		1u,								   // number of buffers
+		&p_vertex_buffer_,				   // buffer to be bound
+		&stride,						   // pointer to array of stride values, i.e. 1 stride for each buffer, pointer to UINT is the same as an array of 1
+		&offset							   // pointer to array of offset values, 0u offset for first and only buffer
+	);
+}
+
+void Graphics::BindModelIndices(std::vector<unsigned short>& i)
+{
+	D3D11_MAPPED_SUBRESOURCE mapped_subresource;
+	p_device_context_->Map(p_index_buffer_, 0u, D3D11_MAP_WRITE_DISCARD, 0u, &mapped_subresource);
+	memcpy(mapped_subresource.pData, &i[0], i.size()*sizeof(unsigned short));
+	p_device_context_->Unmap(p_index_buffer_, 0u);
+
+	p_device_context_->IASetIndexBuffer(p_index_buffer_, DXGI_FORMAT_R16_UINT, 0u);
 }

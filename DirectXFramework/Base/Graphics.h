@@ -17,6 +17,7 @@ private:
 	ID3D11DeviceContext*	p_device_context_ = nullptr;	// pointer to interface which generates rendering commands
 	ID3D11RenderTargetView* p_rtv_back_buffer_ = nullptr;	// render target: resource that can be written by pipeline, interfaces back buffer in swap chain
 	ID3D11Buffer*			p_vertex_buffer_ = nullptr;
+	ID3D11Buffer*			p_index_buffer_ = nullptr;
 	ID3D11Buffer*			p_cb_transform_ = nullptr;	
 	ID3D11DepthStencilView*	p_depth_stencil_view_ = nullptr;
 	ID3DBlob*				p_vs_blob_ = nullptr;
@@ -29,12 +30,7 @@ private:
 	struct VertexBuffer { Vertex topleft; Vertex topright; Vertex bottomleft; Vertex bottomright; };
 	// Defined vertex data type to render a 3D Cube
 	struct CubeVertex { float x; float y; float z; float t_x; float t_y; };
-	struct CubeVertexBuffer { CubeVertex ftopleft; CubeVertex ftopright; CubeVertex fbottomleft; CubeVertex fbottomright;
-	CubeVertex btopleft; CubeVertex btopright; CubeVertex bbottomleft; CubeVertex bbottomright;
-	CubeVertex rtopleft; CubeVertex rtopright; CubeVertex rbottomleft; CubeVertex rbottomright;
-	CubeVertex ltopleft; CubeVertex ltopright; CubeVertex lbottomleft; CubeVertex lbottomright;
-	CubeVertex ttopleft; CubeVertex ttopright; CubeVertex tbottomleft; CubeVertex tbottomright;
-	CubeVertex bttopleft; CubeVertex bttopright; CubeVertex btbottomleft; CubeVertex btbottomright; };
+	
 	/*_______________________________________*/
 	// Defined buffer struct that represents a transformation matrix
 	// to be used in the vertex shader stage as generic world, view, transform
@@ -43,6 +39,16 @@ private:
 public:
 	static const int viewport_width_ = 800, viewport_height_ = 600;
 public:
+	struct CubeVertexBuffer {
+		CubeVertex ftopleft; CubeVertex ftopright; CubeVertex fbottomleft; CubeVertex fbottomright;
+		CubeVertex btopleft; CubeVertex btopright; CubeVertex bbottomleft; CubeVertex bbottomright;
+		CubeVertex rtopleft; CubeVertex rtopright; CubeVertex rbottomleft; CubeVertex rbottomright;
+		CubeVertex ltopleft; CubeVertex ltopright; CubeVertex lbottomleft; CubeVertex lbottomright;
+		CubeVertex ttopleft; CubeVertex ttopright; CubeVertex tbottomleft; CubeVertex tbottomright;
+		CubeVertex bttopleft; CubeVertex bttopright; CubeVertex btbottomleft; CubeVertex btbottomright;
+	};
+
+
 	Graphics();
 	Graphics(const Graphics&) = delete;
 	Graphics& operator=(const Graphics&) = delete;
@@ -68,6 +74,9 @@ public:
 	void Draw(); // call for sprites
 	void DrawIndexed(); // call for cubes
 
-	void BindModelVertices(const std::vector<DirectX::XMFLOAT3>& v);
-	void BindModelIndices(const std::vector<unsigned short>& i);
+	void BindCubeVertices(const CubeVertexBuffer v);
+	void BindCubeIndices(const unsigned short* i, int size);
+
+	void BindModelVertices(std::vector<DirectX::XMFLOAT3>& v);
+	void BindModelIndices(std::vector<unsigned short>& i);
 };
