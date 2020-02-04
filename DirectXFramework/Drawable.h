@@ -360,7 +360,12 @@ private:
 
 	std::vector<DirectX::XMFLOAT3> vertices;
 	std::vector<unsigned short> indices;
+
+	ID3D11Buffer* p_vertex_buffer_ = nullptr;
+	ID3D11Buffer* p_index_buffer_ = nullptr;
+
 public:
+	int index_count_ = 0;
 	TestObject(std::shared_ptr<Graphics> graphics_, std::shared_ptr<Input> input_, DirectX::XMFLOAT3 material)
 		:
 		Drawable(graphics_, material),
@@ -373,7 +378,7 @@ public:
 		};
 
 		Assimp::Importer imp;
-		const auto pModel = imp.ReadFile("Models\\suzanne.obj",
+		const auto pModel = imp.ReadFile("Models\\dog.obj",
 			aiProcess_Triangulate |
 			aiProcess_JoinIdenticalVertices
 		);
@@ -388,43 +393,57 @@ public:
 				);
 		}
 
-		vertices = std::vector<DirectX::XMFLOAT3> {
-			// Back face
-			{1.0f, -1.0f, -1.0f},
-			{-1.0f, -1.0f, -1.0f},
-			{1.0f, 1.0f, -1.0f},
-			{-1.0f, 1.0f, -1.0f},
+		D3D11_BUFFER_DESC buffer_description = {};
+		buffer_description.BindFlags = D3D11_BIND_VERTEX_BUFFER;		// how buffer will be bound to pipeline, i.e. type
+		buffer_description.Usage = D3D11_USAGE_DEFAULT;					// how buffer is expected to be read from and written to
+		buffer_description.CPUAccessFlags = 0u;		// cpu access, allow cpu to change buffer content
+		buffer_description.MiscFlags = 0u;								// 0 i.e. unused
+		buffer_description.ByteWidth = sizeof(vertices.size() * sizeof(DirectX::XMFLOAT3));				// size of buffer
+		buffer_description.StructureByteStride = sizeof(DirectX::XMFLOAT3);	// size of each element in buffer
+		D3D11_SUBRESOURCE_DATA subresource_data = {};					// subresource used to create the buffer
+		subresource_data.pSysMem = &(vertices[0]);							// pointer to initialization data
 
-			// Front face
-			{-1.0f, -1.0f, 1.0f},
-			{1.0f, -1.0f, 1.0f},
-			{-1.0f, 1.0f, 1.0f},
-			{1.0f, 1.0f, 1.0f},
+		graphics_->GetGraphicsDevice()->CreateBuffer(&buffer_description, &subresource_data, &p_vertex_buffer_);
+		//vertices = std::vector<DirectX::XMFLOAT3> {
+		//	// Back face
+		//	{10.0f, -1.0f, -1.0f},
+		//	{-1.0f, -1.0f, -1.0f},
+		//	{1.0f, 1.0f, -1.0f},
+		//	{-1.0f, 1.0f, -1.0f},
 
-			// Right face
-			{1.0f, -1.0f, 1.0f},
-			{1.0f, -1.0f, -1.0f},
-			{1.0f, 1.0f, 1.0f},
-			{1.0f, 1.0f, -1.0f},
+		//	// Front face
+		//	{-1.0f, -1.0f, 1.0f},
+		//	{1.0f, -1.0f, 1.0f},
+		//	{-1.0f, 1.0f, 1.0f},
+		//	{1.0f, 1.0f, 1.0f},
 
-			// Left face
-			{-1.0f, -1.0f, -1.0f},
-			{-1.0f, -1.0f, 1.0f},
-			{-1.0f, 1.0f, -1.0f},
-			{-1.0f, 1.0f, 1.0f},
+		//	// Right face
+		//	{1.0f, -1.0f, 1.0f},
+		//	{1.0f, -1.0f, -1.0f},
+		//	{1.0f, 1.0f, 1.0f},
+		//	{1.0f, 1.0f, -1.0f},
 
-			// Top face
-			{-1.0f, 1.0f, 1.0f},
-			{1.0f, 1.0f, 1.0f},
-			{-1.0f, 1.0f, -1.0f},
-			{1.0f, 1.0f, -1.0f},
+		//	// Left face
+		//	{-1.0f, -1.0f, -1.0f},
+		//	{-1.0f, -1.0f, 1.0f},
+		//	{-1.0f, 1.0f, -1.0f},
+		//	{-1.0f, 1.0f, 1.0f},
 
-			// Bottom face
-			{-1.0f, -1.0f, -1.0f},
-			{1.0f, -1.0f, -1.0f},
-			{-1.0f, -1.0f, 1.0f},
-			{1.0f, -1.0f, 1.0f}
-		};
+		//	// Top face
+		//	{-1.0f, 1.0f, 1.0f},
+		//	{1.0f, 1.0f, 1.0f},
+		//	{-1.0f, 1.0f, -1.0f},
+		//	{1.0f, 1.0f, -1.0f},
+
+		//	// Bottom face
+		//	{-1.0f, -1.0f, -1.0f},
+		//	{1.0f, -1.0f, -1.0f},
+		//	{-1.0f, -1.0f, 1.0f},
+		//	{1.0f, -1.0f, 1.0f}
+		//};
+		/*for (int i = 0; i < 1000; i++) {
+			vertices.push_back({ 1.0f, 1.0f, 1.0f });
+		}*/
 
 		indices.reserve(pMesh->mNumFaces * 3);
 		for (unsigned int i = 0; i < pMesh->mNumFaces; i++)
@@ -435,15 +454,38 @@ public:
 			indices.push_back(face.mIndices[1]);
 			indices.push_back(face.mIndices[2]);
 		}
+		index_count_ = pMesh->mNumFaces * 3;
 
+		D3D11_BUFFER_DESC index_buffer_desc = {};
+		index_buffer_desc.BindFlags = D3D11_BIND_INDEX_BUFFER;
+		index_buffer_desc.Usage = D3D11_USAGE_DEFAULT;
+		index_buffer_desc.CPUAccessFlags = 0u;
+		index_buffer_desc.MiscFlags = 0u;
+		index_buffer_desc.ByteWidth = sizeof(indices.size() * sizeof(unsigned short));
+		index_buffer_desc.StructureByteStride = sizeof(unsigned short);
+		D3D11_SUBRESOURCE_DATA index_subresource_data = {};				// subresource used to create the buffer
+		index_subresource_data.pSysMem = &(indices[0]);
+
+		graphics_->GetGraphicsDevice()->CreateBuffer(&index_buffer_desc, &index_subresource_data, &p_index_buffer_);
+		/*indices = std::vector<unsigned short>{
+		0,1,2, 2,1,3,
+		4,5,6, 6,5,7,
+		8,9,10, 10,9,11,
+		12,13,14, 1,1,1,
+		16,17,18, 1,1,1,
+		20,21,22, 1, 1, 1
+		};*/
+		/*for (int i = 0; i < 1000; i++) {
+			indices.push_back(0);
+		}*/
 		//// Set IED
 		//graphics_->SetModelIED();
 
 		// Bind vertices
-		graphics_->BindModelVertices(vertices);
+		//graphics_->BindVertexBuffer(p_vertex_buffer_);
 
 		// Bind indices
-		//graphics_->BindModelIndices(indices);
+		//graphics_->BindIndicesBuffer(p_index_buffer_);
 
 		/*AddStaticBind(std::make_unique<VertexBuffer>(graphics_, vertices));
 
@@ -486,8 +528,12 @@ public:
 
 	void Draw()
 	{
+		// Bind vertices
+		//graphics_->BindVertexBuffer(p_vertex_buffer_);
+		// Bind indices
+		//graphics_->BindIndicesBuffer(p_index_buffer_);
 		graphics_->UpdateCBTransformSubresource({ GetTransform(0) });
-		graphics_->DrawIndexed();
+		graphics_->DrawIndexed(index_count_);
 	}
 	
 	DirectX::XMMATRIX GetTransform(const float& dt)
@@ -495,7 +541,7 @@ public:
 		// no scaling by 0
 		//assert(cube_data_.scale_x_ != 0.0f || cube_data_.scale_y_ != 0.0f || cube_data_.scale_z_ != 0.0f);
 		return DirectX::XMMatrixTranspose(
-			DirectX::XMMatrixScaling(1, 1, 1) *
+			DirectX::XMMatrixScaling(1.0f, 1.0f, 1.0f) *
 			DirectX::XMMatrixRotationRollPitchYaw(0, 0, 0) *
 			/*dx::XMMatrixRotationZ(cube_data_.angle_z) *
 			dx::XMMatrixRotationX(cube_data_.angle_x) *

@@ -56,7 +56,7 @@ void Graphics::Initialize(HWND hwnd)
 		nullptr,						 // *pAdapter: use default adapter
 		D3D_DRIVER_TYPE_HARDWARE,		 // DriverType: hardware accelerated graphics
 		nullptr,						 // Software: not using software driver type
-		0,								 // Flags: no flags
+		D3D11_CREATE_DEVICE_DEBUG,								 // Flags: no flags
 		nullptr,						 // *pFeatureLevels: default order of feature level 11.0 > 10.1 > 10.0 > 9.3 > 9.2 > 9.1
 		0,								 // FeatureLevels, number of elements in pFeatureLevel, default so 0
 		D3D11_SDK_VERSION,				 // SDKVersion
@@ -630,6 +630,11 @@ void Graphics::DrawIndexed() {
 	p_device_context_->DrawIndexed(36u, 0u, 0);
 }
 
+void Graphics::DrawIndexed(int indexcount)
+{
+	p_device_context_->DrawIndexed((UINT)indexcount, 0u, 0);
+}
+
 void Graphics::BindCubeVertices(const CubeVertexBuffer v)
 {
 	D3D11_MAPPED_SUBRESOURCE mapped_subresource;
@@ -684,4 +689,26 @@ void Graphics::BindModelIndices(std::vector<unsigned short>& i)
 	p_device_context_->Unmap(p_index_buffer_, 0u);
 
 	p_device_context_->IASetIndexBuffer(p_index_buffer_, DXGI_FORMAT_R16_UINT, 0u);
+}
+
+void Graphics::BindVertexBuffer(ID3D11Buffer* vertices)
+{
+	UINT stride = sizeof(DirectX::XMFLOAT3);
+	UINT offset = 0u;
+	p_device_context_->IAGetVertexBuffers(0u, 1u, &vertices, &stride, &offset);
+}
+
+void Graphics::BindIndicesBuffer(ID3D11Buffer* indices)
+{
+	p_device_context_->IASetIndexBuffer(indices, DXGI_FORMAT_R16_UINT, 0u);
+}
+
+ID3D11Device* Graphics::GetGraphicsDevice()
+{
+	return p_device_;
+}
+
+ID3D11DeviceContext* Graphics::GetGraphicsDeviceContext()
+{
+	return p_device_context_;
 }

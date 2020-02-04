@@ -73,10 +73,15 @@ public:
 	void ClearBuffer();													  // fills back buffer with colour (e.g. white)
 	void Draw(); // call for sprites
 	void DrawIndexed(); // call for cubes
+	void DrawIndexed(int indexcount);
 
 	void BindCubeVertices(const CubeVertexBuffer v);
 	void BindCubeIndices(const unsigned short* i, int size);
 
 	void BindModelVertices(std::vector<DirectX::XMFLOAT3>& v);
 	void BindModelIndices(std::vector<unsigned short>& i);
+	void BindVertexBuffer(ID3D11Buffer* vertices);
+	void BindIndicesBuffer(ID3D11Buffer* indices);
+	ID3D11Device* GetGraphicsDevice();
+	ID3D11DeviceContext* GetGraphicsDeviceContext();
 };
