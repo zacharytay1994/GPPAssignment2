@@ -8,12 +8,18 @@ Level::Level(std::shared_ptr<Graphics> gfx, std::shared_ptr<Input> input)
 	test_block_ = std::make_shared<Block>(Block(L"Images/grassblock.png", graphics_, input_));
 	AddEntity(std::dynamic_pointer_cast<Entity>(test_block_));
 
+	std::mt19937 rng{ std::random_device{}() };
+	std::uniform_real_distribution<float> cdist{ 0.0f,1.0f };
+	const DirectX::XMFLOAT3 mat = { cdist(rng),cdist(rng),cdist(rng) };
+	test_object_ = std::make_shared<TestObject>(graphics_, mat);
+	AddEntity(std::dynamic_pointer_cast<Entity>(test_object_));
+
 	// Initialize map generator
 	mapGen_ = std::make_unique<MapGenerator>(graphics_, input_);
 
 	// Generatr map
-	for (std::shared_ptr<Entity> e : mapGen_->GenerateMap())
-	{ AddEntity(e); }
+	// for (std::shared_ptr<Entity> e : mapGen_->GenerateMap())
+	// { AddEntity(e); }
 }
 
 void Level::Update(const float& dt)

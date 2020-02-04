@@ -51,6 +51,7 @@ public:
 	// Get Set
 	ID3D11Device& GetDevice();
 	ID3D11DeviceContext& GetContext();
+	ID3D11Buffer& GetVB() { return *p_vertex_buffer_; };
 	VertexBuffer GetDefaultVB();
 	CubeVertexBuffer GetDefaultCubeVB();
 	bool Initialized();

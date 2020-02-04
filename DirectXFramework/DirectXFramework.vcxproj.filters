@@ -26,14 +26,7 @@
     <ClCompile Include="SourceFiles\Sprite.cpp" />
     <ClCompile Include="SourceFiles\Surface.cpp" />
     <ClCompile Include="SourceFiles\WinMain.cpp" />
-    <ClCompile Include="VertexBuffer.cpp" />
-    <ClCompile Include="Bindable.cpp" />
-    <ClCompile Include="IndexBuffer.cpp" />
-    <ClCompile Include="VertexShader.cpp" />
-    <ClCompile Include="PixelShader.cpp" />
-    <ClCompile Include="Topology.cpp" />
-    <ClCompile Include="InputLayout.cpp" />
-    <ClCompile Include="TransformCbuf.cpp" />
+    <ClCompile Include="Drawable.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Base\Color.h" />
@@ -64,15 +57,6 @@
     <ClInclude Include="assimp\include\assimp\config.h" />
     <ClInclude Include="assimp\include\assimp\fast_atof.h" />
     <ClInclude Include="Drawable.h" />
-    <ClInclude Include="VertexBuffer.h" />
-    <ClInclude Include="Bindable.h" />
-    <ClInclude Include="IndexBuffer.h" />
-    <ClInclude Include="VertexShader.h" />
-    <ClInclude Include="PixelShader.h" />
-    <ClInclude Include="Topology.h" />
-    <ClInclude Include="InputLayout.h" />
-    <ClInclude Include="ConstantBuffers.h" />
-    <ClInclude Include="TransformCbuf.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Images\alpha_donald.png" />
