@@ -379,14 +379,14 @@ public:
 		);
 		const auto pMesh = pModel->mMeshes[0];
 
-		vertices.reserve(pMesh->mNumVertices);
-		for (unsigned int i = 0; i < pMesh->mNumVertices; i++)
-		{
-			vertices.push_back(
-				{ pMesh->mVertices[i].x /** scale*/,pMesh->mVertices[i].y /** scale*/,pMesh->mVertices[i].z /** scale*/ }
-				/**reinterpret_cast<DirectX::XMFLOAT3*>(&pMesh->mNormals[i])*/
-				);
-		}
+		//vertices.reserve(pMesh->mNumVertices);
+		//for (unsigned int i = 0; i < pMesh->mNumVertices; i++)
+		//{
+		//	vertices.push_back(
+		//		{ pMesh->mVertices[i].x /** scale*/,pMesh->mVertices[i].y /** scale*/,pMesh->mVertices[i].z /** scale*/ }
+		//		/**reinterpret_cast<DirectX::XMFLOAT3*>(&pMesh->mNormals[i])*/
+		//		);
+		//}
 
 		vertices = std::vector<DirectX::XMFLOAT3> {
 			// Back face
@@ -436,14 +436,23 @@ public:
 			indices.push_back(face.mIndices[2]);
 		}
 
-		//// Set IED
-		//graphics_->SetModelIED();
+		indices = std::vector<unsigned short> {
+			0,1,2, 2,1,3,
+			4,5,6, 6,5,7,
+			8,9,10, 10,9,11,
+			12,13,14, 14,13,15,
+			16,17,18, 18,17,19,
+			20,21,22, 22,21,23
+		};
+
+		// Set IED
+		graphics_->SetModelIED();
 
 		// Bind vertices
 		graphics_->BindModelVertices(vertices);
 
 		// Bind indices
-		//graphics_->BindModelIndices(indices);
+		graphics_->BindModelIndices(indices);
 
 		/*AddStaticBind(std::make_unique<VertexBuffer>(graphics_, vertices));
 

@@ -662,7 +662,7 @@ void Graphics::BindModelVertices(std::vector<DirectX::XMFLOAT3>& v)
 {
 	D3D11_MAPPED_SUBRESOURCE mapped_subresource;
 	p_device_context_->Map(p_vertex_buffer_, 0u, D3D11_MAP_WRITE_DISCARD, 0u, &mapped_subresource);
-	memcpy(mapped_subresource.pData, &v[0], v.size()*sizeof(DirectX::XMFLOAT3));
+	memcpy(mapped_subresource.pData, &v[0], sizeof(DirectX::XMFLOAT3)* v.size());
 	p_device_context_->Unmap(p_vertex_buffer_, 0u);
 
 	const UINT stride = sizeof(DirectX::XMFLOAT3);
@@ -680,7 +680,7 @@ void Graphics::BindModelIndices(std::vector<unsigned short>& i)
 {
 	D3D11_MAPPED_SUBRESOURCE mapped_subresource;
 	p_device_context_->Map(p_index_buffer_, 0u, D3D11_MAP_WRITE_DISCARD, 0u, &mapped_subresource);
-	memcpy(mapped_subresource.pData, &i[0], i.size()*sizeof(unsigned short));
+	memcpy(mapped_subresource.pData, &i[0], sizeof(unsigned short)* i.size());
 	p_device_context_->Unmap(p_index_buffer_, 0u);
 
 	p_device_context_->IASetIndexBuffer(p_index_buffer_, DXGI_FORMAT_R16_UINT, 0u);
