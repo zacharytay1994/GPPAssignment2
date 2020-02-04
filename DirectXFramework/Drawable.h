@@ -384,14 +384,14 @@ public:
 		);
 		const auto pMesh = pModel->mMeshes[0];
 
-		vertices.reserve(pMesh->mNumVertices);
-		for (unsigned int i = 0; i < pMesh->mNumVertices; i++)
-		{
-			vertices.push_back(
-				{ pMesh->mVertices[i].x /** scale*/,pMesh->mVertices[i].y /** scale*/,pMesh->mVertices[i].z /** scale*/ }
-				/**reinterpret_cast<DirectX::XMFLOAT3*>(&pMesh->mNormals[i])*/
-				);
-		}
+		//vertices.reserve(pMesh->mNumVertices);
+		//for (unsigned int i = 0; i < pMesh->mNumVertices; i++)
+		//{
+		//	vertices.push_back(
+		//		{ pMesh->mVertices[i].x /** scale*/,pMesh->mVertices[i].y /** scale*/,pMesh->mVertices[i].z /** scale*/ }
+		//		/**reinterpret_cast<DirectX::XMFLOAT3*>(&pMesh->mNormals[i])*/
+		//		);
+		//}
 
 		D3D11_BUFFER_DESC buffer_description = {};
 		buffer_description.BindFlags = D3D11_BIND_VERTEX_BUFFER;		// how buffer will be bound to pipeline, i.e. type
