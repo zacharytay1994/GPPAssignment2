@@ -379,7 +379,7 @@ void Graphics::InitCubePipeline()
 	);
 	p_device_context_->IASetInputLayout(p_input_layout);
 	p_input_layout->Release();
-	p_blob->Release();
+	p_vs_blob_ = p_blob;
 
 	/*_______________________________________*/
 	// CREATE AND BIND VERTEX CONSTANT BUFFER
@@ -585,6 +585,23 @@ void Graphics::UpdateCubeVBVertexSubresource(const CubeVertexBuffer& cvb)
 	p_device_context_->Unmap(p_vertex_buffer_, 0u);
 }
 
+void Graphics::SetModelIED()
+{
+	ID3D11InputLayout* p_input_layout;
+	const D3D11_INPUT_ELEMENT_DESC input_element_description[] = {
+		{"Position", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0}
+	};
+	p_device_->CreateInputLayout(
+		input_element_description,						// specifies how input vertex data structure should be read as types, and processed by the vertex shader through semantic names e.g. "Position"
+		(UINT)std::size(input_element_description),		// number of input data types
+		p_vs_blob_->GetBufferPointer(),						// pointer to compiled shader
+		p_vs_blob_->GetBufferSize(),						// size of compiled shader
+		&p_input_layout									// pointer to input layout object, to be filled
+	);
+	p_device_context_->IASetInputLayout(p_input_layout);
+	p_input_layout->Release();
+}
+
 void Graphics::UpdateCBTransformSubresource(const ConstantBuffer & cb)
 {
 	D3D11_MAPPED_SUBRESOURCE mapped_subresource;
@@ -609,4 +626,31 @@ void Graphics::Draw()
 
 void Graphics::DrawIndexed() {
 	p_device_context_->DrawIndexed(36u, 0u, 0);
+}
+
+void Graphics::BindModelVertices(const std::vector<DirectX::XMFLOAT3>& v)
+{
+	D3D11_MAPPED_SUBRESOURCE mapped_subresource;
+	p_device_context_->Map(p_vertex_buffer_, 0u, D3D11_MAP_WRITE_DISCARD, 0u, &mapped_subresource);
+	memcpy(mapped_subresource.pData, &v, sizeof(v));
+	p_device_context_->Unmap(p_vertex_buffer_, 0u);
+}
+
+void Graphics::BindModelIndices(const std::vector<unsigned short>& i)
+{
+	ID3D11Buffer* pIndexBuffer;
+	D3D11_BUFFER_DESC index_buffer_desc = {};
+	index_buffer_desc.BindFlags = D3D11_BIND_INDEX_BUFFER;
+	index_buffer_desc.Usage = D3D11_USAGE_DEFAULT;
+	index_buffer_desc.CPUAccessFlags = 0u;
+	index_buffer_desc.MiscFlags = 0u;
+	index_buffer_desc.ByteWidth = sizeof(i);
+	index_buffer_desc.StructureByteStride = sizeof(unsigned short);
+	D3D11_SUBRESOURCE_DATA index_subresource_data = {};				// subresource used to create the buffer
+	index_subresource_data.pSysMem = &i;
+
+	p_device_->CreateBuffer(&index_buffer_desc, &index_subresource_data, &pIndexBuffer);
+	p_device_context_->IASetIndexBuffer(pIndexBuffer, DXGI_FORMAT_R16_UINT, 0u);
+
+	pIndexBuffer->Release();
 }

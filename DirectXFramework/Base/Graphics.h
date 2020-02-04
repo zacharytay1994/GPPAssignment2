@@ -1,6 +1,8 @@
 #pragma once
 
 #include "Surface.h"
+#include "../Vec3.h"
+#include <vector>
 #include <Windows.h>
 #include <d3d11.h>
 #include <DirectXMath.h>
@@ -17,6 +19,7 @@ private:
 	ID3D11Buffer*			p_vertex_buffer_ = nullptr;
 	ID3D11Buffer*			p_cb_transform_ = nullptr;	
 	ID3D11DepthStencilView*	p_depth_stencil_view_ = nullptr;
+	ID3DBlob*				p_vs_blob_ = nullptr;
 	bool initialized_;
 	bool has_depth_stencil_ = false;
 
@@ -59,8 +62,12 @@ public:
 	bool BindShaderResourceView(ID3D11ShaderResourceView*& srv);		  // binds a srv to the pipeline for pixel shader sampling, i.e. individual texture resource managed by sprites (no sprite batching yet)
 	void UpdateVBVertexSubresource(const VertexBuffer& vb);				  // used to update buffer data, e.g. different texture coords for frame sampling (see Sprite::Update())
 	void UpdateCubeVBVertexSubresource(const CubeVertexBuffer& cvb);
+	void SetModelIED();
 	void UpdateCBTransformSubresource(const ConstantBuffer& cb);		  // used to update buffer data, e.g. transformations per frame (see Sprite::GetTransform())
 	void ClearBuffer();													  // fills back buffer with colour (e.g. white)
 	void Draw(); // call for sprites
 	void DrawIndexed(); // call for cubes
+
+	void BindModelVertices(const std::vector<DirectX::XMFLOAT3>& v);
+	void BindModelIndices(const std::vector<unsigned short>& i);
 };

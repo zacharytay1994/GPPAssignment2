@@ -361,7 +361,6 @@ public:
 		struct Vertex
 		{
 			DirectX::XMFLOAT3 pos;
-			DirectX::XMFLOAT3 n;
 		};
 
 		Assimp::Importer imp;
@@ -371,14 +370,14 @@ public:
 		);
 		const auto pMesh = pModel->mMeshes[0];
 
-		std::vector<Vertex> vertices;
+		std::vector<DirectX::XMFLOAT3> vertices;
 		vertices.reserve(pMesh->mNumVertices);
 		for (unsigned int i = 0; i < pMesh->mNumVertices; i++)
 		{
-			vertices.push_back({
-				{ pMesh->mVertices[i].x /** scale*/,pMesh->mVertices[i].y /** scale*/,pMesh->mVertices[i].z /** scale*/ },
-				*reinterpret_cast<DirectX::XMFLOAT3*>(&pMesh->mNormals[i])
-				});
+			vertices.push_back(
+				{ pMesh->mVertices[i].x /** scale*/,pMesh->mVertices[i].y /** scale*/,pMesh->mVertices[i].z /** scale*/ }
+				/**reinterpret_cast<DirectX::XMFLOAT3*>(&pMesh->mNormals[i])*/
+				);
 		}
 
 		std::vector<unsigned short> indices;
@@ -403,11 +402,11 @@ public:
 		AddStaticBind(std::make_unique<PixelShader>(graphics_, L"PhongPS.cso"));
 
 		// Create Pixel Shader
-		Microsoft::WRL::ComPtr<ID3DBlob> pBlob;
+		/*Microsoft::WRL::ComPtr<ID3DBlob> pBlob;
 		D3DReadFileToBlob(path.c_str(), &pBlob);
-		graphics_GetDevice()->CreatePixelShader(pBlob->GetBufferPointer(), pBlob->GetBufferSize(), nullptr, &pPixelShader);
+		graphics_GetDevice()->CreatePixelShader(pBlob->GetBufferPointer(), pBlob->GetBufferSize(), nullptr, &pPixelShader);*/
 
-		const std::vector<D3D11_INPUT_ELEMENT_DESC> ied =
+		/*const std::vector<D3D11_INPUT_ELEMENT_DESC> ied =
 		{
 			{ "Position",0,DXGI_FORMAT_R32G32B32_FLOAT,0,0,D3D11_INPUT_PER_VERTEX_DATA,0 },
 			{ "Normal",0,DXGI_FORMAT_R32G32B32_FLOAT,0,12,D3D11_INPUT_PER_VERTEX_DATA,0 },
@@ -426,6 +425,6 @@ public:
 		pmc.color = material;
 		AddStaticBind(std::make_unique<PixelConstantBuffer<PSMaterialConstant>>(graphics_, pmc, 1u));
 
-		AddBind(std::make_unique<TransformCbuf>(graphics_, *this));
+		AddBind(std::make_unique<TransformCbuf>(graphics_, *this));*/
 	}
 };
