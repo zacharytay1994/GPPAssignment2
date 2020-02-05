@@ -338,7 +338,6 @@ void Graphics::InitCubePipeline()
 		nullptr,							// ignore: null no class instance
 		0u									// ignore: 0 class instances interfaces
 	);
-	p_cube_pixel_shader_ = p_pixel_shader_;
 
 	/*_______________________________________*/
 	// CREATE AND BIND VERTEX SHADER
@@ -354,15 +353,6 @@ void Graphics::InitCubePipeline()
 		p_vertex_shader_,					 // same as pixel shader
 		nullptr,							 // same as pixel shader
 		0u									 // same as pixel shader
-	);
-	p_cube_vertex_shader_ = p_vertex_shader_;
-
-	D3DReadFileToBlob(L"Shaders/ModelVertexShader.cso", &p_blob);
-	p_device_->CreateVertexShader(
-		p_blob->GetBufferPointer(),			 // same as pixel shader
-		p_blob->GetBufferSize(),			 // same as pixel shader
-		nullptr,							 // same as pixel shader
-		&p_model_vertex_shader_				 // same as pixel shader
 	);
 
 	/*_______________________________________*/
@@ -657,12 +647,6 @@ void Graphics::BindCubeVertices(const CubeVertexBuffer v)
 		&stride,						   // pointer to array of stride values, i.e. 1 stride for each buffer, pointer to UINT is the same as an array of 1
 		&offset							   // pointer to array of offset values, 0u offset for first and only buffer
 	);
-
-	p_device_context_->VSSetShader(
-		p_cube_vertex_shader_,				 // same as pixel shader
-		nullptr,							 // same as pixel shader
-		0u									 // same as pixel shader
-	);
 }
 
 void Graphics::BindCubeIndices(const unsigned short* i, int size)
@@ -673,12 +657,6 @@ void Graphics::BindCubeIndices(const unsigned short* i, int size)
 	p_device_context_->Unmap(p_index_buffer_, 0u);
 
 	p_device_context_->IASetIndexBuffer(p_index_buffer_, DXGI_FORMAT_R16_UINT, 0u);
-
-	p_device_context_->PSSetShader(
-		p_cube_pixel_shader_,				 
-		nullptr,							 
-		0u									 
-	);
 }
 
 void Graphics::BindModelVertices(std::vector<DirectX::XMFLOAT3>& v)
@@ -697,12 +675,6 @@ void Graphics::BindModelVertices(std::vector<DirectX::XMFLOAT3>& v)
 		&stride,						   // pointer to array of stride values, i.e. 1 stride for each buffer, pointer to UINT is the same as an array of 1
 		&offset							   // pointer to array of offset values, 0u offset for first and only buffer
 	);
-
-	p_device_context_->VSSetShader(
-		p_model_vertex_shader_,				 // same as pixel shader
-		nullptr,							 // same as pixel shader
-		0u									 // same as pixel shader
-	);
 }
 
 void Graphics::BindModelIndices(std::vector<unsigned short>& i)
@@ -713,12 +685,6 @@ void Graphics::BindModelIndices(std::vector<unsigned short>& i)
 	p_device_context_->Unmap(p_index_buffer_, 0u);
 
 	p_device_context_->IASetIndexBuffer(p_index_buffer_, DXGI_FORMAT_R16_UINT, 0u);
-
-	p_device_context_->PSSetShader(
-		p_model_pixel_shader_,
-		nullptr,
-		0u
-	);
 }
 
 void Graphics::BindVertexBuffer(ID3D11Buffer* vertices)

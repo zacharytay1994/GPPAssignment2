@@ -21,10 +21,6 @@ private:
 	
 	ID3D11VertexShader*		p_vertex_shader_ = nullptr;
 	ID3D11PixelShader*		p_pixel_shader_ = nullptr;
-	ID3D11VertexShader*		p_cube_vertex_shader_ = nullptr;
-	ID3D11PixelShader*		p_cube_pixel_shader_ = nullptr;
-	ID3D11VertexShader*		p_model_vertex_shader_ = nullptr;
-	ID3D11PixelShader*		p_model_pixel_shader_ = nullptr;
 
 	ID3D11Buffer*			p_cb_transform_ = nullptr;	
 	ID3D11DepthStencilView*	p_depth_stencil_view_ = nullptr;

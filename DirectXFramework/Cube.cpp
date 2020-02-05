@@ -246,17 +246,6 @@ void Cube::Update(const float& frametime)
 
 void Cube::InitializeCube(const int& x, const int& y, const int& z, const float& scalex, const float& scaley, const float& scalez, const float& anglez, const float& anglex, const float& angley)
 {
-	SetX(x);
-	SetY(y);
-	SetZ(z);
-	SetScaleX(scalex);
-	SetScaleY(scaley);
-	SetScaleZ(scalez);
-	SetAngleZ(anglez);
-	SetAngleX(anglex);
-	SetAngleY(angley);
-	CreateShaderResourceView();
-
 	// Create shaders
 	ID3DBlob* p_blob;						// binary large object, i.e. some data
 	D3DReadFileToBlob(L"Shaders/CubePixelShader.cso", &p_blob);
@@ -275,6 +264,16 @@ void Cube::InitializeCube(const int& x, const int& y, const int& z, const float&
 		&p_vertex_shader_					 // same as pixel shader
 	);
 
+	SetX(x);
+	SetY(y);
+	SetZ(z);
+	SetScaleX(scalex);
+	SetScaleY(scaley);
+	SetScaleZ(scalez);
+	SetAngleZ(anglez);
+	SetAngleX(anglex);
+	SetAngleY(angley);
+	CreateShaderResourceView();
 	initialized_ = true;
 }
 

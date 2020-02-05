@@ -40,10 +40,13 @@ std::vector<std::shared_ptr<Entity>> MapGenerator::GenerateMap()
 
 			if (n < .4) 
 			{
+				//image = L"Images/woodblock.png";
+
 				// Spawn tree
 				std::shared_ptr<TestObject> b = std::make_shared<TestObject>(graphics_, input_, "Models\\lowpolytree.obj");
 				b->SetPosition(Vecf3(x, 0.0, z));
 				ents.push_back(b);
+				continue;
 			}
 			else if (n < .6) { continue; } 
 			else { image = L"Images/stoneblock.png"; }
