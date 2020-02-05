@@ -26,6 +26,23 @@ public:
 		graphics_(gfx),
 		input_(in)
 	{
+		// Create & set buffers
+		ID3DBlob* p_blob;						// binary large object, i.e. some data
+		D3DReadFileToBlob(L"Shaders/ModelPixelShader.cso", &p_blob);
+		graphics_->GetDevice().CreatePixelShader(
+			p_blob->GetBufferPointer(),			// pointer to compiled shader 
+			p_blob->GetBufferSize(),			// size of compiled shader
+			nullptr,							// ignore: no class linkage
+			&p_pixel_shader_					// ignore: address pointer to pixel shader
+		);
+
+		D3DReadFileToBlob(L"Shaders/ModelVertexShader.cso", &p_blob);
+		graphics_->GetDevice().CreateVertexShader(
+			p_blob->GetBufferPointer(),			 // same as pixel shader
+			p_blob->GetBufferSize(),			 // same as pixel shader
+			nullptr,							 // same as pixel shader
+			&p_vertex_shader_					 // same as pixel shader
+		);
 	}
 
 	void SetPosition(const Vecf3& position)
@@ -35,6 +52,19 @@ public:
 
 	void Render(const float& dt = 0) override
 	{
+		// Set shaders
+		graphics_->GetContext().VSSetShader(
+			p_vertex_shader_,					 // same as pixel shader
+			nullptr,							 // same as pixel shader
+			0u									 // same as pixel shader
+		);
+
+		graphics_->GetContext().PSSetShader(
+			p_pixel_shader_,					// pointer to pixel shader
+			nullptr,							// ignore: null no class instance
+			0u									// ignore: 0 class instances interfaces
+		);
+
 		// Bind vertices
 		graphics_->BindVertexBuffer(p_vertex_buffer_);
 		// Bind indices
@@ -75,6 +105,10 @@ protected:
 	// buffers
 	ID3D11Buffer* p_vertex_buffer_ = nullptr;
 	ID3D11Buffer* p_index_buffer_ = nullptr;
+
+	// shaders
+	ID3D11VertexShader* p_vertex_shader_ = nullptr;
+	ID3D11PixelShader* p_pixel_shader_ = nullptr;
 
 	int index_count_ = 0;
 
