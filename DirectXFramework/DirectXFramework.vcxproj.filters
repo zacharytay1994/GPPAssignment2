@@ -5,6 +5,8 @@
     <FxCompile Include="Shaders\SpritePixelShader.hlsl" />
     <FxCompile Include="Shaders\SpriteVertexShader.hlsl" />
     <FxCompile Include="CubeVertexShader.hlsl" />
+    <FxCompile Include="ModelVertexShader.hlsl" />
+    <FxCompile Include="ModelPixelShader.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Block.cpp" />
@@ -26,7 +28,6 @@
     <ClCompile Include="SourceFiles\Sprite.cpp" />
     <ClCompile Include="SourceFiles\Surface.cpp" />
     <ClCompile Include="SourceFiles\WinMain.cpp" />
-    <ClCompile Include="Drawable.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Base\Color.h" />

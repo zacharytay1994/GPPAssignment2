@@ -16,8 +16,10 @@ private:
 	IDXGISwapChain*			p_swap_chain_ = nullptr;		// pointer to interface to one or more framebuffer for storing rendered data before presenting
 	ID3D11DeviceContext*	p_device_context_ = nullptr;	// pointer to interface which generates rendering commands
 	ID3D11RenderTargetView* p_rtv_back_buffer_ = nullptr;	// render target: resource that can be written by pipeline, interfaces back buffer in swap chain
-	ID3D11Buffer*			p_vertex_buffer_ = nullptr;
-	ID3D11Buffer*			p_index_buffer_ = nullptr;
+	ID3D11Buffer*			p_cube_vertex_buffer_ = nullptr;
+	ID3D11Buffer*			p_cube_index_buffer_ = nullptr;
+	ID3D11Buffer*			p_model_vertex_buffer_ = nullptr;
+	ID3D11Buffer*			p_model_index_buffer_ = nullptr;
 	ID3D11Buffer*			p_cb_transform_ = nullptr;	
 	ID3D11DepthStencilView*	p_depth_stencil_view_ = nullptr;
 	ID3DBlob*				p_vs_blob_ = nullptr;

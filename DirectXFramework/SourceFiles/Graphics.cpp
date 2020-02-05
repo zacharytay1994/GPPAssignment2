@@ -327,7 +327,7 @@ void Graphics::InitCubePipeline()
 	/*_______________________________________*/
 	ID3D11PixelShader* p_pixel_shader;
 	ID3DBlob* p_blob;						// binary large object, i.e. some data
-	D3DReadFileToBlob(L"Shaders/CubePixelShader.cso", &p_blob);
+	D3DReadFileToBlob(L"Shaders/ModelPixelShader.cso", &p_blob);
 	p_device_->CreatePixelShader(
 		p_blob->GetBufferPointer(),			// pointer to compiled shader 
 		p_blob->GetBufferSize(),			// size of compiled shader
@@ -345,7 +345,7 @@ void Graphics::InitCubePipeline()
 	// CREATE AND BIND VERTEX SHADER
 	/*_______________________________________*/
 	ID3D11VertexShader* p_vertex_shader;
-	D3DReadFileToBlob(L"Shaders/CubeVertexShader.cso", &p_blob);
+	D3DReadFileToBlob(L"Shaders/ModelVertexShader.cso", &p_blob);
 	p_device_->CreateVertexShader(
 		p_blob->GetBufferPointer(),			 // same as pixel shader
 		p_blob->GetBufferSize(),			 // same as pixel shader
