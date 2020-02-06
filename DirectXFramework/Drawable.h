@@ -355,14 +355,22 @@ private:
 
 class TestObject : public Drawable {
 private:
+	struct Vertex
+	{
+		DirectX::XMFLOAT3 pos;
+		DirectX::XMFLOAT2 tx;
+	};
 	std::shared_ptr<Graphics> graphics_;
 	std::shared_ptr<Input> input_;
 
-	std::vector<DirectX::XMFLOAT3> vertices;
+	std::vector<Vertex> vertices;
 	std::vector<unsigned short> indices;
 
 	ID3D11Buffer* p_vertex_buffer_ = nullptr;
 	ID3D11Buffer* p_index_buffer_ = nullptr;
+
+	ID3D11ShaderResourceView* srv_sprite_ = nullptr;	// pointer to sprite image resource ready for pixel shader sampling
+	Surface			image_resource_;
 
 public:
 	float temp_x = 0.0f;
@@ -370,31 +378,31 @@ public:
 	float temp_pos_x_ = 0.0f;
 	float temp_pos_y_ = 0.0f;
 	int index_count_ = 0;
-	TestObject(std::shared_ptr<Graphics> graphics_, std::shared_ptr<Input> input_, DirectX::XMFLOAT3 material, const std::string& objfile)
+	TestObject(std::shared_ptr<Graphics> graphics_, std::shared_ptr<Input> input_, DirectX::XMFLOAT3 material, const std::string& objfile, const std::wstring& texture)
 		:
 		Drawable(graphics_, material),
 		graphics_(graphics_),
-		input_(input_)
+		input_(input_),
+		image_resource_(texture)
 	{
-		struct Vertex
-		{
-			DirectX::XMFLOAT3 pos;
-		};
 
 		Assimp::Importer imp;
 		const auto pModel = imp.ReadFile(objfile,
 			aiProcess_Triangulate |
-			aiProcess_JoinIdenticalVertices
+			aiProcess_JoinIdenticalVertices |
+			aiProcess_FlipUVs
 		);
 		const auto pMesh = pModel->mMeshes[0];
 
+		int size = pMesh->mNumVertices;
 		vertices.reserve(pMesh->mNumVertices);
+		//int sizetx = (pMesh->mTextureCoords[0]).size();
 		for (unsigned int i = 0; i < pMesh->mNumVertices; i++)
 		{
 			vertices.push_back(
-				{ pMesh->mVertices[i].x /** scale*/,pMesh->mVertices[i].y /** scale*/,pMesh->mVertices[i].z /** scale*/ }
-				/**reinterpret_cast<DirectX::XMFLOAT3*>(&pMesh->mNormals[i])*/
-				);
+				{ { pMesh->mVertices[i].x /** scale*/,pMesh->mVertices[i].y /** scale*/,pMesh->mVertices[i].z /** scale*/ },
+				{ pMesh->mTextureCoords[0][i].x, pMesh->mTextureCoords[0][i].y }
+				});
 		}
 
 		D3D11_BUFFER_DESC buffer_description = {};
@@ -402,8 +410,8 @@ public:
 		buffer_description.Usage = D3D11_USAGE_DYNAMIC;					// how buffer is expected to be read from and written to
 		buffer_description.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;		// cpu access, allow cpu to change buffer content
 		buffer_description.MiscFlags = 0u;								// 0 i.e. unused
-		buffer_description.ByteWidth = vertices.size() * sizeof(DirectX::XMFLOAT3);				// size of buffer
-		buffer_description.StructureByteStride = sizeof(DirectX::XMFLOAT3);	// size of each element in buffer
+		buffer_description.ByteWidth = vertices.size() * sizeof(Vertex);				// size of buffer
+		buffer_description.StructureByteStride = sizeof(Vertex);	// size of each element in buffer
 		D3D11_SUBRESOURCE_DATA subresource_data = {};					// subresource used to create the buffer
 		subresource_data.pSysMem = &(vertices[0]);							// pointer to initialization data
 
@@ -529,6 +537,7 @@ public:
 		AddStaticBind(std::make_unique<PixelConstantBuffer<PSMaterialConstant>>(graphics_, pmc, 1u));
 
 		AddBind(std::make_unique<TransformCbuf>(graphics_, *this));*/
+		CreateShaderResourceView();
 	}
 
 	void Draw()
@@ -537,6 +546,7 @@ public:
 		graphics_->BindVertexBuffer(p_vertex_buffer_);
 		// Bind indices
 		graphics_->BindIndicesBuffer(p_index_buffer_);
+		graphics_->BindShaderResourceView(srv_sprite_);
 		graphics_->UpdateCBTransformSubresource({ GetTransform(0) });
 		graphics_->DrawIndexed(index_count_);
 	}
@@ -555,5 +565,36 @@ public:
 			input_->GetCameraMatrix(dt) *
 			DirectX::XMMatrixPerspectiveLH(1.0f, (float)Graphics::viewport_height_ / (float)Graphics::viewport_width_, 0.5f, 1000.0f)
 		);
+	}
+
+	void CreateShaderResourceView() {
+		D3D11_TEXTURE2D_DESC texture_description = {};
+		texture_description.Width = image_resource_.GetWidth();
+		texture_description.Height = image_resource_.GetHeight();
+		texture_description.MipLevels = 1;
+		texture_description.ArraySize = 1;
+		texture_description.Format = DXGI_FORMAT_B8G8R8A8_UNORM;
+		texture_description.SampleDesc.Count = 1;
+		texture_description.SampleDesc.Quality = 0;
+		texture_description.Usage = D3D11_USAGE_DEFAULT;
+		texture_description.BindFlags = D3D11_BIND_SHADER_RESOURCE;
+		texture_description.CPUAccessFlags = 0;
+		texture_description.MiscFlags = 0;
+		D3D11_SUBRESOURCE_DATA subresource_data = {};
+		subresource_data.pSysMem = image_resource_.GetBufferPointer();
+		subresource_data.SysMemPitch = image_resource_.GetWidth() * sizeof(Color);
+		ID3D11Texture2D* p_texture;
+		graphics_->GetDevice().CreateTexture2D(&texture_description, &subresource_data, &p_texture);
+
+		D3D11_SHADER_RESOURCE_VIEW_DESC srv_descriptor = {};
+		srv_descriptor.Format = texture_description.Format;
+		srv_descriptor.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
+		srv_descriptor.Texture2D.MostDetailedMip = 0;
+		srv_descriptor.Texture2D.MipLevels = 1;
+		if (p_texture != 0) {
+			graphics_->GetDevice().CreateShaderResourceView(p_texture, &srv_descriptor, &srv_sprite_);
+		}
+		p_texture->Release();
+		graphics_->BindShaderResourceView(srv_sprite_);
 	}
 };

@@ -11,12 +11,12 @@ Level::Level(std::shared_ptr<Graphics> gfx, std::shared_ptr<Input> input)
 	std::mt19937 rng{ std::random_device{}() };
 	std::uniform_real_distribution<float> cdist{ 0.0f,1.0f };
 	const DirectX::XMFLOAT3 mat = { cdist(rng),cdist(rng),cdist(rng) };
-	test_object_ = std::make_shared<TestObject>(graphics_, input_, mat, "Models\\dog.obj");
+	test_object_ = std::make_shared<TestObject>(graphics_, input_, mat, "Models\\10021_Giraffe_v04.obj", L"Images/10021_Giraffe_v05.png");
 	test_object_->temp_x = -3.14f/2.0f;
-	test_object_->temp_scale_ = 0.03f;
+	test_object_->temp_scale_ = 1.0f;
 	test_object_->temp_pos_x_ = -2.0f;
 	test_object_->temp_pos_y_ = -1.0f;
-	test_object_2_ = std::make_shared<TestObject>(graphics_, input_, mat, "Models\\lowpolytree.obj");
+	//test_object_2_ = std::make_shared<TestObject>(graphics_, input_, mat, "Models\\lowpolytree.obj");
 	//AddEntity(std::dynamic_pointer_cast<Entity>(test_object_));
 
 	// Initialize map generator
@@ -46,7 +46,7 @@ void Level::Update(const float& dt)
 	}
 
 	test_object_->Draw();
-	test_object_2_->Draw();
+	//test_object_2_->Draw();
 }
 
 void Level::Render(const float& dt)

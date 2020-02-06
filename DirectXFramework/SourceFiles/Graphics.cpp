@@ -369,7 +369,7 @@ void Graphics::InitCubePipeline()
 	ID3D11InputLayout* p_input_layout;
 	const D3D11_INPUT_ELEMENT_DESC input_element_description[] = {
 		{"Position", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0},
-		/*{"TexCoord", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0},*/
+		{"TexCoord", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0},
 	};
 	p_device_->CreateInputLayout(
 		input_element_description,						// specifies how input vertex data structure should be read as types, and processed by the vertex shader through semantic names e.g. "Position"
@@ -693,7 +693,7 @@ void Graphics::BindModelIndices(std::vector<unsigned short>& i)
 
 void Graphics::BindVertexBuffer(ID3D11Buffer* vertices)
 {
-	UINT stride = sizeof(DirectX::XMFLOAT3);
+	UINT stride = 20;
 	UINT offset = 0u;
 	p_device_context_->IASetVertexBuffers(0u, 1u, &vertices, &stride, &offset);
 }

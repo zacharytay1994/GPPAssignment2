@@ -54,22 +54,22 @@ void Input::Update(const float& dt)
 	ResetCamera();
 	if (camera_engaged_) {
 		if (KeyIsDown('W')) {
-			TranslateNoY({0.0f, 0.0f, 1.0f}, dt);
+			TranslateNoY({0.0f, 0.0f, 100.0f}, dt);
 		}
 		if (KeyIsDown('S')) {
-			TranslateNoY({ 0.0f, 0.0f, -1.0f }, dt);
+			TranslateNoY({ 0.0f, 0.0f, -100.0f }, dt);
 		}
 		if (KeyIsDown('A')) {
-			TranslateNoY({ -1.0f, 0.0f, 0.0f }, dt);
+			TranslateNoY({ -100.0f, 0.0f, 0.0f }, dt);
 		}
 		if (KeyIsDown('D')) {
-			TranslateNoY({ 1.0f, 0.0f, 0.0f }, dt);
+			TranslateNoY({ 100.0f, 0.0f, 0.0f }, dt);
 		}
 		if (KeyIsDown(VK_SHIFT)) {
-			TranslateNoRotation({ 0.0f, -1.0f, 0.0f }, dt);
+			TranslateNoRotation({ 0.0f, -100.0f, 0.0f }, dt);
 		}
 		if (KeyIsDown(VK_SPACE)) {
-			TranslateNoRotation({ 0.0f, 1.0f, 0.0f }, dt);
+			TranslateNoRotation({ 0.0f, 100.0f, 0.0f }, dt);
 		}
 	}
 }
