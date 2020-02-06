@@ -1,4 +1,5 @@
 #include "Cube.h"
+#include "D3dcompiler.h"
 
 Cube::Cube(std::shared_ptr<Graphics> gfx, std::shared_ptr<Input> input, const std::wstring& filename)
 	:
@@ -220,6 +221,19 @@ void Cube::Draw(const float& dt)
 		};
 		gfx->BindCubeIndices(indices, sizeof(indices));
 
+		// Set shaders
+		gfx->GetContext().VSSetShader(
+			p_vertex_shader_,					 // same as pixel shader
+			nullptr,							 // same as pixel shader
+			0u									 // same as pixel shader
+		);
+
+		gfx->GetContext().PSSetShader(
+			p_pixel_shader_,					// pointer to pixel shader
+			nullptr,							// ignore: null no class instance
+			0u									// ignore: 0 class instances interfaces
+		);
+
 		gfx->BindShaderResourceView(cube_data_.srv_sprite_);
 		gfx->UpdateCBTransformSubresource({ GetTransform(dt) });
 		gfx->DrawIndexed();
@@ -232,6 +246,24 @@ void Cube::Update(const float& frametime)
 
 void Cube::InitializeCube(const int& x, const int& y, const int& z, const float& scalex, const float& scaley, const float& scalez, const float& anglez, const float& anglex, const float& angley)
 {
+	// Create shaders
+	ID3DBlob* p_blob;						// binary large object, i.e. some data
+	D3DReadFileToBlob(L"Shaders/CubePixelShader.cso", &p_blob);
+	gfx->GetDevice().CreatePixelShader(
+		p_blob->GetBufferPointer(),			// pointer to compiled shader 
+		p_blob->GetBufferSize(),			// size of compiled shader
+		nullptr,							// ignore: no class linkage
+		&p_pixel_shader_					// ignore: address pointer to pixel shader
+	);
+
+	D3DReadFileToBlob(L"Shaders/CubeVertexShader.cso", &p_blob);
+	gfx->GetDevice().CreateVertexShader(
+		p_blob->GetBufferPointer(),			 // same as pixel shader
+		p_blob->GetBufferSize(),			 // same as pixel shader
+		nullptr,							 // same as pixel shader
+		&p_vertex_shader_					 // same as pixel shader
+	);
+
 	SetX(x);
 	SetY(y);
 	SetZ(z);

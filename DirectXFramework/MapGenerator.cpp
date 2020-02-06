@@ -38,7 +38,16 @@ std::vector<std::shared_ptr<Entity>> MapGenerator::GenerateMap()
 
 			n = pn_->octaveNoise0_1(x / fx_, z / fz_, octaves_);
 
-			if (n < .4) { image = L"Images/woodblock.png"; }
+			if (n < .4) 
+			{
+				//image = L"Images/woodblock.png";
+
+				// Spawn tree I COMMENTED OUT THIS FOR MERGING CAUSE THE CONSTRUCTOR FOR TESTOBJECT CHANGED
+				/*std::shared_ptr<TestObject> b = std::make_shared<TestObject>(graphics_, input_, "Models\\lowpolytree.obj");
+				b->SetPosition(Vecf3(x, 0.0, z));
+				ents.push_back(b);*/
+				continue;
+			}
 			else if (n < .6) { continue; } 
 			else { image = L"Images/stoneblock.png"; }
 

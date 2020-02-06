@@ -39,6 +39,10 @@ private:
 	bool	initialized_ = false;			 	  // set in Sprite::IntializeSprite()
 	bool	visible_ = true;					  // referenced in Sprite::Draw()
 
+	// shaders
+	ID3D11VertexShader* p_vertex_shader_ = nullptr;
+	ID3D11PixelShader* p_pixel_shader_ = nullptr;
+
 public:
 	Cube(std::shared_ptr<Graphics> gfx, std::shared_ptr<Input> input, const std::wstring& filename);
 	~Cube();

@@ -18,6 +18,10 @@ private:
 	ID3D11RenderTargetView* p_rtv_back_buffer_ = nullptr;	// render target: resource that can be written by pipeline, interfaces back buffer in swap chain
 	ID3D11Buffer*			p_vertex_buffer_ = nullptr;
 	ID3D11Buffer*			p_index_buffer_ = nullptr;
+	
+	ID3D11VertexShader*		p_vertex_shader_ = nullptr;
+	ID3D11PixelShader*		p_pixel_shader_ = nullptr;
+
 	ID3D11Buffer*			p_cb_transform_ = nullptr;	
 	ID3D11DepthStencilView*	p_depth_stencil_view_ = nullptr;
 	ID3DBlob*				p_vs_blob_ = nullptr;
@@ -60,9 +64,8 @@ public:
 	// Get Set
 	ID3D11Device& GetDevice();
 	ID3D11DeviceContext& GetContext();
-	ID3D11Buffer& GetVB() { return *p_vertex_buffer_; };
 	VertexBuffer GetDefaultVB();
-	CubeVertexBuffer GetDefaultCubeVB();
+	const CubeVertexBuffer GetDefaultCubeVB();
 	bool Initialized();
 	// Miscellaneous functions
 	bool BindShaderResourceView(ID3D11ShaderResourceView*& srv);		  // binds a srv to the pipeline for pixel shader sampling, i.e. individual texture resource managed by sprites (no sprite batching yet)

@@ -12,284 +12,81 @@
 #include <vector>
 #include <wrl.h>
 
-class Bindable
-{
-public:
-	virtual void Bind(std::shared_ptr<Graphics> gfx) noexcept = 0;
-	virtual ~Bindable() = default;
-protected:
-	static ID3D11DeviceContext* GetContext(std::shared_ptr<Graphics> gfx) noexcept
-	{
-		return &(gfx->GetContext());
-	}
-	static ID3D11Device* GetDevice(std::shared_ptr<Graphics> gfx) noexcept
-	{
-		return&(gfx->GetDevice());
-	}
-};
-
-class VertexBuffer : public Bindable
-{
-public:
-	template<class V>
-	VertexBuffer(std::shared_ptr<Graphics> gfx, const std::vector<V>& vertices)
-		:
-		stride(sizeof(V))
-	{
-		/*INFOMAN(gfx);*/
-
-		D3D11_BUFFER_DESC bd = {};
-		bd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-		bd.Usage = D3D11_USAGE_DEFAULT;
-		bd.CPUAccessFlags = 0u;
-		bd.MiscFlags = 0u;
-		bd.ByteWidth = UINT(sizeof(V) * vertices.size());
-		bd.StructureByteStride = sizeof(V);
-		D3D11_SUBRESOURCE_DATA sd = {};
-		sd.pSysMem = vertices.data();
-		GetDevice(gfx)->CreateBuffer(&bd, &sd, &pVertexBuffer);
-	}
-	void Bind(std::shared_ptr<Graphics> gfx) noexcept override
-	{
-		const UINT offset = 0u;
-		ID3D11Buffer* tmp = &(gfx->GetVB());
-		GetContext(gfx)->IASetVertexBuffers(0u, 1u, &tmp, &stride, &offset);
-	}
-protected:
-	UINT stride;
-	Microsoft::WRL::ComPtr<ID3D11Buffer> pVertexBuffer;
-};
-
-class IndexBuffer : public Bindable
-{
-public:
-	IndexBuffer(std::shared_ptr<Graphics> gfx, const std::vector<unsigned short>& indices)
-		:
-		count((UINT)indices.size())
-	{
-		D3D11_BUFFER_DESC ibd = {};
-		ibd.BindFlags = D3D11_BIND_INDEX_BUFFER;
-		ibd.Usage = D3D11_USAGE_DEFAULT;
-		ibd.CPUAccessFlags = 0u;
-		ibd.MiscFlags = 0u;
-		ibd.ByteWidth = UINT(count * sizeof(unsigned short));
-		ibd.StructureByteStride = sizeof(unsigned short);
-		D3D11_SUBRESOURCE_DATA isd = {};
-		isd.pSysMem = indices.data();
-	}
-	void Bind(std::shared_ptr<Graphics> gfx) noexcept override
-	{
-		GetContext(gfx)->IASetIndexBuffer(pIndexBuffer.Get(), DXGI_FORMAT_R16_UINT, 0u);
-	}
-	UINT GetCount() const noexcept
-	{
-		return count;
-	}
-protected:
-	UINT count;
-	Microsoft::WRL::ComPtr<ID3D11Buffer> pIndexBuffer;
-};
-
-class VertexShader : public Bindable
-{
-public:
-	VertexShader(std::shared_ptr<Graphics> gfx, const std::wstring& path)
-	{
-		D3DReadFileToBlob(path.c_str(), &pBytecodeBlob);
-		GetDevice(gfx)->CreateVertexShader(
-			pBytecodeBlob->GetBufferPointer(),
-			pBytecodeBlob->GetBufferSize(),
-			nullptr,
-			&pVertexShader
-		);
-	}
-	void Bind(std::shared_ptr<Graphics> gfx) noexcept override
-	{
-		GetContext(gfx)->VSSetShader(pVertexShader.Get(), nullptr, 0u);
-	}
-	ID3DBlob* GetBytecode() const noexcept
-	{
-		return pBytecodeBlob.Get();
-	}
-protected:
-	Microsoft::WRL::ComPtr<ID3DBlob> pBytecodeBlob;
-	Microsoft::WRL::ComPtr<ID3D11VertexShader> pVertexShader;
-};
-
-class PixelShader : public Bindable
-{
-public:
-	PixelShader(std::shared_ptr<Graphics> gfx, const std::wstring& path)
-	{
-		Microsoft::WRL::ComPtr<ID3DBlob> pBlob;
-		D3DReadFileToBlob(path.c_str(), &pBlob);
-		GetDevice(gfx)->CreatePixelShader(pBlob->GetBufferPointer(), pBlob->GetBufferSize(), nullptr, &pPixelShader);
-	}
-	void Bind(std::shared_ptr<Graphics> gfx) noexcept override
-	{
-		GetContext(gfx)->PSSetShader(pPixelShader.Get(), nullptr, 0u);
-	}
-protected:
-	Microsoft::WRL::ComPtr<ID3D11PixelShader> pPixelShader;
-};
-
-class InputLayout : public Bindable
-{
-public:
-	InputLayout(std::shared_ptr<Graphics> gfx,
-		const std::vector<D3D11_INPUT_ELEMENT_DESC>& layout,
-		ID3DBlob* pVertexShaderBytecode)
-	{
-	}
-
-	void Bind(std::shared_ptr<Graphics> gfx) noexcept override
-	{
-		GetContext(gfx)->IASetInputLayout(pInputLayout.Get());
-	}
-protected:
-	Microsoft::WRL::ComPtr<ID3D11InputLayout> pInputLayout;
-};
-
-class Topology : public Bindable
-{
-public:
-	Topology(std::shared_ptr<Graphics> gfx, D3D11_PRIMITIVE_TOPOLOGY type)
-		:
-		type(type)
-	{}
-	void Bind(std::shared_ptr<Graphics> gfx) noexcept override
-	{
-		GetContext(gfx)->IASetPrimitiveTopology(type);
-	}
-protected:
-	D3D11_PRIMITIVE_TOPOLOGY type;
-};
-
-template<typename C>
-class ConstantBuffer : public Bindable
-{
-public:
-	void Update(std::shared_ptr<Graphics> gfx, const C& consts)
-	{
-		D3D11_MAPPED_SUBRESOURCE msr;
-		GetContext(gfx)->Map(
-			pConstantBuffer.Get(), 0u,
-			D3D11_MAP_WRITE_DISCARD, 0u,
-			&msr
-		);
-		memcpy(msr.pData, &consts, sizeof(consts));
-		GetContext(gfx)->Unmap(pConstantBuffer.Get(), 0u);
-	}
-	ConstantBuffer(std::shared_ptr<Graphics> gfx, const C& consts, UINT slot = 0u)
-		:
-		slot(slot)
-	{
-		/*INFOMAN(gfx);*/
-
-		D3D11_BUFFER_DESC cbd;
-		cbd.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-		cbd.Usage = D3D11_USAGE_DYNAMIC;
-		cbd.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
-		cbd.MiscFlags = 0u;
-		cbd.ByteWidth = sizeof(consts);
-		cbd.StructureByteStride = 0u;
-
-		D3D11_SUBRESOURCE_DATA csd = {};
-		csd.pSysMem = &consts;
-		GetDevice(gfx)->CreateBuffer(&cbd, &csd, &pConstantBuffer);
-	}
-	ConstantBuffer(std::shared_ptr<Graphics> gfx, UINT slot = 0u)
-		:
-		slot(slot)
-	{
-		/*INFOMAN(gfx);*/
-
-		D3D11_BUFFER_DESC cbd;
-		cbd.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-		cbd.Usage = D3D11_USAGE_DYNAMIC;
-		cbd.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
-		cbd.MiscFlags = 0u;
-		cbd.ByteWidth = sizeof(C);
-		cbd.StructureByteStride = 0u;
-		GetDevice(gfx)->CreateBuffer(&cbd, nullptr, &pConstantBuffer);
-	}
-protected:
-	Microsoft::WRL::ComPtr<ID3D11Buffer> pConstantBuffer;
-	UINT slot;
-};
-
-template<typename C>
-class PixelConstantBuffer : public ConstantBuffer<C>
-{
-public:
-	using ConstantBuffer<C>::ConstantBuffer;
-	void Bind(std::shared_ptr<Graphics> gfx) noexcept override
-	{
-		Bindable::GetContext(gfx)->PSSetConstantBuffers(ConstantBuffer<C>::slot, 1u, ConstantBuffer<C>::pConstantBuffer.GetAddressOf());
-	}
-};
-
-template<typename C>
-class VertexConstantBuffer : public ConstantBuffer<C>
-{
-public:
-	using ConstantBuffer<C>::ConstantBuffer;
-	void Bind(std::shared_ptr<Graphics> gfx) noexcept override
-	{
-		Bindable::GetContext(gfx)->VSSetConstantBuffers(ConstantBuffer<C>::slot, 1u, ConstantBuffer<C>::pConstantBuffer.GetAddressOf());
-	}
-};
-
-
-class Drawable
+class Drawable : public Entity
 {
 private:
 	std::shared_ptr<Graphics> graphics_;
-	static std::vector<std::unique_ptr<Bindable>> staticBinds_;
-	const class IndexBuffer* pIndexBuffer_ = nullptr;
-	std::vector<std::unique_ptr<Bindable>> binds_;
+	std::shared_ptr<Input> input_;
+
+	Vecf3 position_ = Vecf3(0.0f, 0.0f, 0.0f);
 
 public:
-	Drawable(std::shared_ptr<Graphics> gfx, DirectX::XMFLOAT3 material)
+	Drawable(std::shared_ptr<Graphics> gfx, std::shared_ptr<Input> in)
 		:
-		graphics_(gfx)
+		graphics_(gfx),
+		input_(in)
 	{
+		// Create & set buffers
+		ID3DBlob* p_blob;						// binary large object, i.e. some data
+		D3DReadFileToBlob(L"Shaders/ModelPixelShader.cso", &p_blob);
+		graphics_->GetDevice().CreatePixelShader(
+			p_blob->GetBufferPointer(),			// pointer to compiled shader 
+			p_blob->GetBufferSize(),			// size of compiled shader
+			nullptr,							// ignore: no class linkage
+			&p_pixel_shader_					// ignore: address pointer to pixel shader
+		);
+
+		D3DReadFileToBlob(L"Shaders/ModelVertexShader.cso", &p_blob);
+		graphics_->GetDevice().CreateVertexShader(
+			p_blob->GetBufferPointer(),			 // same as pixel shader
+			p_blob->GetBufferSize(),			 // same as pixel shader
+			nullptr,							 // same as pixel shader
+			&p_vertex_shader_					 // same as pixel shader
+		);
 	}
 
-	static void AddStaticBind(std::unique_ptr<Bindable> bind)
+	void SetPosition(const Vecf3& position)
 	{
-		staticBinds_.push_back(std::move(bind));
+		position_ = position;
 	}
 
-	void AddStaticIndexBuffer(std::unique_ptr<IndexBuffer> ibuf)
+	void Render(const float& dt = 0) override
 	{
-		pIndexBuffer_ = ibuf.get();
-		staticBinds_.push_back(std::move(ibuf));
+		// Set shaders
+		graphics_->GetContext().VSSetShader(
+			p_vertex_shader_,					 // same as pixel shader
+			nullptr,							 // same as pixel shader
+			0u									 // same as pixel shader
+		);
+
+		graphics_->GetContext().PSSetShader(
+			p_pixel_shader_,					// pointer to pixel shader
+			nullptr,							// ignore: null no class instance
+			0u									// ignore: 0 class instances interfaces
+		);
+
+		// Bind vertices
+		graphics_->BindVertexBuffer(p_vertex_buffer_);
+		// Bind indices
+		graphics_->BindIndicesBuffer(p_index_buffer_);
+		graphics_->UpdateCBTransformSubresource({ GetTransform(0) });
+		graphics_->DrawIndexed(index_count_);
 	}
 
-	void AddBind(std::unique_ptr<Bindable> bind)
+	DirectX::XMMATRIX GetTransform(const float& dt)
 	{
-		binds_.push_back(std::move(bind));
-	}
-
-	const std::vector<std::unique_ptr<Bindable>>& GetStaticBinds() const noexcept
-	{
-		return staticBinds_;
-	}
-
-	void Draw()
-	{
-		for (auto& b : binds_)
-		{
-			b->Bind(graphics_);
-		}
-
-		for (auto& b : GetStaticBinds())
-		{
-			b->Bind(graphics_);
-		}
-
-		graphics_->DrawIndexed();
+		// no scaling by 0
+		//assert(cube_data_.scale_x_ != 0.0f || cube_data_.scale_y_ != 0.0f || cube_data_.scale_z_ != 0.0f);
+		return DirectX::XMMatrixTranspose(
+			DirectX::XMMatrixScaling(temp_scale_, temp_scale_, temp_scale_) *
+			DirectX::XMMatrixRotationRollPitchYaw(temp_x, 0, 0) *
+			/*dx::XMMatrixRotationZ(cube_data_.angle_z) *
+			dx::XMMatrixRotationX(cube_data_.angle_x) *
+			dx::XMMatrixRotationY(cube_data_.angle_y) **/
+			DirectX::XMMatrixTranslation(position_.x, position_.y, position_.z) *
+			input_->GetCameraMatrix(dt) *
+			DirectX::XMMatrixPerspectiveLH(1.0f, (float)Graphics::viewport_height_ / (float)Graphics::viewport_width_, 0.5f, 1000.0f)
+		);
 	}
 
 	DirectX::XMMATRIX GetTransformXM() const noexcept
@@ -299,6 +96,22 @@ public:
 			   DirectX::XMMatrixRotationRollPitchYaw(theta, phi, chi);
 	}
 protected:
+	// temp
+	float temp_x = 0.0f;
+	float temp_scale_ = 1.0f;
+	float temp_pos_x_ = 0.0f;
+	float temp_pos_y_ = 0.0f;
+
+	// buffers
+	ID3D11Buffer* p_vertex_buffer_ = nullptr;
+	ID3D11Buffer* p_index_buffer_ = nullptr;
+
+	// shaders
+	ID3D11VertexShader* p_vertex_shader_ = nullptr;
+	ID3D11PixelShader* p_pixel_shader_ = nullptr;
+
+	int index_count_ = 0;
+
 	// positional
 	float r;
 	float roll = 0.0f;
@@ -314,43 +127,6 @@ protected:
 	float dtheta;
 	float dphi;
 	float dchi;
-};
-
-class TransformCbuf : public Bindable
-{
-private:
-	struct Transforms
-	{
-		DirectX::XMMATRIX modelViewProj;
-		DirectX::XMMATRIX model;
-	};
-public:
-	TransformCbuf(std::shared_ptr<Graphics> gfx, Drawable& parent, UINT slot = 0u)
-		:
-		parent(parent)
-	{
-		if (!pVcbuf)
-		{
-			pVcbuf = std::make_unique<VertexConstantBuffer<Transforms>>(gfx, slot);
-		}
-	}
-	void Bind(std::shared_ptr<Graphics> gfx) noexcept override
-	{
-		auto modelView = parent.GetTransformXM() /** gfx.GetCamera()*/;
-		const Transforms tf =
-		{
-			DirectX::XMMatrixTranspose(modelView),
-			DirectX::XMMatrixTranspose(
-				modelView /**
-				gfx.GetProjection()*/
-			)
-		};
-		pVcbuf->Update(gfx, tf);
-		pVcbuf->Bind(gfx);
-	}
-private:
-	static std::unique_ptr<VertexConstantBuffer<Transforms>> pVcbuf;
-	Drawable& parent;
 };
 
 class TestObject : public Drawable {
@@ -378,14 +154,18 @@ public:
 	float temp_pos_x_ = 0.0f;
 	float temp_pos_y_ = 0.0f;
 	int index_count_ = 0;
+	
+	/*std::vector<DirectX::XMFLOAT3> vertices;
+	std::vector<unsigned short> indices;*/
+
+public:
 	TestObject(std::shared_ptr<Graphics> graphics_, std::shared_ptr<Input> input_, DirectX::XMFLOAT3 material, const std::string& objfile, const std::wstring& texture)
 		:
-		Drawable(graphics_, material),
+		Drawable(graphics_, input_),
 		graphics_(graphics_),
 		input_(input_),
 		image_resource_(texture)
 	{
-
 		Assimp::Importer imp;
 		const auto pModel = imp.ReadFile(objfile,
 			aiProcess_Triangulate |
@@ -403,6 +183,9 @@ public:
 				{ { pMesh->mVertices[i].x /** scale*/,pMesh->mVertices[i].y /** scale*/,pMesh->mVertices[i].z /** scale*/ },
 				{ pMesh->mTextureCoords[0][i].x, pMesh->mTextureCoords[0][i].y }
 				});
+				//{ pMesh->mVertices[i].x * scale,pMesh->mVertices[i].y * scale,pMesh->mVertices[i].z * scale }
+				///**reinterpret_cast<DirectX::XMFLOAT3*>(&pMesh->mNormals[i])*/
+				//);
 		}
 
 		D3D11_BUFFER_DESC buffer_description = {};
@@ -416,46 +199,6 @@ public:
 		subresource_data.pSysMem = &(vertices[0]);							// pointer to initialization data
 
 		graphics_->GetGraphicsDevice()->CreateBuffer(&buffer_description, &subresource_data, &p_vertex_buffer_);
-		//vertices = std::vector<DirectX::XMFLOAT3> {
-		//	// Back face
-		//	{10.0f, -1.0f, -1.0f},
-		//	{-1.0f, -1.0f, -1.0f},
-		//	{1.0f, 1.0f, -1.0f},
-		//	{-1.0f, 1.0f, -1.0f},
-
-		//	// Front face
-		//	{-1.0f, -1.0f, 1.0f},
-		//	{1.0f, -1.0f, 1.0f},
-		//	{-1.0f, 1.0f, 1.0f},
-		//	{1.0f, 1.0f, 1.0f},
-
-		//	// Right face
-		//	{1.0f, -1.0f, 1.0f},
-		//	{1.0f, -1.0f, -1.0f},
-		//	{1.0f, 1.0f, 1.0f},
-		//	{1.0f, 1.0f, -1.0f},
-
-		//	// Left face
-		//	{-1.0f, -1.0f, -1.0f},
-		//	{-1.0f, -1.0f, 1.0f},
-		//	{-1.0f, 1.0f, -1.0f},
-		//	{-1.0f, 1.0f, 1.0f},
-
-		//	// Top face
-		//	{-1.0f, 1.0f, 1.0f},
-		//	{1.0f, 1.0f, 1.0f},
-		//	{-1.0f, 1.0f, -1.0f},
-		//	{1.0f, 1.0f, -1.0f},
-
-		//	// Bottom face
-		//	{-1.0f, -1.0f, -1.0f},
-		//	{1.0f, -1.0f, -1.0f},
-		//	{-1.0f, -1.0f, 1.0f},
-		//	{1.0f, -1.0f, 1.0f}
-		//};
-		/*for (int i = 0; i < 1000; i++) {
-			vertices.push_back({ 1.0f, 1.0f, 1.0f });
-		}*/
 
 		indices.reserve(pMesh->mNumFaces * 3);
 		for (unsigned int i = 0; i < pMesh->mNumFaces; i++)
