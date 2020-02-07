@@ -7,6 +7,11 @@
 #include <d3d11.h>
 #include <DirectXMath.h>
 
+enum class ShaderType {
+	Textured,
+	Untextured
+};
+
 class Sprite;
 class Graphics {
 	friend class Sprite;
@@ -19,6 +24,14 @@ private:
 	ID3D11Buffer*			p_vertex_buffer_ = nullptr;
 	ID3D11Buffer*			p_index_buffer_ = nullptr;
 	
+	/*_______________________________________*/
+	// SHADERS FOR TEXTURED/UNTEXTURES, BOTH WITH NORMALS
+	/*_______________________________________*/
+	ID3D11VertexShader* p_vs_textured_ = nullptr;
+	ID3D11PixelShader* p_ps_textured_ = nullptr;
+	ID3D11VertexShader* p_vs_untextured_ = nullptr;
+	ID3D11PixelShader* p_ps_untextured_ = nullptr;
+
 	ID3D11VertexShader*		p_vertex_shader_ = nullptr;
 	ID3D11PixelShader*		p_pixel_shader_ = nullptr;
 
@@ -84,7 +97,10 @@ public:
 	void BindModelVertices(std::vector<DirectX::XMFLOAT3>& v);
 	void BindModelIndices(std::vector<unsigned short>& i);
 	void BindVertexBuffer(ID3D11Buffer* vertices);
-	void BindIndicesBuffer(ID3D11Buffer* indices);
+	void BindIndexBuffer(ID3D11Buffer* indices);
 	ID3D11Device* GetGraphicsDevice();
 	ID3D11DeviceContext* GetGraphicsDeviceContext();
+
+	void InitializeShaders();
+	void SetShaderType(const ShaderType& type);
 };

@@ -694,7 +694,7 @@ void Graphics::BindVertexBuffer(ID3D11Buffer* vertices)
 	p_device_context_->IASetVertexBuffers(0u, 1u, &vertices, &stride, &offset);
 }
 
-void Graphics::BindIndicesBuffer(ID3D11Buffer* indices)
+void Graphics::BindIndexBuffer(ID3D11Buffer* indices)
 {
 	p_device_context_->IASetIndexBuffer(indices, DXGI_FORMAT_R16_UINT, 0u);
 }
@@ -707,4 +707,74 @@ ID3D11Device* Graphics::GetGraphicsDevice()
 ID3D11DeviceContext* Graphics::GetGraphicsDeviceContext()
 {
 	return p_device_context_;
+}
+
+void Graphics::InitializeShaders()
+{
+	/*______________________________________*/
+	// CREATING TEXTURED SHADERS
+	/*______________________________________*/
+	ID3DBlob* p_blob;						// binary large object, i.e. some data
+	D3DReadFileToBlob(L"Shaders/TexturedPS.cso", &p_blob);
+	p_device_->CreatePixelShader(
+		p_blob->GetBufferPointer(),			// pointer to compiled shader 
+		p_blob->GetBufferSize(),			// size of compiled shader
+		nullptr,							// ignore: no class linkage
+		&p_ps_textured_					// ignore: address pointer to pixel shader
+	);
+	D3DReadFileToBlob(L"Shaders/TexturedVS.cso", &p_blob);
+	p_device_->CreateVertexShader(
+		p_blob->GetBufferPointer(),			 // same as pixel shader
+		p_blob->GetBufferSize(),			 // same as pixel shader
+		nullptr,							 // same as pixel shader
+		&p_vs_textured_					 // same as pixel shader
+	);
+	/*______________________________________*/
+	// CREATING UNTEXTURED SHADERS
+	/*______________________________________*/
+	D3DReadFileToBlob(L"Shaders/UntexturedPS.cso", &p_blob);
+	p_device_->CreatePixelShader(
+		p_blob->GetBufferPointer(),			// pointer to compiled shader 
+		p_blob->GetBufferSize(),			// size of compiled shader
+		nullptr,							// ignore: no class linkage
+		&p_ps_untextured_					// ignore: address pointer to pixel shader
+	);
+	D3DReadFileToBlob(L"Shaders/UntexturedVS.cso", &p_blob);
+	p_device_->CreateVertexShader(
+		p_blob->GetBufferPointer(),			 // same as pixel shader
+		p_blob->GetBufferSize(),			 // same as pixel shader
+		nullptr,							 // same as pixel shader
+		&p_vs_untextured_					 // same as pixel shader
+	);
+	p_blob->Release();
+}
+
+void Graphics::SetShaderType(const ShaderType& type)
+{
+	switch (type) {
+	case ShaderType::Textured:
+		p_device_context_->PSSetShader(
+			p_ps_textured_,						
+			nullptr,							
+			0u									
+		);
+		p_device_context_->VSSetShader(
+			p_vs_textured_,					 
+			nullptr,						
+			0u								
+		);
+		break;
+	case ShaderType::Untextured:
+		p_device_context_->PSSetShader(
+			p_ps_untextured_,					
+			nullptr,							
+			0u									
+		);
+		p_device_context_->VSSetShader(
+			p_vs_untextured_,					 
+			nullptr,							 
+			0u									 
+		);
+		break;
+	}
 }

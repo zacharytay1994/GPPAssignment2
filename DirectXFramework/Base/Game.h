@@ -4,6 +4,7 @@
 #include <Windows.h>
 #include "Input.h"
 #include "Graphics.h"
+#include "../ResourceLibrary.h"
 
 class Game {
 protected:
@@ -31,6 +32,8 @@ protected:
 	RECT rect;
 	// cursor variables
 	bool cursor_enabled_ = true;
+	// resource library loads all surfaces and meshes for the game
+	std::shared_ptr<ResourceLibrary> rl_;
 public:
 	Game(HWND hwnd);
 	virtual ~Game();

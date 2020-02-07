@@ -1,9 +1,9 @@
 #include "Level.h"
 #include "Block.h"
 
-Level::Level(std::shared_ptr<Graphics> gfx, std::shared_ptr<Input> input)
+Level::Level(std::shared_ptr<Graphics> gfx, std::shared_ptr<Input> input, std::shared_ptr<ResourceLibrary> rl)
 	:
-	Scene(gfx, input)
+	Scene(gfx, input, rl)
 {
 	//test_block_ = std::make_shared<Block>(Block(L"Images/grassblock.png", graphics_, input_));
 	//AddEntity(std::dynamic_pointer_cast<Entity>(test_block_));
@@ -11,7 +11,7 @@ Level::Level(std::shared_ptr<Graphics> gfx, std::shared_ptr<Input> input)
 	std::mt19937 rng{ std::random_device{}() };
 	std::uniform_real_distribution<float> cdist{ 0.0f,1.0f };
 	const DirectX::XMFLOAT3 mat = { cdist(rng),cdist(rng),cdist(rng) };
-	test_object_ = std::make_shared<TestObject>(graphics_, input_, mat, "Models\\10021_Giraffe_v04.obj", L"Images/10021_Giraffe_v05.png");
+	test_object_ = std::make_shared<TestObject>(graphics_, input_, mat, "Models\\10021_Giraffe_v04.obj", L"Images/10021_Giraffe_v05.png", rl);
 	/*test_object_ = std::make_shared<TestObject>(graphics_, input_, "Models\\dog.obj");
 >>>>>>> d6855af42c04a8ccdc680a2c4e571b1b68c4a4bb
 	test_object_->temp_x = -3.14f/2.0f;
@@ -27,11 +27,11 @@ Level::Level(std::shared_ptr<Graphics> gfx, std::shared_ptr<Input> input)
 	//AddEntity(std::dynamic_pointer_cast<Entity>(test_object_2_));
 
 	// Initialize map generator
-	mapGen_ = std::make_unique<MapGenerator>(graphics_, input_);
+	//mapGen_ = std::make_unique<MapGenerator>(graphics_, input_);
 
-	// Generate map
-	for (std::shared_ptr<Entity> e : mapGen_->GenerateMap())
-	{ AddEntity(e); }
+	//// Generate map
+	//for (std::shared_ptr<Entity> e : mapGen_->GenerateMap())
+	//{ AddEntity(e); }
 }
 
 void Level::Update(const float& dt)

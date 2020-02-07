@@ -14,7 +14,7 @@ private:
 	std::shared_ptr<TestObject> test_object_;
 	std::shared_ptr<TestObject> test_object_2_;
 public:
-	Level(std::shared_ptr<Graphics> gfx, std::shared_ptr<Input> input);
+	Level(std::shared_ptr<Graphics> gfx, std::shared_ptr<Input> input, std::shared_ptr<ResourceLibrary> rl);
 	void Update(const float& dt) override;
 	void Render(const float& dt) override;
 };

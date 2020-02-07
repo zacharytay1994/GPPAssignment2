@@ -1,10 +1,11 @@
 #include "Scene.h"
 #include "Entity.h"
 
-Scene::Scene(std::shared_ptr<Graphics> gfx, std::shared_ptr<Input> input)
+Scene::Scene(std::shared_ptr<Graphics> gfx, std::shared_ptr<Input> input, std::shared_ptr<ResourceLibrary> rl)
 	:
 	graphics_(gfx),
-	input_(input)
+	input_(input),
+	rl_(rl)
 {
 }
 

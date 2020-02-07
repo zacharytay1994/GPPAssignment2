@@ -2,8 +2,8 @@
 #include "Block.h"
 #include "Player.h"
 
-MainMenu::MainMenu(std::shared_ptr<Graphics> gfx, std::shared_ptr<Input> input):
-	Scene(gfx, input)
+MainMenu::MainMenu(std::shared_ptr<Graphics> gfx, std::shared_ptr<Input> input, std::shared_ptr<ResourceLibrary> rl):
+	Scene(gfx, input, rl)
 {
 
 	std::shared_ptr<Block> tempBlock;

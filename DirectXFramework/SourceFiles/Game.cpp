@@ -4,7 +4,8 @@
 Game::Game(HWND hwnd)
 	:
 	input_(std::make_shared<Input>()),
-	graphics_(std::make_shared<Graphics>())
+	graphics_(std::make_shared<Graphics>()),
+	rl_(std::make_shared<ResourceLibrary>(graphics_))
 {
 	Initialize(hwnd);
 

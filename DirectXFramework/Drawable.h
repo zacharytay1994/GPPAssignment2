@@ -8,9 +8,10 @@
 #include "Base/Input.h"
 #include "D3dcompiler.h"
 #include "Entity.h"
+#include "ResourceLibrary.h"
 #include <memory>
 #include <vector>
-#include <wrl.h>
+//#include <wrl.h>
 
 class Drawable : public Entity
 {
@@ -68,7 +69,7 @@ public:
 		// Bind vertices
 		graphics_->BindVertexBuffer(p_vertex_buffer_);
 		// Bind indices
-		graphics_->BindIndicesBuffer(p_index_buffer_);
+		graphics_->BindIndexBuffer(p_index_buffer_);
 		graphics_->UpdateCBTransformSubresource({ GetTransform(0) });
 		graphics_->DrawIndexed(index_count_);
 	}
@@ -138,6 +139,7 @@ private:
 	};
 	std::shared_ptr<Graphics> graphics_;
 	std::shared_ptr<Input> input_;
+	std::shared_ptr<ResourceLibrary> rl_;
 
 	std::vector<Vertex> vertices;
 	std::vector<unsigned short> indices;
@@ -146,7 +148,8 @@ private:
 	ID3D11Buffer* p_index_buffer_ = nullptr;
 
 	ID3D11ShaderResourceView* srv_sprite_ = nullptr;	// pointer to sprite image resource ready for pixel shader sampling
-	Surface			image_resource_;
+	std::wstring surface_file_;
+	//Surface			image_resource_;
 
 public:
 	float temp_x = 0.0f;
@@ -159,12 +162,13 @@ public:
 	std::vector<unsigned short> indices;*/
 
 public:
-	TestObject(std::shared_ptr<Graphics> graphics_, std::shared_ptr<Input> input_, DirectX::XMFLOAT3 material, const std::string& objfile, const std::wstring& texture)
+	TestObject(std::shared_ptr<Graphics> graphics_, std::shared_ptr<Input> input_, DirectX::XMFLOAT3 material, const std::string& objfile, const std::wstring& texture, std::shared_ptr<ResourceLibrary> rl)
 		:
 		Drawable(graphics_, input_),
 		graphics_(graphics_),
 		input_(input_),
-		image_resource_(texture)
+		surface_file_(texture),
+		rl_(rl)
 	{
 		Assimp::Importer imp;
 		const auto pModel = imp.ReadFile(objfile,
@@ -286,12 +290,13 @@ public:
 	void Draw()
 	{
 		// Bind vertices
-		graphics_->BindVertexBuffer(p_vertex_buffer_);
-		// Bind indices
-		graphics_->BindIndicesBuffer(p_index_buffer_);
-		graphics_->BindShaderResourceView(srv_sprite_);
-		graphics_->UpdateCBTransformSubresource({ GetTransform(0) });
-		graphics_->DrawIndexed(index_count_);
+		//graphics_->BindVertexBuffer(p_vertex_buffer_);
+		//// Bind indices
+		//graphics_->BindIndexBuffer(p_index_buffer_);
+		//graphics_->BindShaderResourceView(srv_sprite_);
+		/*graphics_->UpdateCBTransformSubresource({ GetTransform(0) });
+		graphics_->DrawIndexed(index_count_);*/
+		rl_->DrawIndexed("giraffe", GetTransform(0));
 	}
 	
 	DirectX::XMMATRIX GetTransform(const float& dt)
@@ -311,6 +316,7 @@ public:
 	}
 
 	void CreateShaderResourceView() {
+		Surface image_resource_(surface_file_);
 		D3D11_TEXTURE2D_DESC texture_description = {};
 		texture_description.Width = image_resource_.GetWidth();
 		texture_description.Height = image_resource_.GetHeight();
