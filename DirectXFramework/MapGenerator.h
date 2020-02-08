@@ -4,6 +4,7 @@
 #include "Base/Graphics.h"
 #include "Base/Input.h"
 #include "PerlinNoise.h"
+#include "ResourceLibrary.h"
 #include <random>
 #include "Drawable.h"
 #include <vector>
@@ -21,6 +22,7 @@ class MapGenerator {
 private:
 	std::shared_ptr<Graphics> graphics_;
 	std::shared_ptr<Input> input_;
+	std::shared_ptr<ResourceLibrary> rl_;
 
 	// To be used to generate the noise values
 	PerlinNoise* pn_;
@@ -55,7 +57,7 @@ private:
 
 public:
 	// Constructor
-	MapGenerator(std::shared_ptr<Graphics> graphics, std::shared_ptr<Input> input);
+	MapGenerator(std::shared_ptr<Graphics> graphics, std::shared_ptr<Input> input, std::shared_ptr<ResourceLibrary> rl);
 
 	// Generates a map based on the WIDTH & HEIGHT attributes & modifies the provided entity vector
 	std::vector<std::shared_ptr<Entity>> GenerateMap();

@@ -2,13 +2,14 @@
 
 #include "Block.h"
 
-MapGenerator::MapGenerator(std::shared_ptr<Graphics> graphics, std::shared_ptr<Input> input)
+MapGenerator::MapGenerator(std::shared_ptr<Graphics> graphics, std::shared_ptr<Input> input, std::shared_ptr<ResourceLibrary> rl)
 	:
 	pn_(new PerlinNoise()),
 	graphics_(graphics),
 	input_(input),
 	rng_(rd_()),
-	dist(1, height_-2)
+	dist(1, height_-2),
+	rl_(rl)
 {
 }
 
@@ -21,18 +22,18 @@ std::vector<std::shared_ptr<Entity>> MapGenerator::GenerateMap()
 	Vecf3 checkpoint = Vecf3((curr_chunk_size_ * width_)+2, 0, dist(rng_));
 
 	double n;
-	std::wstring image;
+	std::string image;
 
 	for (int z = 0; z < height_; z++)
 	{
 		for (int x = curr_chunk_size_*width_; x < (curr_chunk_size_*width_)+width_; x++)
 		{
 			// Spawn checkpoint
-			if (abs(x - checkpoint.x) <= 1 && abs(z - checkpoint.z) <= 1) { image = L"Images/startblock.png";  }
-			else { image = L"Images/grassblock.png"; }
+			if (abs(x - checkpoint.x) <= 1 && abs(z - checkpoint.z) <= 1) { image = "startblock";  }
+			else { image = "grassblock"; }
 
 			// Spawn floor
-			std::shared_ptr<Block> fb = std::make_shared<Block>(image, graphics_, input_);
+			std::shared_ptr<Block> fb = std::make_shared<Block>(image, graphics_, input_, rl_);
 			fb->SetPosition(Vecf3(x, -1.0, z));
 			ents.push_back(fb);
 
@@ -49,12 +50,12 @@ std::vector<std::shared_ptr<Entity>> MapGenerator::GenerateMap()
 				continue;
 			}
 			else if (n < .6) { continue; } 
-			else { image = L"Images/stoneblock.png"; }
+			else { image = "stoneblock"; }
 
 			// Don't spawn anything above the checkpoint
 			if (abs(x - checkpoint.x) <= 1 && abs(z - checkpoint.z) <= 1) { continue; }
 
-			std::shared_ptr<Block> b = std::make_shared<Block>(image, graphics_, input_);
+			std::shared_ptr<Block> b = std::make_shared<Block>(image, graphics_, input_, rl_);
 			b->SetPosition(Vecf3(x, 0.0, z));
 			ents.push_back(b);
 		}

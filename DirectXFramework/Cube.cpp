@@ -1,11 +1,12 @@
 #include "Cube.h"
 #include "D3dcompiler.h"
 
-Cube::Cube(std::shared_ptr<Graphics> gfx, std::shared_ptr<Input> input, const std::wstring& filename)
+Cube::Cube(std::shared_ptr<Graphics> gfx, std::shared_ptr<Input> input, const std::string& filename, const std::shared_ptr<ResourceLibrary> rl)
 	:
 	gfx(gfx),
 	input(input),
-	image_resource_(filename)
+	texture_key_(filename),
+	rl_(rl)
 {
 	InitializeCube(0, 0, 0, 0.5f, 0.5f, 0.5f, 0.0f, 0.0f, 0.0f);
 }
@@ -17,10 +18,10 @@ Cube::~Cube()
 	}
 }
 
-Surface Cube::GetSurface()
-{
-	return image_resource_;
-}
+//Surface Cube::GetSurface()
+//{
+//	//return image_resource_;
+//}
 
 dx::XMMATRIX Cube::GetTransform(const float& dt)
 {
@@ -171,73 +172,74 @@ bool Cube::Visible()
 void Cube::Draw(const float& dt)
 {
 	assert(initialized_ == true);
-	if (visible_) {
-		Graphics::CubeVertexBuffer vertices = {
-			// Back face
-			{1.0f, -1.0f, -1.0f, 2.0f / 3.0f, 0.0f},
-			{-1.0f, -1.0f, -1.0f, 1.0f / 3.0f, 0.0f},
-			{1.0f, 1.0f, -1.0f, 2.0f / 3.0f, 0.25f},
-			{-1.0f, 1.0f, -1.0f, 1.0f / 3.0f, 0.25f},
+	//if (visible_) {
+	//	Graphics::CubeVertexBuffer vertices = {
+	//		// Back face
+	//		{1.0f, -1.0f, -1.0f, 2.0f / 3.0f, 0.0f},
+	//		{-1.0f, -1.0f, -1.0f, 1.0f / 3.0f, 0.0f},
+	//		{1.0f, 1.0f, -1.0f, 2.0f / 3.0f, 0.25f},
+	//		{-1.0f, 1.0f, -1.0f, 1.0f / 3.0f, 0.25f},
 
-			// Front face
-			{-1.0f, -1.0f, 1.0f, 1.0f / 3.0f, 0.75f},
-			{1.0f, -1.0f, 1.0f, 2.0f / 3.0f, 0.75f},
-			{-1.0f, 1.0f, 1.0f, 1.0f / 3.0f, 0.5f},
-			{1.0f, 1.0f, 1.0f, 2.0f / 3.0f, 0.5f},
+	//		// Front face
+	//		{-1.0f, -1.0f, 1.0f, 1.0f / 3.0f, 0.75f},
+	//		{1.0f, -1.0f, 1.0f, 2.0f / 3.0f, 0.75f},
+	//		{-1.0f, 1.0f, 1.0f, 1.0f / 3.0f, 0.5f},
+	//		{1.0f, 1.0f, 1.0f, 2.0f / 3.0f, 0.5f},
 
-			// Right face
-			{1.0f, -1.0f, 1.0f, 1.0f, 0.5f},
-			{1.0f, -1.0f, -1.0f, 1.0f, 0.25f},
-			{1.0f, 1.0f, 1.0f, 2.0f / 3.0f, 0.5f},
-			{1.0f, 1.0f, -1.0f, 2.0f / 3.0f, 0.25f},
+	//		// Right face
+	//		{1.0f, -1.0f, 1.0f, 1.0f, 0.5f},
+	//		{1.0f, -1.0f, -1.0f, 1.0f, 0.25f},
+	//		{1.0f, 1.0f, 1.0f, 2.0f / 3.0f, 0.5f},
+	//		{1.0f, 1.0f, -1.0f, 2.0f / 3.0f, 0.25f},
 
-			// Left face
-			{-1.0f, -1.0f, -1.0f, 0.0f, 0.25f},
-			{-1.0f, -1.0f, 1.0f, 0.0f, 0.5f},
-			{-1.0f, 1.0f, -1.0f, 1.0f / 3.0f, 0.25f},
-			{-1.0f, 1.0f, 1.0f, 1.0f / 3.0f, 0.5f},
+	//		// Left face
+	//		{-1.0f, -1.0f, -1.0f, 0.0f, 0.25f},
+	//		{-1.0f, -1.0f, 1.0f, 0.0f, 0.5f},
+	//		{-1.0f, 1.0f, -1.0f, 1.0f / 3.0f, 0.25f},
+	//		{-1.0f, 1.0f, 1.0f, 1.0f / 3.0f, 0.5f},
 
-			// Top face
-			{-1.0f, 1.0f, 1.0f, 1.0f / 3.0f, 0.5f},
-			{1.0f, 1.0f, 1.0f, 2.0f / 3.0f, 0.5f},
-			{-1.0f, 1.0f, -1.0f, 1.0f / 3.0f, 0.25f},
-			{1.0f, 1.0f, -1.0f, 2.0f / 3.0f, 0.25f},
+	//		// Top face
+	//		{-1.0f, 1.0f, 1.0f, 1.0f / 3.0f, 0.5f},
+	//		{1.0f, 1.0f, 1.0f, 2.0f / 3.0f, 0.5f},
+	//		{-1.0f, 1.0f, -1.0f, 1.0f / 3.0f, 0.25f},
+	//		{1.0f, 1.0f, -1.0f, 2.0f / 3.0f, 0.25f},
 
-			// Bottom face
-			{-1.0f, -1.0f, -1.0f, 1.0f / 3.0f, 1.0f},
-			{1.0f, -1.0f, -1.0f, 2.0f / 3.0f, 1.0f},
-			{-1.0f, -1.0f, 1.0f, 1.0f / 3.0f, 0.75f},
-			{1.0f, -1.0f, 1.0f, 2.0f / 3.0f, 0.75f}
-		};
-		gfx->BindCubeVertices(vertices);
+	//		// Bottom face
+	//		{-1.0f, -1.0f, -1.0f, 1.0f / 3.0f, 1.0f},
+	//		{1.0f, -1.0f, -1.0f, 2.0f / 3.0f, 1.0f},
+	//		{-1.0f, -1.0f, 1.0f, 1.0f / 3.0f, 0.75f},
+	//		{1.0f, -1.0f, 1.0f, 2.0f / 3.0f, 0.75f}
+	//	};
+	//	gfx->BindCubeVertices(vertices);
 
-		const unsigned short indices[] = {
-		0,1,2, 2,1,3,
-		4,5,6, 6,5,7,
-		8,9,10, 10,9,11,
-		12,13,14, 14,13,15,
-		16,17,18, 18,17,19,
-		20,21,22, 22,21,23
-		};
-		gfx->BindCubeIndices(indices, sizeof(indices));
+	//	const unsigned short indices[] = {
+	//	0,1,2, 2,1,3,
+	//	4,5,6, 6,5,7,
+	//	8,9,10, 10,9,11,
+	//	12,13,14, 14,13,15,
+	//	16,17,18, 18,17,19,
+	//	20,21,22, 22,21,23
+	//	};
+	//	gfx->BindCubeIndices(indices, sizeof(indices));
 
-		// Set shaders
-		gfx->GetContext().VSSetShader(
-			p_vertex_shader_,					 // same as pixel shader
-			nullptr,							 // same as pixel shader
-			0u									 // same as pixel shader
-		);
+	//	// Set shaders
+	//	gfx->GetContext().VSSetShader(
+	//		p_vertex_shader_,					 // same as pixel shader
+	//		nullptr,							 // same as pixel shader
+	//		0u									 // same as pixel shader
+	//	);
 
-		gfx->GetContext().PSSetShader(
-			p_pixel_shader_,					// pointer to pixel shader
-			nullptr,							// ignore: null no class instance
-			0u									// ignore: 0 class instances interfaces
-		);
+	//	gfx->GetContext().PSSetShader(
+	//		p_pixel_shader_,					// pointer to pixel shader
+	//		nullptr,							// ignore: null no class instance
+	//		0u									// ignore: 0 class instances interfaces
+	//	);
 
-		gfx->BindShaderResourceView(cube_data_.srv_sprite_);
-		gfx->UpdateCBTransformSubresource({ GetTransform(dt) });
-		gfx->DrawIndexed();
-	}
+	//	gfx->BindShaderResourceView(cube_data_.srv_sprite_);
+	//	gfx->UpdateCBTransformSubresource({ GetTransform(dt) });
+	//	gfx->DrawIndexed();
+	//}
+	rl_->DrawTexturedCubeNorm(texture_key_, GetTransform(0));
 }
 
 void Cube::Update(const float& frametime)
@@ -279,7 +281,7 @@ void Cube::InitializeCube(const int& x, const int& y, const int& z, const float&
 
 void Cube::CreateShaderResourceView()
 {
-	if (gfx->Initialized()) {
+	/*if (gfx->Initialized()) {
 		D3D11_TEXTURE2D_DESC texture_description = {};
 		texture_description.Width = image_resource_.GetWidth();
 		texture_description.Height = image_resource_.GetHeight();
@@ -308,5 +310,5 @@ void Cube::CreateShaderResourceView()
 		}
 		p_texture->Release();
 		gfx->BindShaderResourceView(cube_data_.srv_sprite_);
-	}
+	}*/
 }

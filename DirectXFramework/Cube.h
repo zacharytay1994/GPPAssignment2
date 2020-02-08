@@ -4,6 +4,7 @@
 #include "Base/Surface.h"
 #include "Base/Input.h"
 #include "Vec3.h"
+#include "ResourceLibrary.h"
 #include <memory>
 #include <vector>
 
@@ -27,10 +28,12 @@ struct CubeData {
 
 class Cube {
 private:
-	Surface			image_resource_;			// array of color values representing an image, used to create a shader resource view to be bound to the pipeline (see CreateShaderResourceView())
+	//Surface			image_resource_;			// array of color values representing an image, used to create a shader resource view to be bound to the pipeline (see CreateShaderResourceView())
 	CubeData		cube_data_;				// sprite data struct as above
 	std::shared_ptr<Graphics> gfx;				// graphics reference
 	std::shared_ptr<Input> input;
+	std::shared_ptr<ResourceLibrary> rl_;
+	std::string texture_key_;
 
 	//// Vertex buffer ready to bind to graphics pipeline before drawing
 	//Graphics::CubeVertexBuffer cvb = gfx->GetDefaultCubeVB();
@@ -44,13 +47,13 @@ private:
 	ID3D11PixelShader* p_pixel_shader_ = nullptr;
 
 public:
-	Cube(std::shared_ptr<Graphics> gfx, std::shared_ptr<Input> input, const std::wstring& filename);
+	Cube(std::shared_ptr<Graphics> gfx, std::shared_ptr<Input> input, const std::string& filename, const std::shared_ptr<ResourceLibrary> rl);
 	~Cube();
 
 	/*___________________________________*/
 	// GET AND SET FUNCTIONS
 	/*___________________________________*/
-	Surface GetSurface();
+	//Surface GetSurface();
 	dx::XMMATRIX GetTransform(const float& dt);
 
 	/*___________________________________*/

@@ -379,6 +379,11 @@ void Graphics::InitCubePipeline()
 	p_vs_blob_ = p_blob;
 
 	/*_______________________________________*/
+	// INITIALIZE ALL SHADER AND INPUT LAYOUT TYPES
+	/*_______________________________________*/
+	InitializeShadersAndInputLayouts();
+
+	/*_______________________________________*/
 	// CREATE AND BIND VERTEX CONSTANT BUFFER
 	// Additional data we might like to bind to various stages in the pipeline.
 	// Can be used to store repeated data that all vertices in processing would share.
@@ -610,7 +615,7 @@ void Graphics::UpdateCBTransformSubresource(const ConstantBuffer & cb)
 
 void Graphics::ClearBuffer()
 {
-	const float color[] = { 1.0f, 1.0f, 1.0f, 1.0f };
+	const float color[] = { 0.0f, 1.0f, 0.0f, 0.0f };
 	p_device_context_->ClearRenderTargetView(p_rtv_back_buffer_, color);
 	if (has_depth_stencil_) {
 		p_device_context_->ClearDepthStencilView(p_depth_stencil_view_, D3D11_CLEAR_DEPTH, 1.0f, 0u);
@@ -709,10 +714,10 @@ ID3D11DeviceContext* Graphics::GetGraphicsDeviceContext()
 	return p_device_context_;
 }
 
-void Graphics::InitializeShaders()
+void Graphics::InitializeShadersAndInputLayouts()
 {
 	/*______________________________________*/
-	// CREATING TEXTURED SHADERS
+	// CREATING TEXTURED SHADERS POSTEX
 	/*______________________________________*/
 	ID3DBlob* p_blob;						// binary large object, i.e. some data
 	D3DReadFileToBlob(L"Shaders/TexturedPS.cso", &p_blob);
@@ -720,61 +725,159 @@ void Graphics::InitializeShaders()
 		p_blob->GetBufferPointer(),			// pointer to compiled shader 
 		p_blob->GetBufferSize(),			// size of compiled shader
 		nullptr,							// ignore: no class linkage
-		&p_ps_textured_					// ignore: address pointer to pixel shader
+		&p_ps_textured_						// ignore: address pointer to pixel shader
 	);
 	D3DReadFileToBlob(L"Shaders/TexturedVS.cso", &p_blob);
 	p_device_->CreateVertexShader(
 		p_blob->GetBufferPointer(),			 // same as pixel shader
 		p_blob->GetBufferSize(),			 // same as pixel shader
 		nullptr,							 // same as pixel shader
-		&p_vs_textured_					 // same as pixel shader
+		&p_vs_textured_						 // same as pixel shader
+	);
+	// fill p_il_PosTex
+	const D3D11_INPUT_ELEMENT_DESC input_element_description[] = {
+		{"Position", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0},
+		{"TexCoord", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0},
+	};
+	p_device_->CreateInputLayout(
+		input_element_description,						// specifies how input vertex data structure should be read as types, and processed by the vertex shader through semantic names e.g. "Position"
+		(UINT)std::size(input_element_description),		// number of input data types
+		p_blob->GetBufferPointer(),						// pointer to compiled shader
+		p_blob->GetBufferSize(),						// size of compiled shader
+		&p_il_PosTex_									// pointer to input layout object, to be filled
 	);
 	/*______________________________________*/
-	// CREATING UNTEXTURED SHADERS
+	// CREATING UNTEXTURED SHADERS POSTEX
 	/*______________________________________*/
-	D3DReadFileToBlob(L"Shaders/UntexturedPS.cso", &p_blob);
+	ID3DBlob* p_blob2;
+	D3DReadFileToBlob(L"Shaders/UntexturedPS.cso", &p_blob2);
 	p_device_->CreatePixelShader(
-		p_blob->GetBufferPointer(),			// pointer to compiled shader 
-		p_blob->GetBufferSize(),			// size of compiled shader
+		p_blob2->GetBufferPointer(),			// pointer to compiled shader 
+		p_blob2->GetBufferSize(),			// size of compiled shader
 		nullptr,							// ignore: no class linkage
 		&p_ps_untextured_					// ignore: address pointer to pixel shader
 	);
-	D3DReadFileToBlob(L"Shaders/UntexturedVS.cso", &p_blob);
+	D3DReadFileToBlob(L"Shaders/UntexturedVS.cso", &p_blob2);
 	p_device_->CreateVertexShader(
-		p_blob->GetBufferPointer(),			 // same as pixel shader
-		p_blob->GetBufferSize(),			 // same as pixel shader
+		p_blob2->GetBufferPointer(),			 // same as pixel shader
+		p_blob2->GetBufferSize(),			 // same as pixel shader
 		nullptr,							 // same as pixel shader
 		&p_vs_untextured_					 // same as pixel shader
 	);
+	
+	/*______________________________________*/
+	// CREATING TEXTURED SHADERS POSNORMTEX
+	/*______________________________________*/
+	ID3DBlob* p_blob3;
+	D3DReadFileToBlob(L"Shaders/TexturedNormPS.cso", &p_blob3);
+	p_device_->CreatePixelShader(
+		p_blob3->GetBufferPointer(),			// pointer to compiled shader 
+		p_blob3->GetBufferSize(),			// size of compiled shader
+		nullptr,							// ignore: no class linkage
+		&p_ps_texturedNorm_					// ignore: address pointer to pixel shader
+	);
+	D3DReadFileToBlob(L"Shaders/TexturedNormVS.cso", &p_blob3);
+	p_device_->CreateVertexShader(
+		p_blob3->GetBufferPointer(),			 // same as pixel shader
+		p_blob3->GetBufferSize(),			 // same as pixel shader
+		nullptr,							 // same as pixel shader
+		&p_vs_texturedNorm_					 // same as pixel shader
+	);
+	// fill p_il_PosNormTex
+	const D3D11_INPUT_ELEMENT_DESC input_element_description2[] = {
+		{"Position", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0},
+		{"Normal", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0},
+		{"TexCoord", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0},
+	};
+	p_device_->CreateInputLayout(
+		input_element_description2,						// specifies how input vertex data structure should be read as types, and processed by the vertex shader through semantic names e.g. "Position"
+		(UINT)std::size(input_element_description2),	// number of input data types
+		p_blob3->GetBufferPointer(),						// pointer to compiled shader
+		p_blob3->GetBufferSize(),						// size of compiled shader
+		&p_il_PosNormTex_								// pointer to input layout object, to be filled
+	);
+	/*______________________________________*/
+	// CREATING UNTEXTURED SHADERS POSNORMTEX
+	/*______________________________________*/
+	ID3DBlob* p_blob4;
+	D3DReadFileToBlob(L"Shaders/UntexturedNormPS.cso", &p_blob4);
+	p_device_->CreatePixelShader(
+		p_blob4->GetBufferPointer(),			// pointer to compiled shader 
+		p_blob4->GetBufferSize(),			// size of compiled shader
+		nullptr,							// ignore: no class linkage
+		&p_ps_untexturedNorm_				// ignore: address pointer to pixel shader
+	);
+	D3DReadFileToBlob(L"Shaders/UntexturedNormVS.cso", &p_blob4);
+	p_device_->CreateVertexShader(
+		p_blob4->GetBufferPointer(),			 // same as pixel shader
+		p_blob4->GetBufferSize(),			 // same as pixel shader
+		nullptr,							 // same as pixel shader
+		&p_vs_untexturedNorm_				 // same as pixel shader
+	);
 	p_blob->Release();
+	p_blob2->Release();
+	p_blob3->Release();
+	p_blob4->Release();
 }
 
-void Graphics::SetShaderType(const ShaderType& type)
+//void Graphics::SetShaderType(const ShaderType& type)
+//{
+//	switch (type) {
+//	case ShaderType::Textured:
+//		p_device_context_->PSSetShader(
+//			p_ps_textured_,						
+//			nullptr,							
+//			0u									
+//		);
+//		p_device_context_->VSSetShader(
+//			p_vs_textured_,					 
+//			nullptr,						
+//			0u								
+//		);
+//		break;
+//	case ShaderType::Untextured:
+//		p_device_context_->PSSetShader(
+//			p_ps_untextured_,					
+//			nullptr,							
+//			0u									
+//		);
+//		p_device_context_->VSSetShader(
+//			p_vs_untextured_,					 
+//			nullptr,							 
+//			0u									 
+//		);
+//		break;
+//	}
+//}
+
+void Graphics::SetUseType(const ShaderType& type)
 {
+	// if already at type, skip
+	if (type == shader_type_) {
+		return;
+	}
 	switch (type) {
 	case ShaderType::Textured:
-		p_device_context_->PSSetShader(
-			p_ps_textured_,						
-			nullptr,							
-			0u									
-		);
-		p_device_context_->VSSetShader(
-			p_vs_textured_,					 
-			nullptr,						
-			0u								
-		);
+		p_device_context_->IASetInputLayout(p_il_PosTex_);
+		p_device_context_->VSSetShader(p_vs_textured_, nullptr, 0u);
+		p_device_context_->PSSetShader(p_ps_textured_, nullptr, 0u);
+		shader_type_ = type;
 		break;
 	case ShaderType::Untextured:
-		p_device_context_->PSSetShader(
-			p_ps_untextured_,					
-			nullptr,							
-			0u									
-		);
-		p_device_context_->VSSetShader(
-			p_vs_untextured_,					 
-			nullptr,							 
-			0u									 
-		);
+		p_device_context_->VSSetShader(p_vs_untextured_, nullptr, 0u);
+		p_device_context_->PSSetShader(p_ps_untextured_, nullptr, 0u);
+		shader_type_ = type;
+		break;
+	case ShaderType::TexturedNormal:
+		p_device_context_->IASetInputLayout(p_il_PosNormTex_);
+		p_device_context_->VSSetShader(p_vs_texturedNorm_, nullptr, 0u);
+		p_device_context_->PSSetShader(p_ps_texturedNorm_, nullptr, 0u);
+		shader_type_ = type;
+		break;
+	case ShaderType::UntexturedNormal:
+		p_device_context_->VSSetShader(p_vs_texturedNorm_, nullptr, 0u);
+		p_device_context_->PSSetShader(p_ps_texturedNorm_, nullptr, 0u);
+		shader_type_ = type;
 		break;
 	}
 }

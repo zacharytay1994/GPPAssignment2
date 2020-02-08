@@ -25,8 +25,13 @@ BoxyGame::~BoxyGame()
 
 void BoxyGame::Initialize(HWND hwnd)
 {
-	rl_->GenPosTexModelVI("giraffe", "Models\\10021_Giraffe_v04.obj", L"Images/10021_Giraffe_v05.png");
-	rl_->GenPosTexModelVI("dog", "Models\\dog.obj", L"Images/Dog_diffuse.png");
+	rl_->AddPosTexModel("giraffe", "Models\\10021_Giraffe_v04.obj", L"Images/10021_Giraffe_v05.png");
+	rl_->AddPosNormTexModel("giraffeNormie", "Models\\10021_Giraffe_v04.obj", L"Images/10021_Giraffe_v05.png");
+	rl_->AddPosTexModel("dog", "Models\\dog.obj", L"Images/Dog_diffuse.png");
+	rl_->AddPosNormTexModel("dogNormie", "Models\\dog.obj", L"Images/Dog_diffuse.png");
+	rl_->AddCubeTexture("grassblock", L"Images/grassblock.png");
+	rl_->AddCubeTexture("startblock", L"Images/startblock.png");
+	rl_->AddCubeTexture("stoneblock", L"Images/stoneblock.png");
 }
 
 void BoxyGame::Update()

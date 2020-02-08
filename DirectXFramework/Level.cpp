@@ -27,17 +27,17 @@ Level::Level(std::shared_ptr<Graphics> gfx, std::shared_ptr<Input> input, std::s
 	//AddEntity(std::dynamic_pointer_cast<Entity>(test_object_2_));
 
 	// Initialize map generator
-	//mapGen_ = std::make_unique<MapGenerator>(graphics_, input_);
+	mapGen_ = std::make_unique<MapGenerator>(graphics_, input_, rl_);
 
-	//// Generate map
-	//for (std::shared_ptr<Entity> e : mapGen_->GenerateMap())
-	//{ AddEntity(e); }
+	// Generate map
+	for (std::shared_ptr<Entity> e : mapGen_->GenerateMap())
+	{ AddEntity(e); }
 }
 
 void Level::Update(const float& dt)
 {
 	if (input_->KeyWasPressed('B')) {
-		AddEntity(std::dynamic_pointer_cast<Entity>(std::make_shared<Block>((Block(L"Images/grassblock.png", graphics_, input_)))));
+		AddEntity(std::dynamic_pointer_cast<Entity>(std::make_shared<Block>((Block("grassblock", graphics_, input_, rl_)))));
 	}
 	if (input_->KeyIsDown('P')) {
 		Vecf3 v = test_block_->GetPosition();
@@ -52,7 +52,7 @@ void Level::Update(const float& dt)
 		{ AddEntity(e); }
 	}
 
-	test_object_->Draw();
+	//test_object_->Draw();
 	//test_object_2_->Draw();
 }
 

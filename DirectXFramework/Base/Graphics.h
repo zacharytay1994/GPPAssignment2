@@ -9,7 +9,9 @@
 
 enum class ShaderType {
 	Textured,
-	Untextured
+	TexturedNormal,
+	Untextured,
+	UntexturedNormal
 };
 
 class Sprite;
@@ -24,13 +26,25 @@ private:
 	ID3D11Buffer*			p_vertex_buffer_ = nullptr;
 	ID3D11Buffer*			p_index_buffer_ = nullptr;
 	
+	// <--- REFACTORED DESIGN
+	ShaderType shader_type_ = ShaderType::Untextured;
 	/*_______________________________________*/
-	// SHADERS FOR TEXTURED/UNTEXTURES, BOTH WITH NORMALS
+	// SHADERS FOR TEXTURED/UNTEXTURES
 	/*_______________________________________*/
-	ID3D11VertexShader* p_vs_textured_ = nullptr;
-	ID3D11PixelShader* p_ps_textured_ = nullptr;
-	ID3D11VertexShader* p_vs_untextured_ = nullptr;
-	ID3D11PixelShader* p_ps_untextured_ = nullptr;
+	ID3D11VertexShader*		p_vs_textured_ = nullptr;
+	ID3D11PixelShader*		p_ps_textured_ = nullptr;
+	ID3D11VertexShader*		p_vs_texturedNorm_ = nullptr;
+	ID3D11PixelShader*		p_ps_texturedNorm_ = nullptr;
+	ID3D11VertexShader*		p_vs_untextured_ = nullptr;
+	ID3D11PixelShader*		p_ps_untextured_ = nullptr;
+	ID3D11VertexShader*		p_vs_untexturedNorm_ = nullptr;
+	ID3D11PixelShader*		p_ps_untexturedNorm_ = nullptr;
+	/*_______________________________________*/
+	// INPUT LAYOUTS
+	/*_______________________________________*/
+	ID3D11InputLayout*		p_il_PosTex_ = nullptr;
+	ID3D11InputLayout*		p_il_PosNormTex_ = nullptr;
+	// --->
 
 	ID3D11VertexShader*		p_vertex_shader_ = nullptr;
 	ID3D11PixelShader*		p_pixel_shader_ = nullptr;
@@ -101,6 +115,11 @@ public:
 	ID3D11Device* GetGraphicsDevice();
 	ID3D11DeviceContext* GetGraphicsDeviceContext();
 
-	void InitializeShaders();
+	void InitializeShadersAndInputLayouts();
 	void SetShaderType(const ShaderType& type);
+
+	// <--- REFACTORED FUNCTIONS
+	// sets the use type of the pipeline, binds the corresponding shader and input layout
+	void SetUseType(const ShaderType& type);
+	// --->
 };

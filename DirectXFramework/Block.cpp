@@ -1,9 +1,9 @@
 #include "Block.h"
 
-Block::Block(const std::wstring& image, std::shared_ptr<Graphics> gfx, std::shared_ptr<Input> input)
+Block::Block(const std::string& image, std::shared_ptr<Graphics> gfx, std::shared_ptr<Input> input, std::shared_ptr<ResourceLibrary> rl)
 	:
 	Entity(),
-	cube_(gfx, input, image)
+	cube_(gfx, input, image, rl)
 {
 }
 

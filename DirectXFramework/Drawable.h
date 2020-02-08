@@ -296,7 +296,7 @@ public:
 		//graphics_->BindShaderResourceView(srv_sprite_);
 		/*graphics_->UpdateCBTransformSubresource({ GetTransform(0) });
 		graphics_->DrawIndexed(index_count_);*/
-		rl_->DrawIndexed("giraffe", GetTransform(0));
+		rl_->DrawModel("giraffe", GetTransform(0));
 	}
 	
 	DirectX::XMMATRIX GetTransform(const float& dt)

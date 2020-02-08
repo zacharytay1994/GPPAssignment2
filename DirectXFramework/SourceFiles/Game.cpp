@@ -30,6 +30,7 @@ void Game::Initialize(HWND hwnd)
 	input_->Initialize(hwnd, false);
 	graphics_->Initialize(hwnd);
 	graphics_->InitCubePipeline();
+	rl_->Initialize();
 	// set up high resolution timer, always succeeds on systems running Windows XP or later
 	// retrieves current performance counter frequency in counts per second and stores it in timer_frequency_
 	QueryPerformanceFrequency(&timer_freqency_);

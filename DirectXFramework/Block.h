@@ -11,7 +11,7 @@ private:
 	Cube cube_;
 	Vecf3 position_ = {0.0f, 0.0f, 0.0f};
 public:
-	Block(const std::wstring& image, std::shared_ptr<Graphics> gfx, std::shared_ptr<Input> input);
+	Block(const std::string& image, std::shared_ptr<Graphics> gfx, std::shared_ptr<Input> input, std::shared_ptr<ResourceLibrary> rl);
 	void SetPosition(const Vecf3& position);
 	Vecf3 GetPosition();
 	void SetScale(const Vecf3& scale);

@@ -41,11 +41,29 @@ private:
 	std::unordered_map<std::string, ID3D11ShaderResourceView*> srv_map;
 public:
 	ResourceLibrary(std::shared_ptr<Graphics> gfx);
-	void GenPosTexModelVI(const std::string& mapkey, const std::string& objfile, const std::wstring& texturefile);
-	void GenPosNormTexModelVI(const std::string& mapkey, const std::string& objfile, const std::wstring& texturefile);
-
-	void CreateShaderResourceView(const std::wstring& texturefile, const std::string& mapkey);
-	
-	void DrawIndexed(const std::string& key, const DirectX::XMMATRIX& transform);
+	void Initialize();
+	/*____________________________________*/
+	// MESH LOADING FUNCTIONS
+	/*____________________________________*/
+	// loads a .obj file with Positions and Texture Coordinates
+	void AddPosTexModel(const std::string& mapkey, const std::string& objfile, const std::wstring& texturefile);
+	// loads a .obj file with Positions, Normals, and Texture Coordinates
+	void AddPosNormTexModel(const std::string& mapkey, const std::string& objfile, const std::wstring& texturefile);
+private:
+	// loads a cube mesh with Positions and Texture Coordinates
+	void GenPosTexCube();
+	void GenPosNormTexCube();
+public:
+	// loads a texture to wrap a cube
+	void AddCubeTexture(const std::string& mapkey, const std::wstring& texturefile);
+	/*____________________________________*/
+	// DRAWING FUNCTIONS
+	/*____________________________________*/
+	void DrawModel(const std::string& key, const DirectX::XMMATRIX& transform);				// draws textured model with no normals
+	void DrawModelNorm(const std::string& key, const DirectX::XMMATRIX& transform);			// draws textured model with normals
+	void DrawTexturedCube(const std::string& key, const DirectX::XMMATRIX& transform);		// draws textured cube with no normals
+	void DrawTexturedCubeNorm(const std::string& key, const DirectX::XMMATRIX& transform);	// draws textured cube with normals
+private:
 	void BindResource(const std::string& key);
+	void CreateShaderResourceView(const std::wstring& texturefile, const std::string& mapkey);
 };
