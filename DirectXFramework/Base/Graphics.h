@@ -65,7 +65,7 @@ private:
 	/*_______________________________________*/
 	// Defined buffer struct that represents a transformation matrix
 	// to be used in the vertex shader stage as generic world, view, transform
-	struct ConstantBuffer { DirectX::XMMATRIX transform; };
+	struct ConstantBuffer { DirectX::XMMATRIX transform; DirectX::XMMATRIX model; };
 	/*_______________________________________*/
 public:
 	static const int viewport_width_ = 800, viewport_height_ = 600;
@@ -111,12 +111,12 @@ public:
 	void BindModelVertices(std::vector<DirectX::XMFLOAT3>& v);
 	void BindModelIndices(std::vector<unsigned short>& i);
 	void BindVertexBuffer(ID3D11Buffer* vertices);
+	void BindVertexBufferStride(ID3D11Buffer* vertices, const UINT& stride);
 	void BindIndexBuffer(ID3D11Buffer* indices);
 	ID3D11Device* GetGraphicsDevice();
 	ID3D11DeviceContext* GetGraphicsDeviceContext();
 
 	void InitializeShadersAndInputLayouts();
-	void SetShaderType(const ShaderType& type);
 
 	// <--- REFACTORED FUNCTIONS
 	// sets the use type of the pipeline, binds the corresponding shader and input layout

@@ -52,7 +52,7 @@ void Level::Update(const float& dt)
 		{ AddEntity(e); }
 	}
 
-	//test_object_->Draw();
+	test_object_->Draw();
 	//test_object_2_->Draw();
 }
 

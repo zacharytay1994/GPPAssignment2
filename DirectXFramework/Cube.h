@@ -55,6 +55,7 @@ public:
 	/*___________________________________*/
 	//Surface GetSurface();
 	dx::XMMATRIX GetTransform(const float& dt);
+	dx::XMMATRIX GetModelTransform();
 
 	/*___________________________________*/
 	// SPRITE DATA

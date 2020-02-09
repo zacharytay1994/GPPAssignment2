@@ -39,6 +39,17 @@ dx::XMMATRIX Cube::GetTransform(const float& dt)
 	);
 }
 
+dx::XMMATRIX Cube::GetModelTransform()
+{
+	// no scaling by 0
+	assert(cube_data_.scale_x_ != 0.0f || cube_data_.scale_y_ != 0.0f || cube_data_.scale_z_ != 0.0f);
+	return	dx::XMMatrixTranspose(
+		dx::XMMatrixRotationRollPitchYaw(cube_data_.angle_x, cube_data_.angle_y, cube_data_.angle_z) *
+		dx::XMMatrixScaling(cube_data_.scale_x_, cube_data_.scale_y_, cube_data_.scale_z_) *
+		dx::XMMatrixTranslation(cube_data_.world_xoffset_, cube_data_.world_yoffset_, cube_data_.world_zoffset_)
+	);
+}
+
 void Cube::SetX(const float& x)
 {
 	cube_data_.world_xoffset_ = x;
@@ -239,7 +250,7 @@ void Cube::Draw(const float& dt)
 	//	gfx->UpdateCBTransformSubresource({ GetTransform(dt) });
 	//	gfx->DrawIndexed();
 	//}
-	rl_->DrawTexturedCubeNorm(texture_key_, GetTransform(0));
+	rl_->DrawTexturedCubeNorm(texture_key_, GetTransform(0), GetModelTransform());
 }
 
 void Cube::Update(const float& frametime)

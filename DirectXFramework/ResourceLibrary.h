@@ -60,9 +60,9 @@ public:
 	// DRAWING FUNCTIONS
 	/*____________________________________*/
 	void DrawModel(const std::string& key, const DirectX::XMMATRIX& transform);				// draws textured model with no normals
-	void DrawModelNorm(const std::string& key, const DirectX::XMMATRIX& transform);			// draws textured model with normals
+	void DrawModelNorm(const std::string& key, const DirectX::XMMATRIX& transform, const DirectX::XMMATRIX& model);			// draws textured model with normals
 	void DrawTexturedCube(const std::string& key, const DirectX::XMMATRIX& transform);		// draws textured cube with no normals
-	void DrawTexturedCubeNorm(const std::string& key, const DirectX::XMMATRIX& transform);	// draws textured cube with normals
+	void DrawTexturedCubeNorm(const std::string& key, const DirectX::XMMATRIX& transform, const DirectX::XMMATRIX& model);	// draws textured cube with normals
 private:
 	void BindResource(const std::string& key);
 	void CreateShaderResourceView(const std::wstring& texturefile, const std::string& mapkey);

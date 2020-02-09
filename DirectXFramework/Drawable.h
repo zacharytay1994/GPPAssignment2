@@ -296,7 +296,7 @@ public:
 		//graphics_->BindShaderResourceView(srv_sprite_);
 		/*graphics_->UpdateCBTransformSubresource({ GetTransform(0) });
 		graphics_->DrawIndexed(index_count_);*/
-		rl_->DrawModel("giraffe", GetTransform(0));
+		rl_->DrawModelNorm("giraffeNormie", GetTransform(0), GetModelTransform());
 	}
 	
 	DirectX::XMMATRIX GetTransform(const float& dt)
@@ -312,6 +312,17 @@ public:
 			DirectX::XMMatrixTranslation(temp_pos_x_, temp_pos_y_, 10) *
 			input_->GetCameraMatrix(dt) *
 			DirectX::XMMatrixPerspectiveLH(1.0f, (float)Graphics::viewport_height_ / (float)Graphics::viewport_width_, 0.5f, 1000.0f)
+		);
+	}
+
+	DirectX::XMMATRIX GetModelTransform()
+	{
+		// no scaling by 0
+		//assert(cube_data_.scale_x_ != 0.0f || cube_data_.scale_y_ != 0.0f || cube_data_.scale_z_ != 0.0f);
+		return DirectX::XMMatrixTranspose(
+			DirectX::XMMatrixScaling(temp_scale_, temp_scale_, temp_scale_) *
+			DirectX::XMMatrixRotationRollPitchYaw(temp_x, 0, 0) *
+			DirectX::XMMatrixTranslation(temp_pos_x_, temp_pos_y_, 10)
 		);
 	}
 

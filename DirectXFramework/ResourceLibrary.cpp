@@ -341,37 +341,41 @@ void ResourceLibrary::AddCubeTexture(const std::string& mapkey, const std::wstri
 void ResourceLibrary::DrawModel(const std::string& key, const DirectX::XMMATRIX& transform)
 {
 	gfx->SetUseType(ShaderType::Textured);
-	BindResource(key);
-	gfx->UpdateCBTransformSubresource({ transform });
+	gfx->BindVertexBufferStride(vi_buffer_map[key].p_v_buffer_, 20u);
+	gfx->BindIndexBuffer(vi_buffer_map[key].p_i_buffer_);
+	gfx->BindShaderResourceView(srv_map[key]);
+	gfx->UpdateCBTransformSubresource({ transform, DirectX::XMMatrixIdentity() });
 	gfx->DrawIndexed(vi_buffer_map[key].index_count_);
 }
 
-void ResourceLibrary::DrawModelNorm(const std::string& key, const DirectX::XMMATRIX& transform)
+void ResourceLibrary::DrawModelNorm(const std::string& key, const DirectX::XMMATRIX& transform, const DirectX::XMMATRIX& model)
 {
 	gfx->SetUseType(ShaderType::TexturedNormal);
-	BindResource(key);
-	gfx->UpdateCBTransformSubresource({ transform });
+	gfx->BindVertexBufferStride(vi_buffer_map[key].p_v_buffer_, 32u);
+	gfx->BindIndexBuffer(vi_buffer_map[key].p_i_buffer_);
+	gfx->BindShaderResourceView(srv_map[key]);
+	gfx->UpdateCBTransformSubresource({ transform, model });
 	gfx->DrawIndexed(vi_buffer_map[key].index_count_);
 }
 
 void ResourceLibrary::DrawTexturedCube(const std::string& key, const DirectX::XMMATRIX& transform)
 {
 	gfx->SetUseType(ShaderType::Textured);
-	gfx->BindVertexBuffer(vi_buffer_map["TexturedCube"].p_v_buffer_);
+	gfx->BindVertexBufferStride(vi_buffer_map["TexturedCube"].p_v_buffer_, 20u);
 	gfx->BindIndexBuffer(vi_buffer_map["TexturedCube"].p_i_buffer_);
 	gfx->BindShaderResourceView(srv_map[key]);
-	gfx->UpdateCBTransformSubresource({ transform });
+	gfx->UpdateCBTransformSubresource({ transform, DirectX::XMMatrixIdentity() });
 	gfx->DrawIndexed(vi_buffer_map["TexturedCube"].index_count_);
 }
 
-void ResourceLibrary::DrawTexturedCubeNorm(const std::string& key, const DirectX::XMMATRIX& transform)
+void ResourceLibrary::DrawTexturedCubeNorm(const std::string& key, const DirectX::XMMATRIX& transform, const DirectX::XMMATRIX& model)
 {
 	gfx->SetUseType(ShaderType::TexturedNormal);
-	gfx->BindVertexBuffer(vi_buffer_map["TexturedCube"].p_v_buffer_);
-	gfx->BindIndexBuffer(vi_buffer_map["TexturedCube"].p_i_buffer_);
+	gfx->BindVertexBufferStride(vi_buffer_map["TexturedNormCube"].p_v_buffer_, 32u);
+	gfx->BindIndexBuffer(vi_buffer_map["TexturedNormCube"].p_i_buffer_);
 	gfx->BindShaderResourceView(srv_map[key]);
-	gfx->UpdateCBTransformSubresource({ transform });
-	gfx->DrawIndexed(vi_buffer_map["TexturedCube"].index_count_);
+	gfx->UpdateCBTransformSubresource({ transform, model });
+	gfx->DrawIndexed(vi_buffer_map["TexturedNormCube"].index_count_);
 }
 
 void ResourceLibrary::BindResource(const std::string& key)

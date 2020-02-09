@@ -362,21 +362,37 @@ void Graphics::InitCubePipeline()
 	// input vertices will be passed to.
 	// https://docs.microsoft.com/en-us/windows/win32/direct3d11/d3d10-graphics-programming-guide-input-assembler-stage
 	/*_______________________________________*/
+	ID3DBlob* p_blob3;
+	D3DReadFileToBlob(L"Shaders/TexturedNormPS.cso", &p_blob3);
+	p_device_->CreatePixelShader(
+		p_blob3->GetBufferPointer(),			// pointer to compiled shader 
+		p_blob3->GetBufferSize(),			// size of compiled shader
+		nullptr,							// ignore: no class linkage
+		&p_ps_texturedNorm_					// ignore: address pointer to pixel shader
+	);
+	D3DReadFileToBlob(L"Shaders/TexturedNormVS.cso", &p_blob3);
+	p_device_->CreateVertexShader(
+		p_blob3->GetBufferPointer(),			 // same as pixel shader
+		p_blob3->GetBufferSize(),			 // same as pixel shader
+		nullptr,							 // same as pixel shader
+		&p_vs_texturedNorm_					 // same as pixel shader
+	);
 	ID3D11InputLayout* p_input_layout;
 	const D3D11_INPUT_ELEMENT_DESC input_element_description[] = {
 		{"Position", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0},
+		{"Normal", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0},
 		{"TexCoord", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0},
 	};
 	p_device_->CreateInputLayout(
 		input_element_description,						// specifies how input vertex data structure should be read as types, and processed by the vertex shader through semantic names e.g. "Position"
 		(UINT)std::size(input_element_description),		// number of input data types
-		p_blob->GetBufferPointer(),						// pointer to compiled shader
-		p_blob->GetBufferSize(),						// size of compiled shader
+		p_blob3->GetBufferPointer(),						// pointer to compiled shader
+		p_blob3->GetBufferSize(),						// size of compiled shader
 		&p_input_layout									// pointer to input layout object, to be filled
 	);
 	p_device_context_->IASetInputLayout(p_input_layout);
 	p_input_layout->Release();
-	p_vs_blob_ = p_blob;
+	p_vs_blob_ = p_blob3;
 
 	/*_______________________________________*/
 	// INITIALIZE ALL SHADER AND INPUT LAYOUT TYPES
@@ -390,7 +406,7 @@ void Graphics::InitCubePipeline()
 	// E.g. world, view, and projection transformations, are the same between all vertices of the same mesh
 	/*_______________________________________*/
 	// defined data struct that stores a transformation matrix
-	const ConstantBuffer cb = { dx::XMMatrixIdentity() };
+	const ConstantBuffer cb = { dx::XMMatrixIdentity(), dx::XMMatrixIdentity() };
 
 	// shares similar setup process as vertex buffer
 	D3D11_BUFFER_DESC bd;
@@ -399,7 +415,7 @@ void Graphics::InitCubePipeline()
 	bd.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
 	bd.MiscFlags = 0u;
 	bd.ByteWidth = sizeof(cb);
-	bd.StructureByteStride = {};
+	bd.StructureByteStride = sizeof(dx::XMMATRIX);
 	D3D11_SUBRESOURCE_DATA sd;
 	sd.pSysMem = &cb;
 	p_device_->CreateBuffer(&bd, &sd, &p_cb_transform_);
@@ -615,7 +631,7 @@ void Graphics::UpdateCBTransformSubresource(const ConstantBuffer & cb)
 
 void Graphics::ClearBuffer()
 {
-	const float color[] = { 0.0f, 1.0f, 0.0f, 0.0f };
+	const float color[] = { 0.0f, 0.0f, 0.0f, 0.0f };
 	p_device_context_->ClearRenderTargetView(p_rtv_back_buffer_, color);
 	if (has_depth_stencil_) {
 		p_device_context_->ClearDepthStencilView(p_depth_stencil_view_, D3D11_CLEAR_DEPTH, 1.0f, 0u);
@@ -694,7 +710,13 @@ void Graphics::BindModelIndices(std::vector<unsigned short>& i)
 
 void Graphics::BindVertexBuffer(ID3D11Buffer* vertices)
 {
-	UINT stride = 20;
+	UINT stride = 32;
+	UINT offset = 0u;
+	p_device_context_->IASetVertexBuffers(0u, 1u, &vertices, &stride, &offset);
+}
+
+void Graphics::BindVertexBufferStride(ID3D11Buffer* vertices, const UINT& stride)
+{
 	UINT offset = 0u;
 	p_device_context_->IASetVertexBuffers(0u, 1u, &vertices, &stride, &offset);
 }
@@ -787,12 +809,12 @@ void Graphics::InitializeShadersAndInputLayouts()
 	const D3D11_INPUT_ELEMENT_DESC input_element_description2[] = {
 		{"Position", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0},
 		{"Normal", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0},
-		{"TexCoord", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0},
+		{"TexCoord", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 24, D3D11_INPUT_PER_VERTEX_DATA, 0},
 	};
 	p_device_->CreateInputLayout(
 		input_element_description2,						// specifies how input vertex data structure should be read as types, and processed by the vertex shader through semantic names e.g. "Position"
 		(UINT)std::size(input_element_description2),	// number of input data types
-		p_blob3->GetBufferPointer(),						// pointer to compiled shader
+		p_blob3->GetBufferPointer(),					// pointer to compiled shader
 		p_blob3->GetBufferSize(),						// size of compiled shader
 		&p_il_PosNormTex_								// pointer to input layout object, to be filled
 	);
