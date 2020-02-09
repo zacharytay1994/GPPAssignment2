@@ -378,13 +378,6 @@ void ResourceLibrary::DrawTexturedCubeNorm(const std::string& key, const DirectX
 	gfx->DrawIndexed(vi_buffer_map["TexturedNormCube"].index_count_);
 }
 
-void ResourceLibrary::BindResource(const std::string& key)
-{
-	gfx->BindVertexBuffer(vi_buffer_map[key].p_v_buffer_);
-	gfx->BindIndexBuffer(vi_buffer_map[key].p_i_buffer_);
-	gfx->BindShaderResourceView(srv_map[key]);
-}
-
 void ResourceLibrary::CreateShaderResourceView(const std::wstring& texturefile, const std::string& mapkey)
 {
 	// create surface image resource

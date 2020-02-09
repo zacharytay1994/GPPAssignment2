@@ -18,7 +18,6 @@ float4 main(float3 worldPos : Position, float3 normal : Normal, float2 tc : TexC
 	if (colour.x == 1.0f && colour.y == 0.0f && colour.z == 1.0f && colour.w == 1.0f) {
 		discard;
 	}
-	//return colour;
 
 	// fragment to light vector data
 	const float3 vTol = lightPos - worldPos;
@@ -30,6 +29,4 @@ float4 main(float3 worldPos : Position, float3 normal : Normal, float2 tc : TexC
 	const float3 diffuse = colour * diffuseIntensity * att * max(0.0f, dot(dirTol, normal));
 	// final color
 	return float4(saturate(diffuse + ambient), 1.0f);
-
-	
 }
