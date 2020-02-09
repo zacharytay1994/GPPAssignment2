@@ -11,7 +11,6 @@ BoxyGame::BoxyGame(HWND hwnd)
 {
 	Initialize(hwnd);
 	EnableCursor();
-
 	// Go to main menu
 	current_scene_ = std::make_unique<MainMenu>(graphics_, input_, rl_);
 
@@ -32,6 +31,10 @@ void BoxyGame::Initialize(HWND hwnd)
 	rl_->AddCubeTexture("grassblock", L"Images/grassblock.png");
 	rl_->AddCubeTexture("startblock", L"Images/startblock.png");
 	rl_->AddCubeTexture("stoneblock", L"Images/stoneblock.png");
+	rl_->AddCubeTexture("alex", L"Images/alex.png");
+	rl_->AddCubeTexture("alexbody", L"Images/alex_body.png");
+	rl_->AddCubeTexture("alexarm", L"Images/alex-arm.png");
+	rl_->AddCubeTexture("alexleg", L"Images/alex-leg.png");
 }
 
 void BoxyGame::Update()

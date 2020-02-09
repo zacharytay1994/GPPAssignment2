@@ -15,27 +15,39 @@ Cube::~Cube()
 {
 }
 
-dx::XMMATRIX Cube::GetTransform(const float& dt)
+dx::XMMATRIX Cube::GetTransform()
 {
 	// no scaling by 0
 	assert(cube_data_.scale_x_ != 0.0f || cube_data_.scale_y_ != 0.0f || cube_data_.scale_z_ != 0.0f);
 	return	dx::XMMatrixTranspose(
-		dx::XMMatrixRotationRollPitchYaw(cube_data_.angle_x, cube_data_.angle_y, cube_data_.angle_z) *
 		dx::XMMatrixScaling(cube_data_.scale_x_, cube_data_.scale_y_, cube_data_.scale_z_) *
+		dx::XMMatrixRotationRollPitchYaw(cube_data_.angle_x, cube_data_.angle_y, cube_data_.angle_z) *
 		dx::XMMatrixTranslation(cube_data_.world_xoffset_, cube_data_.world_yoffset_, cube_data_.world_zoffset_) *
-		input->GetCameraMatrix(dt) *
+		input->GetCameraMatrix() *
 		dx::XMMatrixPerspectiveLH(1.0f,(float)Graphics::viewport_height_ / (float)Graphics::viewport_width_, 0.5f, 1000.0f) 
 	);
 }
 
 dx::XMMATRIX Cube::GetModelTransform()
 {
+	assert(cube_data_.scale_x_ != 0.0f || cube_data_.scale_y_ != 0.0f || cube_data_.scale_z_ != 0.0f);
+	return	dx::XMMatrixTranspose(
+		dx::XMMatrixScaling(cube_data_.scale_x_, cube_data_.scale_y_, cube_data_.scale_z_) *
+		dx::XMMatrixRotationRollPitchYaw(cube_data_.angle_x, cube_data_.angle_y, cube_data_.angle_z) *
+		dx::XMMatrixTranslation(cube_data_.world_xoffset_, cube_data_.world_yoffset_, cube_data_.world_zoffset_)
+	);
+}
+
+dx::XMMATRIX Cube::GetQuaternionTransform()
+{
 	// no scaling by 0
 	assert(cube_data_.scale_x_ != 0.0f || cube_data_.scale_y_ != 0.0f || cube_data_.scale_z_ != 0.0f);
 	return	dx::XMMatrixTranspose(
-		dx::XMMatrixRotationRollPitchYaw(cube_data_.angle_x, cube_data_.angle_y, cube_data_.angle_z) *
 		dx::XMMatrixScaling(cube_data_.scale_x_, cube_data_.scale_y_, cube_data_.scale_z_) *
-		dx::XMMatrixTranslation(cube_data_.world_xoffset_, cube_data_.world_yoffset_, cube_data_.world_zoffset_)
+		dx::XMMatrixRotationQuaternion({ cube_data_.rotation_.x, cube_data_.rotation_.y, cube_data_.rotation_.z, cube_data_.rotation_.w }) *
+		dx::XMMatrixTranslation(cube_data_.world_xoffset_, cube_data_.world_yoffset_, cube_data_.world_zoffset_) *
+		input->GetCameraMatrix() *
+		dx::XMMatrixPerspectiveLH(1.0f, (float)Graphics::viewport_height_ / (float)Graphics::viewport_width_, 0.5f, 1000.0f)
 	);
 }
 
@@ -97,6 +109,26 @@ void Cube::SetAngleX(const float& angle)
 void Cube::SetAngleY(const float& angle)
 {
 	cube_data_.angle_y = angle;
+}
+
+void Cube::SetAngleZDeg(const float& angle)
+{
+	cube_data_.angle_z = angle * (3.141592f/180.0f);
+}
+
+void Cube::SetAngleXDeg(const float& angle)
+{
+	cube_data_.angle_x = angle * (3.141592f / 180.0f);
+}
+
+void Cube::SetAngleYDeg(const float& angle)
+{
+	cube_data_.angle_y = angle * (3.141592f / 180.0f);
+}
+
+void Cube::SetQuatRotation(const QuaternionUWU& q)
+{
+	cube_data_.rotation_ = q;
 }
 
 float Cube::GetX()
@@ -164,16 +196,80 @@ void Cube::SetVisible(const bool& visible)
 	visible_ = visible;
 }
 
+void Cube::SetPhysicsDraw(const bool& b)
+{
+	physics_draw_ = b;
+}
+
+void Cube::SetDrawMode(const int& drawmode)
+{
+	draw_mode_ = static_cast<DrawMode>(drawmode);
+}
+
 bool Cube::Visible()
 {
 	return visible_;
 }
 
-void Cube::Draw(const float& dt)
+void Cube::Draw()
 {
 	assert(initialized_ == true);
 	if (visible_) {
-		rl_->DrawTexturedCubeNorm(texture_key_, GetTransform(0), GetModelTransform());
+		rl_->DrawTexturedCubeNorm(texture_key_, GetTransform(), GetModelTransform());
+	}
+}
+
+void Cube::DrawWithQuaternion()
+{
+	assert(initialized_ == true);
+	if (visible_) {
+		rl_->DrawTexturedCubeNorm(texture_key_, GetQuaternionTransform(), GetModelTransform());
+	}
+}
+
+void Cube::DrawModel()
+{
+}
+
+void Cube::DrawModelNorm()
+{
+}
+
+void Cube::HandleDraw()
+{
+	switch (draw_mode_) {
+	case DrawMode::TexturedCube:
+		if (physics_draw_) {
+			rl_->DrawTexturedCube(texture_key_, GetQuaternionTransform());
+		}
+		else {
+			rl_->DrawTexturedCube(texture_key_, GetTransform());
+		}
+		break;
+	case DrawMode::TexturedCubeNormal:
+		if (physics_draw_) {
+			rl_->DrawTexturedCubeNorm(texture_key_, GetQuaternionTransform(), GetModelTransform());
+		}
+		else {
+			rl_->DrawTexturedCubeNorm(texture_key_, GetTransform(), GetModelTransform());
+		}
+		break;
+	case DrawMode::TexturedModel:
+		if (physics_draw_) {
+			rl_->DrawModel(texture_key_, GetQuaternionTransform());
+		}
+		else {
+			rl_->DrawModel(texture_key_, GetTransform());
+		}
+		break;
+	case DrawMode::TexturedModelNormal:
+		if (physics_draw_) {
+			rl_->DrawModelNorm(texture_key_, GetQuaternionTransform(), GetModelTransform());
+		}
+		else {
+			rl_->DrawModelNorm(texture_key_, GetTransform(), GetModelTransform());
+		}
+		break;
 	}
 }
 

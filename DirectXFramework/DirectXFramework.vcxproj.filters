@@ -1,6 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
+<<<<<<< HEAD
     <FxCompile Include="CubePixelShader.hlsl">
       <Filter>Shaders</Filter>
     </FxCompile>
@@ -231,5 +232,71 @@
     <Filter Include="Images">
       <UniqueIdentifier>{a1c73f91-8ef7-42d4-bcce-8128ebaaed57}</UniqueIdentifier>
     </Filter>
+=======
+    <FxCompile Include="CubePixelShader.hlsl" />
+    <FxCompile Include="Shaders\SpritePixelShader.hlsl" />
+    <FxCompile Include="Shaders\SpriteVertexShader.hlsl" />
+    <FxCompile Include="CubeVertexShader.hlsl" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Block.cpp" />
+    <ClCompile Include="BoxyGame.cpp" />
+    <ClCompile Include="Component.cpp" />
+    <ClCompile Include="Cube.cpp" />
+    <ClCompile Include="Entity.cpp" />
+    <ClCompile Include="InputComponent.cpp" />
+    <ClCompile Include="Level.cpp" />
+    <ClCompile Include="MainMenu.cpp" />
+    <ClCompile Include="Player.cpp" />
+    <ClCompile Include="Scene.cpp" />
+    <ClCompile Include="SourceFiles\Game.cpp" />
+    <ClCompile Include="SourceFiles\GameChild.cpp" />
+    <ClCompile Include="SourceFiles\GDIPlusManager.cpp" />
+    <ClCompile Include="SourceFiles\Graphics.cpp" />
+    <ClCompile Include="SourceFiles\Input.cpp" />
+    <ClCompile Include="SourceFiles\Sprite.cpp" />
+    <ClCompile Include="SourceFiles\Surface.cpp" />
+    <ClCompile Include="SourceFiles\WinMain.cpp" />
+    <ClCompile Include="CollisionManager.cpp" />
+    <ClCompile Include="CollisionComponent.cpp" />
+    <ClCompile Include="CubeModel.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Base\Color.h" />
+    <ClInclude Include="Base\Game.h" />
+    <ClInclude Include="Base\GameChild.h" />
+    <ClInclude Include="Base\GDIPlusManager.h" />
+    <ClInclude Include="Base\Graphics.h" />
+    <ClInclude Include="Base\Input.h" />
+    <ClInclude Include="Base\Sprite.h" />
+    <ClInclude Include="Base\Surface.h" />
+    <ClInclude Include="Block.h" />
+    <ClInclude Include="Box.h" />
+    <ClInclude Include="BoxyGame.h" />
+    <ClInclude Include="Component.h" />
+    <ClInclude Include="Cube.h" />
+    <ClInclude Include="Entity.h" />
+    <ClInclude Include="InputComponent.h" />
+    <ClInclude Include="Level.h" />
+    <ClInclude Include="MainMenu.h" />
+    <ClInclude Include="MathStuff.h" />
+    <ClInclude Include="MatTemplate.h" />
+    <ClInclude Include="Player.h" />
+    <ClInclude Include="Scene.h" />
+    <ClInclude Include="Vec2.h" />
+    <ClInclude Include="Vec3.h" />
+    <ClInclude Include="Vec4.h" />
+    <ClInclude Include="PhysicsMath.h" />
+    <ClInclude Include="OBB.h" />
+    <ClInclude Include="SAT.h" />
+    <ClInclude Include="CollisionSolver.h" />
+    <ClInclude Include="CollisionManager.h" />
+    <ClInclude Include="CollisionComponent.h" />
+    <ClInclude Include="CubeModel.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="Images\alpha_donald.png" />
+    <Image Include="Images\rocknroll.png" />
+>>>>>>> 3DRendering
   </ItemGroup>
 </Project>

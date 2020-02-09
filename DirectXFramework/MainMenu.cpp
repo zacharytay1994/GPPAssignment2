@@ -5,7 +5,6 @@
 MainMenu::MainMenu(std::shared_ptr<Graphics> gfx, std::shared_ptr<Input> input, std::shared_ptr<ResourceLibrary> rl):
 	Scene(gfx, input, rl)
 {
-
 	std::shared_ptr<Block> tempBlock;
 	for (float z = 3.0f; z < 15.0f; z++) {
 
@@ -58,7 +57,15 @@ MainMenu::MainMenu(std::shared_ptr<Graphics> gfx, std::shared_ptr<Input> input, 
 		AddEntity(std::dynamic_pointer_cast<Entity>(tempBlock));
 	}
 
-	
+	//tempBlock = std::make_shared<Block>(Block(L"Images/glassblock.png", graphics_, input_));
+	//tempBlock->SetPosition({ 0,0,0 });
+	//AddEntity(std::dynamic_pointer_cast<Entity>(tempBlock));
+	//tempBlock = std::make_shared<Block>(Block(L"Images/glassblock.png", graphics_, input_));
+	//tempBlock->SetPosition({ 0,1,0 });
+	//AddEntity(std::dynamic_pointer_cast<Entity>(tempBlock));
+	//tempBlock = std::make_shared<Block>(Block(L"Images/glassblock.png", graphics_, input_));
+	//tempBlock->SetPosition({ 0,2,0 });
+	//AddEntity(std::dynamic_pointer_cast<Entity>(tempBlock));
 
 
 	AddEntity(std::make_shared<Player>(Player(graphics_, input_, rl_)));
@@ -66,7 +73,9 @@ MainMenu::MainMenu(std::shared_ptr<Graphics> gfx, std::shared_ptr<Input> input, 
 
 void MainMenu::Update(const float& dt)
 {
-
+	if (input_->KeyWasPressed('B')) {
+		AddEntity(std::dynamic_pointer_cast<Entity>(std::make_shared<Block>((Block("grassblock", graphics_, input_, rl_)))));
+	}
 }
 
 void MainMenu::Render(const float& dt)
