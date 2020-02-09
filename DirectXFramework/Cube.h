@@ -23,28 +23,19 @@ struct CubeData {
 	float	angle_z = 0.0f;								// rotation angle of sprite in radians
 	float	angle_x = 0.0f;
 	float	angle_y = 0.0f;
-	ID3D11ShaderResourceView* srv_sprite_ = nullptr;	// pointer to sprite image resource ready for pixel shader sampling
 };
 
 class Cube {
 private:
-	//Surface			image_resource_;			// array of color values representing an image, used to create a shader resource view to be bound to the pipeline (see CreateShaderResourceView())
-	CubeData		cube_data_;				// sprite data struct as above
-	std::shared_ptr<Graphics> gfx;				// graphics reference
+	CubeData cube_data_;								// sprite data struct as above
+	std::shared_ptr<Graphics> gfx;						// graphics reference
 	std::shared_ptr<Input> input;
-	std::shared_ptr<ResourceLibrary> rl_;
-	std::string texture_key_;
-
-	//// Vertex buffer ready to bind to graphics pipeline before drawing
-	//Graphics::CubeVertexBuffer cvb = gfx->GetDefaultCubeVB();
+	std::shared_ptr<ResourceLibrary> rl_;				// holds all resource data loaded for the game
+	std::string texture_key_;							// used to read into resource library
 
 	// Uninitialized sprites cannot be drawn
-	bool	initialized_ = false;			 	  // set in Sprite::IntializeSprite()
-	bool	visible_ = true;					  // referenced in Sprite::Draw()
-
-	// shaders
-	ID3D11VertexShader* p_vertex_shader_ = nullptr;
-	ID3D11PixelShader* p_pixel_shader_ = nullptr;
+	bool	initialized_ = false;			 			// set in Sprite::IntializeSprite()
+	bool	visible_ = true;							// referenced in Sprite::Draw()
 
 public:
 	Cube(std::shared_ptr<Graphics> gfx, std::shared_ptr<Input> input, const std::string& filename, const std::shared_ptr<ResourceLibrary> rl);
@@ -101,11 +92,4 @@ public:
 	// Post: Allows Sprite::Draw() to be called
 	void InitializeCube(const int& x, const int& y, const int& z, const float& scalex,
 		const float& scaley, const float& scalez, const float& anglez, const float& anglex, const float& angley);
-	// Pre : graphics referenced is initialized
-	// Post: sprite_data_.p_srv_sprite_ filled by image_resource_, i.e. != nullptr
-	void CreateShaderResourceView();
-	// Update the vertex buffer
-	// Invariant: vertex coordinates
-	// Post     : texture (uv) coordinates
-	//void UpdateCVB();
 };
