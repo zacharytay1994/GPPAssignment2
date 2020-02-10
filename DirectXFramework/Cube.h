@@ -58,6 +58,7 @@ public:
 	dx::XMMATRIX GetTransform();
 	dx::XMMATRIX GetModelTransform();
 	dx::XMMATRIX GetQuaternionTransform();
+	dx::XMMATRIX GetQuaternionModelTransform();
 
 	/*___________________________________*/
 	// SPRITE DATA

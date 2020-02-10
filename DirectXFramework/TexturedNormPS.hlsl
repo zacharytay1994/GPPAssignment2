@@ -2,7 +2,7 @@ Texture2D tex;
 
 SamplerState samplr;
 
-static const float3 lightPos = { 20.0f, 50.0f, -20.0f };
+static const float3 lightPos = { 20.0f, 0.0f, -50.0f };
 static const float3 materialColor = { 0.7f, 0.7f, 0.9f };
 static const float3 ambient = { 0.05f, 0.05f, 0.05f };
 static const float3 diffuseColor = { 1.0f, 1.0f, 1.0f };
