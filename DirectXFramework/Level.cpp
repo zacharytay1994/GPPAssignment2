@@ -19,9 +19,9 @@ Level::Level(std::shared_ptr<Graphics> gfx, std::shared_ptr<Input> input, std::s
 	{ AddEntity(e); }
 
 	AddSolidBlock("grassblock", { 0.0f, -60.0f, 5.0f }, { 30.0f, 30.0f, 30.0f }, 500000.0f);
-	std::shared_ptr<Block> giraffe = AddModel("dogNormie", { 0.0f, -20.0f, 0.0f }, { 1.0f, 1.0f, 1.0f }, true);
-	giraffe->GetCube().SetAngleYDeg(180);
-	giraffe->GetCube().SetAngleXDeg(-90);
+	//std::shared_ptr<Block> giraffe = AddModel("dogNormie", { 0.0f, -20.0f, 0.0f }, { 1.0f, 1.0f, 1.0f }, true);
+	//giraffe->GetCube().SetAngleYDeg(180);
+	//giraffe->GetCube().SetAngleXDeg(-90);
 	//AddSolidBlock("grassblock", { 0.0f, -60.0f, 5.0f }, { 30.0f, 30.0f, 30.0f }, 500000.0f);
 	gravity_blocks_.push_back(AddSolidBlock("grassblock", { 0.0f, 5.0f, 5.0f }, { 1.0f, 1.0f, 1.0f }, 5.0f));
 	gravity_blocks_[0]->GetComponentOfType<CollisionComponent>("Collision")->SetAngularVelocity({ 1.0f, 1.0f, 1.0f }); // only solid blocks can be added to gravity blocks
