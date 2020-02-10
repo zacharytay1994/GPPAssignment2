@@ -32,4 +32,5 @@ public:
 	std::shared_ptr<Block> AddBlock(const std::string& texture, const Vecf3& position, const Vecf3& size);
 	std::shared_ptr<Block> AddSolidBlock(const std::string& texture, const Vecf3& position, const Vecf3& size, const float& mass);
 	std::shared_ptr<Block> AddModel(const std::string& texture, const Vecf3& position, const Vecf3& size, const bool& light);
+	std::shared_ptr<Block> AddUntexturedModel(const std::string& key, const Vecf3& position, const Vecf3& size);
 };

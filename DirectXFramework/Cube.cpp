@@ -281,6 +281,13 @@ void Cube::HandleDraw()
 			rl_->DrawModelNorm(texture_key_, GetTransform(), GetModelTransform());
 		}
 		break;
+	case DrawMode::UnTexturedModelNormal:
+		if (physics_draw_) {
+			rl_->DrawUnTexturedModelNorm(texture_key_, GetQuaternionTransform(), GetQuaternionModelTransform());
+		}
+		else {
+			rl_->DrawUnTexturedModelNorm(texture_key_, GetTransform(), GetModelTransform());
+		}
 	}
 }
 

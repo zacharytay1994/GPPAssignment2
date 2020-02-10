@@ -15,7 +15,8 @@ enum class DrawMode {
 	TexturedCube,
 	TexturedCubeNormal,
 	TexturedModel,
-	TexturedModelNormal
+	TexturedModelNormal,
+	UnTexturedModelNormal
 };
 struct CubeData {
 	float	width_ = 0;									// width of cube in pixels 

@@ -97,3 +97,13 @@ std::shared_ptr<Block> Scene::AddModel(const std::string& texture, const Vecf3& 
 	AddEntity(std::dynamic_pointer_cast<Entity>(temp));
 	return temp;
 }
+
+std::shared_ptr<Block> Scene::AddUntexturedModel(const std::string& key, const Vecf3& position, const Vecf3& size)
+{
+	std::shared_ptr<Block> temp = std::make_shared<Block>(Block(key, graphics_, input_, rl_));
+	temp->SetDrawMode(4);
+	temp->SetPosition(position);
+	temp->SetScale(size);
+	AddEntity(std::dynamic_pointer_cast<Entity>(temp));
+	return temp;
+}
