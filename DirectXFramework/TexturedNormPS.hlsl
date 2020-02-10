@@ -2,11 +2,11 @@ Texture2D tex;
 
 SamplerState samplr;
 
-static const float3 lightPos = { 0.0f, 10.0f, -30.0f };
+static const float3 lightPos = { 20.0f, 50.0f, -20.0f };
 static const float3 materialColor = { 0.7f, 0.7f, 0.9f };
 static const float3 ambient = { 0.05f, 0.05f, 0.05f };
 static const float3 diffuseColor = { 1.0f, 1.0f, 1.0f };
-static const float diffuseIntensity = 5.0f;
+static const float diffuseIntensity = 100.0f;
 static const float attConst = 1.0f;
 static const float attLin = 0.045f;
 static const float attQuad = 0.0075f;
@@ -18,6 +18,8 @@ float4 main(float3 worldPos : Position, float3 normal : Normal, float2 tc : TexC
 	if (colour.x == 1.0f && colour.y == 0.0f && colour.z == 1.0f && colour.w == 1.0f) {
 		discard;
 	}
+
+	normal = normal / length(normal);
 
 	// fragment to light vector data
 	const float3 vTol = lightPos - worldPos;

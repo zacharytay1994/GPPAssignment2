@@ -118,7 +118,7 @@ void ResourceLibrary::AddPosNormTexModel(const std::string& mapkey, const std::s
 		vs_data.push_back(
 			{ 
 				DirectX::XMFLOAT3( pMesh->mVertices[i].x, pMesh->mVertices[i].y, pMesh->mVertices[i].z ),
-				DirectX::XMFLOAT3( -pMesh->mNormals[i].x, -pMesh->mNormals[i].y, pMesh->mNormals[i].z ),
+				DirectX::XMFLOAT3( pMesh->mNormals[i].x, pMesh->mNormals[i].y, pMesh->mNormals[i].z ),
 				DirectX::XMFLOAT2( pMesh->mTextureCoords[0][i].x, pMesh->mTextureCoords[0][i].y )
 			});
 	}
