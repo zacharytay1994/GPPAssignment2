@@ -38,7 +38,7 @@ public:
 	void RotateX(float angle);
 	void RotateY(float angle);
 	void RotateZ(float angle);
-	void Draw(const float& dt, Vecf3 totalOffSet, Vecf3 absPos);
+	void Draw(Vecf3 totalOffSet, Vecf3 absPos);
 };
 
 
@@ -64,5 +64,5 @@ public:
 	void AddCubeToRootNode(std::shared_ptr<Cube> cube, Vecf3 scale, Vecf3 position);
 
 
-	void Draw(const float& dt);
+	void Draw();
 };

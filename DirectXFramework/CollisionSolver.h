@@ -156,12 +156,12 @@ public:
 		}
 
 		// if velocities are small, set to 0
-		float threshold = 0.01f;
-		float ang_thres = 0.05f;
+		float threshold = 0.001f;
+		float ang_thres = 0.001f;
 
-		ccs.A->vs_.velocity_ = va.Len() < threshold ? Vecf3(0.0f, 0.0f, 0.0f) : va;
+		ccs.A->vs_.velocity_ = va.LenSq() < threshold ? Vecf3(0.0f, 0.0f, 0.0f) : va;
 		ccs.A->vs_.angular_velocity_ = (std::abs(wa.x) < ang_thres && std::abs(wa.y) < ang_thres && std::abs(wa.z) < ang_thres) ? Vecf3(0.0f, 0.0f, 0.0f) : wa;
-		ccs.B->vs_.velocity_ = vb.Len() < threshold ? Vecf3(0.0f, 0.0f, 0.0f) : vb;
+		ccs.B->vs_.velocity_ = vb.LenSq() < threshold ? Vecf3(0.0f, 0.0f, 0.0f) : vb;
 		ccs.B->vs_.angular_velocity_ = (std::abs(wb.x) < ang_thres && std::abs(wb.y) < ang_thres && std::abs(wb.z) < ang_thres) ? Vecf3(0.0f, 0.0f, 0.0f) : wb;
 	}
 };

@@ -4,7 +4,8 @@
 Game::Game(HWND hwnd)
 	:
 	input_(std::make_shared<Input>()),
-	graphics_(std::make_shared<Graphics>())
+	graphics_(std::make_shared<Graphics>()),
+	rl_(std::make_shared<ResourceLibrary>(graphics_))
 {
 	Initialize(hwnd);
 
@@ -29,6 +30,7 @@ void Game::Initialize(HWND hwnd)
 	input_->Initialize(hwnd, false);
 	graphics_->Initialize(hwnd);
 	graphics_->InitCubePipeline();
+	rl_->Initialize();
 	// set up high resolution timer, always succeeds on systems running Windows XP or later
 	// retrieves current performance counter frequency in counts per second and stores it in timer_frequency_
 	QueryPerformanceFrequency(&timer_freqency_);

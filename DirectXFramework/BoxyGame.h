@@ -7,6 +7,7 @@
 class BoxyGame : public Game {
 private:
 	std::unique_ptr<Scene> current_scene_ = nullptr;
+
 public:
 	BoxyGame(HWND hwnd);
 	virtual ~BoxyGame();

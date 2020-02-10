@@ -3,12 +3,20 @@
 #include "Base/Graphics.h"
 #include "Base/Surface.h"
 #include "Base/Input.h"
+#include "Vec3.h"
+#include "ResourceLibrary.h"
 #include "PhysicsMath.h"
 #include <memory>
 #include <vector>
 
 namespace dx = DirectX;
 
+enum class DrawMode {
+	TexturedCube,
+	TexturedCubeNormal,
+	TexturedModel,
+	TexturedModelNormal
+};
 struct CubeData {
 	float	width_ = 0;									// width of cube in pixels 
 	float	height_ = 0;								// height..
@@ -22,36 +30,34 @@ struct CubeData {
 	float	angle_z = 0.0f;								// rotation angle of sprite in radians
 	float	angle_x = 0.0f;
 	float	angle_y = 0.0f;
-	ID3D11ShaderResourceView* srv_sprite_ = nullptr;	// pointer to sprite image resource ready for pixel shader sampling
-
 	// quaternion rotation
 	QuaternionUWU rotation_ = QuaternionUWU(0.0f, 0.0f, 0.0f, 1.0f);
 };
 
 class Cube {
 private:
-	Surface			image_resource_;			// array of color values representing an image, used to create a shader resource view to be bound to the pipeline (see CreateShaderResourceView())
-	CubeData		cube_data_;				// sprite data struct as above
-	std::shared_ptr<Graphics> gfx;				// graphics reference
+	CubeData cube_data_;								// sprite data struct as above
+	std::shared_ptr<Graphics> gfx;						// graphics reference
 	std::shared_ptr<Input> input;
-
-	//// Vertex buffer ready to bind to graphics pipeline before drawing
-	//Graphics::CubeVertexBuffer cvb = gfx->GetDefaultCubeVB();
+	std::shared_ptr<ResourceLibrary> rl_;				// holds all resource data loaded for the game
+	std::string texture_key_;							// used to read into resource library
+	DrawMode draw_mode_ = DrawMode::TexturedCubeNormal;
+	bool physics_draw_ = false;
 
 	// Uninitialized sprites cannot be drawn
-	bool	initialized_ = false;			 	  // set in Sprite::IntializeSprite()
-	bool	visible_ = true;					  // referenced in Sprite::Draw()
+	bool	initialized_ = false;			 			// set in Sprite::IntializeSprite()
+	bool	visible_ = true;							// referenced in Sprite::Draw()
 
 public:
-	Cube(std::shared_ptr<Graphics> gfx, std::shared_ptr<Input> input, const std::wstring& filename);
+	Cube(std::shared_ptr<Graphics> gfx, std::shared_ptr<Input> input, const std::string& filename, const std::shared_ptr<ResourceLibrary> rl);
 	~Cube();
 
 	/*___________________________________*/
 	// GET AND SET FUNCTIONS
 	/*___________________________________*/
-	Surface GetSurface();
-	dx::XMMATRIX GetTransform(const float& dt);
-	dx::XMMATRIX GetQuaternionTransform(const float& dt);
+	dx::XMMATRIX GetTransform();
+	dx::XMMATRIX GetModelTransform();
+	dx::XMMATRIX GetQuaternionTransform();
 
 	/*___________________________________*/
 	// SPRITE DATA
@@ -68,6 +74,9 @@ public:
 	void	SetAngleZ(const float& angle);
 	void	SetAngleX(const float& angle);
 	void	SetAngleY(const float& angle);
+	void	SetAngleZDeg(const float& angle);
+	void	SetAngleXDeg(const float& angle);
+	void	SetAngleYDeg(const float& angle);
 	void	SetQuatRotation(const QuaternionUWU& q);
 	float	GetX();
 	float	GetY();
@@ -84,14 +93,19 @@ public:
 
 public:
 	void	SetVisible(const bool& visible);
+	void	SetPhysicsDraw(const bool& b);
+	void	SetDrawMode(const int& drawmode);
 	bool	Visible();
 
 	/*___________________________________*/
 	// MISCELLENEOUS FUNCTIONS
 	/*___________________________________*/
 	// Pre: initialized_ == true
-	void Draw(const float& dt);
+	void Draw();
 	void DrawWithQuaternion();
+	void DrawModel();
+	void DrawModelNorm();
+	void HandleDraw();
 	void Update(const float& frametime);
 	/*___________________________________*/
 	// BACK-END FUNCTIONS
@@ -99,11 +113,4 @@ public:
 	// Post: Allows Sprite::Draw() to be called
 	void InitializeCube(const int& x, const int& y, const int& z, const float& scalex,
 		const float& scaley, const float& scalez, const float& anglez, const float& anglex, const float& angley);
-	// Pre : graphics referenced is initialized
-	// Post: sprite_data_.p_srv_sprite_ filled by image_resource_, i.e. != nullptr
-	void CreateShaderResourceView();
-	// Update the vertex buffer
-	// Invariant: vertex coordinates
-	// Post     : texture (uv) coordinates
-	//void UpdateCVB();
 };
