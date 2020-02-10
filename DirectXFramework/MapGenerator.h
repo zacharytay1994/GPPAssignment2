@@ -28,8 +28,8 @@ private:
 	PerlinNoise* pn_;
 
 	// Dimensions of chunks that get generated
-	int width_ = 32;
-	int height_ = 16;
+	const static int width_ = 32;
+	const static int height_ = 16;
 
 	// Factors affecting the granity of the generated maps
 	double frequency_ = 3.0;
@@ -45,6 +45,29 @@ private:
 	std::random_device rd_;
 	std::mt19937 rng_;
 	std::uniform_int_distribution<int> dist;
+
+	// Map data
+	enum ResourceBlockType {
+		Rock,
+		Tree,
+		Rail,
+		Air
+	};
+	struct ResourceTileData {
+		ResourceBlockType block_type_;
+		bool walkable_;
+	};
+	ResourceTileData resource_data_[width_][height_];
+
+	enum GroundBlockType {
+		Checkpoint,
+		Grass
+	};
+	struct GroundTileData {
+		GroundBlockType block_type_;
+		bool walkable_;
+	};
+	GroundTileData ground_data_[width_][height_];
 
 	// TODO: Add seed
 
@@ -62,22 +85,15 @@ public:
 	// Generates a map based on the WIDTH & HEIGHT attributes & modifies the provided entity vector
 	std::vector<std::shared_ptr<Entity>> GenerateMap();
 
-	// Set the dimensions of the maps that get generated
-	void setWidth(int w) 
-	{ 
-		width_ = w; 
-		updateFreq();
-	}
-	void setHeight(int h) 
-	{ 
-		height_ = h; 
-		updateFreq();
-	}
-
+	// Setter
 	void setFrequency(double f) 
 	{ 
 		frequency_ = f; 
 		updateFreq();
 	}
+
+	// Getters
+	ResourceTileData* getResourceTileData() { return resource_data_[0]; }
+	GroundTileData* getGroundTileData() { return ground_data_[0]; }
 
 };

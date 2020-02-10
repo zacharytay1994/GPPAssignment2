@@ -29,8 +29,19 @@ std::vector<std::shared_ptr<Entity>> MapGenerator::GenerateMap()
 		for (int x = curr_chunk_size_*width_; x < (curr_chunk_size_*width_)+width_; x++)
 		{
 			// Spawn checkpoint
-			if (abs(x - checkpoint.x) <= 1 && abs(z - checkpoint.z) <= 1) { image = "startblock";  }
-			else { image = "grassblock"; }
+			if (abs(x - checkpoint.x) <= 1 && abs(z - checkpoint.z) <= 1) { 
+				// Set image
+				image = "startblock";  
+
+				// Set below_data_
+				ground_data_[x][z] = { Checkpoint, true };
+			} else { 
+				// Set image
+				image = "grassblock"; 
+
+				// Set below_data_
+				ground_data_[x][z] = { Grass, true };
+			}
 
 			// Spawn floor
 			std::shared_ptr<Block> fb = std::make_shared<Block>(image, graphics_, input_, rl_);
@@ -47,10 +58,26 @@ std::vector<std::shared_ptr<Entity>> MapGenerator::GenerateMap()
 				/*std::shared_ptr<TestObject> b = std::make_shared<TestObject>(graphics_, input_, "Models\\lowpolytree.obj");
 				b->SetPosition(Vecf3(x, 0.0, z));
 				ents.push_back(b);*/
+
+				// Set above_data_
+				resource_data_[x][z] = { Tree, false };
+
 				continue;
+			} else if (n < .6) { 
+
+				// Set above_data_
+				resource_data_[x][z] = { Air, false };
+
+				continue; 
+			} else { 
+
+				// Set image
+				image = "stoneblock";
+
+				// Set above_data_
+				resource_data_[x][z] = { Rock, false };
+				
 			}
-			else if (n < .6) { continue; } 
-			else { image = "stoneblock"; }
 
 			// Don't spawn anything above the checkpoint
 			if (abs(x - checkpoint.x) <= 1 && abs(z - checkpoint.z) <= 1) { continue; }
