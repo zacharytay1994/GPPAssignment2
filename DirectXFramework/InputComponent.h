@@ -2,7 +2,6 @@
 #include "Component.h";
 #include "Base/Input.h";
 
-#define down(vk) input_.KeyIsDown(vk)
 class Entity;
 class InputComponent :
 	public Component

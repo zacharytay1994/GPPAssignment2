@@ -14,7 +14,7 @@ VSOut main(float3 pos : Position, float3 norm : Normal, float2 tex : TexCoord)
 {
 	VSOut vso;
 	vso.worldPos = (float3)mul(float4(pos, 1.0f), model);
-	vso.normal = norm;
+	vso.normal = mul(norm, model);
 	vso.tex = tex;
 	vso.pos = mul(float4(pos, 1.0f), transform);
 	return vso;

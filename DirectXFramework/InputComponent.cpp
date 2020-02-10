@@ -11,28 +11,40 @@ void InputComponent::Update(const float& frametime)
 {
 	Component::Update(frametime);
 
-	if (down(VK_UP)) {
-		owner_.position_.z += movementSpeed*frametime;
+	Vecf3 pos = owner_.GetPosition();
+
+	if (input_.KeyIsDown(VK_UP)) {
+		//owner_.position_.z += movementSpeed*frametime;
+		pos.z += movementSpeed * frametime;
 		// z++
+
 	}
-	if (down(VK_DOWN)) {
-		owner_.position_.z -= movementSpeed * frametime;
+	if (input_.KeyIsDown(VK_DOWN)) {
+		//owner_.position_.z -= movementSpeed * frametime;
+		pos.z -= movementSpeed * frametime;
 		// z--
 	}
-	if (down(VK_LEFT)) {
-		owner_.position_.x -= movementSpeed * frametime;
+	if (input_.KeyIsDown(VK_LEFT)) {
+		//owner_.position_.x -= movementSpeed * frametime;
+		pos.x -= movementSpeed * frametime;
 		// x--
 	}
-	if (down(VK_RIGHT)) {
-		owner_.position_.x += movementSpeed * frametime;
+	if (input_.KeyIsDown(VK_RIGHT)) {
+		//owner_.position_.x += movementSpeed * frametime;
+		pos.x += movementSpeed * frametime;
 		// x++
 	}
-	if (down(VK_SHIFT)) {
+
+	owner_.SetPosition(pos);
+
+	if (input_.KeyIsDown(VK_SHIFT)) {
 		// dash
 	}
-	if (down(VK_SPACE)) {
+	if (input_.KeyIsDown(VK_SPACE)) {
 		// place rail
 	}
+
+
 }
 
 void InputComponent::Render()

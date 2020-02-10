@@ -21,8 +21,6 @@ protected:
 
 public:
 	Entity(const std::string& image, std::shared_ptr<Graphics> gfx, std::shared_ptr<Input> input, std::shared_ptr<ResourceLibrary> rl);
-
-	Vecf3 position_;
 	void AddComponent(ComponentPtr component);
 	ComponentPtr GetComponent(std::string type);
 	template <typename T>
