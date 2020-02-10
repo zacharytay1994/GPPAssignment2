@@ -2,6 +2,7 @@
 #include "Block.h"
 #include "Player.h"
 #include "Rail.h"
+#include "InputComponent.h"
 
 MainMenu::MainMenu(std::shared_ptr<Graphics> gfx, std::shared_ptr<Input> input):
 	Scene(gfx, input)
@@ -60,8 +61,8 @@ MainMenu::MainMenu(std::shared_ptr<Graphics> gfx, std::shared_ptr<Input> input):
 
 	
 	std::shared_ptr<Player> player = std::make_shared<Player>(Player(graphics_, input_));
-	player->SetPosition({ 0,0.75,0 });
-
+	player->SetPosition({ 1,2.25,1 });
+	player->AddComponent(std::make_shared<InputComponent>(*player, *input_));
 	AddEntity(std::dynamic_pointer_cast<Entity>(player));
 
 

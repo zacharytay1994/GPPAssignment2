@@ -2,6 +2,7 @@
 #include <vector>
 #include <memory>
 #include "Component.h"
+#include "Vec3.h"
 
 #define ComponentPtr std::shared_ptr<Component>
 
@@ -12,6 +13,7 @@ private:
 public:
 	Entity();
 
+	Vecf3 position_;
 	void AddComponent(ComponentPtr component);
 	ComponentPtr GetComponent(std::string type);
   

@@ -1,4 +1,5 @@
 #include "InputComponent.h"
+#include "Entity.h"
 
 InputComponent::InputComponent(Entity& owner, Input& input):
 	Component(owner,"InputComponent"),
@@ -10,16 +11,20 @@ void InputComponent::Update(const float& frametime)
 {
 	Component::Update(frametime);
 
-	if (down('W') || down(VK_UP)) {
+	if (down(VK_UP)) {
+		owner_.position_.z += movementSpeed*frametime;
 		// z++
 	}
-	if (down('S') || down(VK_DOWN)) {
+	if (down(VK_DOWN)) {
+		owner_.position_.z -= movementSpeed * frametime;
 		// z--
 	}
-	if (down('A') || down(VK_LEFT)) {
+	if (down(VK_LEFT)) {
+		owner_.position_.x -= movementSpeed * frametime;
 		// x--
 	}
-	if (down('D') || down(VK_RIGHT)) {
+	if (down(VK_RIGHT)) {
+		owner_.position_.x += movementSpeed * frametime;
 		// x++
 	}
 	if (down(VK_SHIFT)) {

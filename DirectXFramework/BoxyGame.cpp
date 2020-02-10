@@ -9,7 +9,7 @@ BoxyGame::BoxyGame(HWND hwnd)
 	Initialize(hwnd);
 	EnableCursor();
 
-	current_scene_ = std::make_unique<Level>(graphics_, input_);
+	current_scene_ = std::make_unique<MainMenu>(graphics_, input_);
 }
 
 BoxyGame::~BoxyGame()
