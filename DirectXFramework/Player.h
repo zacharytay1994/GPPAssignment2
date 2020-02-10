@@ -9,6 +9,7 @@ class Player :
 	public Entity
 {
 private:
+	//Cube cube_;
 	Vecf3 position_ = { 0.0f, 0.0f, 0.0f };
 	CubeModel cubeModel_;
 public:
@@ -16,6 +17,6 @@ public:
 	void SetPosition(const Vecf3& position);
 	Vecf3 GetPosition();
 	void Update(const float& dt) override;
-	void Render() override;
+	void Render(const float& dt) override;
 };
 
