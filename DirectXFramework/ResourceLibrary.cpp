@@ -11,6 +11,7 @@ void ResourceLibrary::Initialize()
 {
 	GenPosTexCube();
 	GenPosNormTexCube();
+	GenPosTexPlane();
 }
 
 void ResourceLibrary::AddPosTexModel(const std::string& mapkey, const std::string& objfile, const std::wstring& texturefile)
@@ -331,6 +332,54 @@ void ResourceLibrary::GenPosNormTexCube()
 	gfx->GetGraphicsDevice()->CreateBuffer(&index_buffer_desc, &index_subresource_data, &vi_buffer_map["TexturedNormCube"].p_i_buffer_);
 
 	vi_buffer_map["TexturedNormCube"].index_count_ = 36;
+}
+
+void ResourceLibrary::GenPosTexPlane()
+{
+	// create and map Vertex and Index Buffers
+	vi_buffer_map.emplace("TexturedPlane", VIBuffer());
+
+	// cube vertices and texture coordinates
+	PosTex vs_data[] = {
+		// Front face
+		{{-1.0f, -1.0f, 0.5f}, {0.0f, 1.0f}},
+		{{1.0f, -1.0f, 0.5f}, {1.0f, 1.0f}},
+		{{-1.0f, 1.0f, 0.5f}, {1.0f / 3.0f, 0.5f}},
+		{{1.0f, 1.0f, 0.5f}, {2.0f / 3.0f, 0.5f}}
+	};
+
+	// fill created v_buffer in map
+	D3D11_BUFFER_DESC buffer_description = {};
+	buffer_description.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+	buffer_description.Usage = D3D11_USAGE_DYNAMIC;
+	buffer_description.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+	buffer_description.MiscFlags = 0u;
+	buffer_description.ByteWidth = sizeof(vs_data);
+	buffer_description.StructureByteStride = sizeof(PosTex);
+	D3D11_SUBRESOURCE_DATA subresource_data = {};
+	subresource_data.pSysMem = vs_data;
+
+	gfx->GetGraphicsDevice()->CreateBuffer(&buffer_description, &subresource_data, &vi_buffer_map["TexturedPlane"].p_v_buffer_);
+
+	// create indices
+	const unsigned short indices[] = {
+		0,1,2, 2,1,3
+	};
+
+	// fill created i_buffer in map
+	D3D11_BUFFER_DESC index_buffer_desc = {};
+	index_buffer_desc.BindFlags = D3D11_BIND_INDEX_BUFFER;
+	index_buffer_desc.Usage = D3D11_USAGE_DYNAMIC;
+	index_buffer_desc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+	index_buffer_desc.MiscFlags = 0u;
+	index_buffer_desc.ByteWidth = sizeof(indices);
+	index_buffer_desc.StructureByteStride = sizeof(unsigned short);
+	D3D11_SUBRESOURCE_DATA index_subresource_data = {};
+	index_subresource_data.pSysMem = indices;
+
+	gfx->GetGraphicsDevice()->CreateBuffer(&index_buffer_desc, &index_subresource_data, &vi_buffer_map["TexturedPlane"].p_i_buffer_);
+
+	vi_buffer_map["TexturedPlane"].index_count_ = 6;
 }
 
 void ResourceLibrary::AddCubeTexture(const std::string& mapkey, const std::wstring& texturefile)

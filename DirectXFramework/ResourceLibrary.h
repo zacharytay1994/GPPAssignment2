@@ -53,6 +53,8 @@ private:
 	// loads a cube mesh with Positions and Texture Coordinates
 	void GenPosTexCube();
 	void GenPosNormTexCube();
+	// loads a plane mesh with Positions and Texture Coordinates
+	void GenPosTexPlane();
 public:
 	// loads a texture to wrap a cube
 	void AddCubeTexture(const std::string& mapkey, const std::wstring& texturefile);
@@ -63,6 +65,7 @@ public:
 	void DrawModelNorm(const std::string& key, const DirectX::XMMATRIX& transform, const DirectX::XMMATRIX& model);			// draws textured model with normals
 	void DrawTexturedCube(const std::string& key, const DirectX::XMMATRIX& transform);										// draws textured cube with no normals
 	void DrawTexturedCubeNorm(const std::string& key, const DirectX::XMMATRIX& transform, const DirectX::XMMATRIX& model);	// draws textured cube with normals
+	void DrawTexturedPlane(const std::string& key, const DirectX::XMMATRIX& transform);
 private:
 	void CreateShaderResourceView(const std::wstring& texturefile, const std::string& mapkey);
 };
