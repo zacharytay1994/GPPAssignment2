@@ -17,16 +17,18 @@ Level::Level(std::shared_ptr<Graphics> gfx, std::shared_ptr<Input> input, std::s
 	// Generate map
 	mapGen_->GenerateMap();
 
-	AddSolidBlock("grassblock", { 0.0f, -60.0f, 5.0f }, { 30.0f, 30.0f, 30.0f }, 500000.0f);
-	std::shared_ptr<Block> giraffe = AddModel("nsur", { 1.0f, 0.0f, 10.0f }, { 0.10f, 0.10f, 0.10f }, true);
 
-	giraffe->GetCube().SetAngleZDeg(180);
-	giraffe->GetCube().SetAngleYDeg(180);
+	//AddSolidBlock("grassblock", { 0.0f, -60.0f, 5.0f }, { 30.0f, 30.0f, 30.0f }, 500000.0f);
+	//std::shared_ptr<Block> giraffe = AddModel("nsur", { 1.0f, 0.0f, 10.0f }, { 0.10f, 0.10f, 0.10f }, true);
+
+	//giraffe->GetCube().SetAngleZDeg(180);
+	//giraffe->GetCube().SetAngleYDeg(180);
 	//giraffe->GetCube().SetAngleXDeg(-90);
 	//AddSolidBlock("grassblock", { 0.0f, -60.0f, 5.0f }, { 30.0f, 30.0f, 30.0f }, 500000.0f);
-	gravity_blocks_.push_back(AddSolidBlock("grassblock", { 0.0f, 5.0f, 5.0f }, { 1.0f, 1.0f, 1.0f }, 5.0f));
-	gravity_blocks_[0]->GetComponentOfType<CollisionComponent>("Collision")->SetAngularVelocity({ 1.0f, 1.0f, 1.0f }); // only solid blocks can be added to gravity blocks
-	AddBlock("grassblock", { 0.0f, -10.0f, 5.0f }, { 5.0f, 1.0f, 5.0f });
+	//gravity_blocks_.push_back(AddSolidBlock("grassblock", { 0.0f, 5.0f, 5.0f }, { 1.0f, 1.0f, 1.0f }, 5.0f));
+	//gravity_blocks_[0]->GetComponentOfType<CollisionComponent>("Collision")->SetAngularVelocity({ 1.0f, 1.0f, 1.0f }); // only solid blocks can be added to gravity blocks
+	//AddBlock("grassblock", { 0.0f, -10.0f, 5.0f }, { 5.0f, 1.0f, 5.0f });
+	player_ = AddPlayer({ 6.0f, 1.0f, 6.0f }, { 0.5f, 0.5f, 0.5f });
 }
 
 void Level::Update(const float& dt)
@@ -35,7 +37,7 @@ void Level::Update(const float& dt)
 
 	// <--- test code can remove if need be
 	if (input_->KeyWasPressed('B')) {
-		start_spawning_ = true;\
+		start_spawning_ = true;
 	}
 	if (start_spawning_) {
 		if (spawn_iterations_ > 0) {
