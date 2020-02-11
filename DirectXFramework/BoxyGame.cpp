@@ -29,10 +29,12 @@ void BoxyGame::Initialize(HWND hwnd)
 	rl_->AddCubeTexture("alexarm", L"Images/alex-arm.png");
 	rl_->AddCubeTexture("alexleg", L"Images/alex-leg.png");
 	rl_->AddCubeTexture("spacebox", L"Images/spacebox2.png");
+	rl_->AddPosNormTexModel("nsur", "Models/nsur.obj", L"Images/nsur.png");
 
 	// For le map
 	rl_->AddCubeTexture("grassblock", L"Images/grassblock.png");
 	rl_->AddCubeTexture("startblock", L"Images/startblock.png");
+	rl_->AddCubeTexture("rail", L"Images/rail.png");
 	rl_->AddPosNormTexModel("tree", "Models\\tree.obj", L"Images\\tree.png");
 	rl_->AddPosNormTexModel("rock", "Models\\rock.obj", L"Images\\rock.png");
 }

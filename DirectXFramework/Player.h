@@ -9,12 +9,11 @@ class Player :
 	public Entity
 {
 private:
-	Vecf3 position_ = { 0.0f, 0.0f, 0.0f };
+	//Cube cube_;
 	CubeModel cubeModel_;
 public:
+	Vecf2 velocity_ = { 0,0 };
 	Player(std::shared_ptr<Graphics> gfx, std::shared_ptr<Input> input, std::shared_ptr<ResourceLibrary> rl);
-	void SetPosition(const Vecf3& position);
-	Vecf3 GetPosition();
 	void Update(const float& dt) override;
 	void Render() override;
 };
