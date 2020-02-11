@@ -1,5 +1,6 @@
 #include "ResourceLibrary.h"
 #include <assert.h>
+#include <limits>
 
 ResourceLibrary::ResourceLibrary(std::shared_ptr<Graphics> gfx)
 	:
@@ -12,6 +13,11 @@ void ResourceLibrary::Initialize()
 	GenPosTexCube();
 	GenPosNormTexCube();
 	GenPosTexPlane();
+}
+
+Vecf3 ResourceLibrary::GetDimensions(const std::string& key)
+{
+	return dimensions[key];
 }
 
 void ResourceLibrary::AddPosTexModel(const std::string& mapkey, const std::string& objfile, const std::wstring& texturefile)
@@ -111,18 +117,35 @@ void ResourceLibrary::AddPosNormTexModel(const std::string& mapkey, const std::s
 	assert(pMesh->HasNormals());
 	assert(pMesh->HasTextureCoords(0));
 
+	float min_x = (std::numeric_limits<float>::max)();
+	float max_x = (std::numeric_limits<float>::min)();
+	float min_y = (std::numeric_limits<float>::max)();
+	float max_y = (std::numeric_limits<float>::min)();
+	float min_z = (std::numeric_limits<float>::max)();
+	float max_z = (std::numeric_limits<float>::min)();
+
 	// push back vertices
 	int size = pMesh->mNumVertices;
 	vs_data.reserve(pMesh->mNumVertices);
 	for (unsigned int i = 0; i < pMesh->mNumVertices; i++)
 	{
+		min_x = pMesh->mVertices[i].x < min_x ? pMesh->mVertices[i].x : min_x;
+		min_y = pMesh->mVertices[i].y < min_y ? pMesh->mVertices[i].y : min_y;
+		min_z = pMesh->mVertices[i].z < min_z ? pMesh->mVertices[i].z : min_z;
+
+		max_x = pMesh->mVertices[i].x > max_x ? pMesh->mVertices[i].x : max_x;
+		max_y = pMesh->mVertices[i].y > max_y ? pMesh->mVertices[i].y : max_y;
+		max_z = pMesh->mVertices[i].z > max_z ? pMesh->mVertices[i].z : max_z;
+
 		vs_data.push_back(
-			{ 
+			{
 				DirectX::XMFLOAT3( pMesh->mVertices[i].x, pMesh->mVertices[i].y, pMesh->mVertices[i].z ),
 				DirectX::XMFLOAT3( pMesh->mNormals[i].x, pMesh->mNormals[i].y, pMesh->mNormals[i].z ),
 				DirectX::XMFLOAT2( pMesh->mTextureCoords[0][i].x, pMesh->mTextureCoords[0][i].y )
 			});
 	}
+
+	dimensions[mapkey] = { max_x - min_x, max_y - min_y, max_z - min_z };
 
 	// fill created v_buffer in map
 	D3D11_BUFFER_DESC buffer_description = {};

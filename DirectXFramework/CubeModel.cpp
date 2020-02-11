@@ -81,6 +81,7 @@ void CubeModelNode::AddCube(std::shared_ptr<Cube> cube, Vecf3 scale, Vecf3 posit
 	std::shared_ptr<CubeModelData> cmd = std::make_shared<CubeModelData>(CubeModelData());
 	cmd->cube = cube;
 	cmd->position = position;
+	cmd->scale = scale;
 	cubes_.push_back(cmd);
 }
 

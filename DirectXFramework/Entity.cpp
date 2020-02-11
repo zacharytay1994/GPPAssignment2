@@ -9,7 +9,6 @@ Entity::Entity(const std::string& image, std::shared_ptr<Graphics> gfx, std::sha
 
 void Entity::Update(const float& dt)
 {
-	
 	std::vector<std::shared_ptr<Component>>::iterator i;
 	for (i = components_.begin(); i != components_.end(); i++) {
 		(*i)->Update(dt);

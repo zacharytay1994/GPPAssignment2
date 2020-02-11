@@ -6,6 +6,7 @@
 #include <vector>
 #include <memory>
 #include "Component.h"
+#include "Vec3.h"
 
 #define ComponentPtr std::shared_ptr<Component>
 
@@ -20,7 +21,6 @@ protected:
 
 public:
 	Entity(const std::string& image, std::shared_ptr<Graphics> gfx, std::shared_ptr<Input> input, std::shared_ptr<ResourceLibrary> rl);
-
 	void AddComponent(ComponentPtr component);
 	ComponentPtr GetComponent(std::string type);
 	template <typename T>
