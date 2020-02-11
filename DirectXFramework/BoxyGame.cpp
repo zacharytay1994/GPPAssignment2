@@ -15,7 +15,7 @@ BoxyGame::BoxyGame(HWND hwnd)
 	current_scene_ = std::make_unique<MainMenu>(graphics_, input_, rl_);
 
 	// Go to level
-	//current_scene_ = std::make_unique<Level>(graphics_, input_, rl_);
+	current_scene_ = std::make_unique<Level>(graphics_, input_, rl_);
 }
 
 BoxyGame::~BoxyGame()
@@ -36,6 +36,9 @@ void BoxyGame::Initialize(HWND hwnd)
 	rl_->AddCubeTexture("alexbody", L"Images/alex_body.png");
 	rl_->AddCubeTexture("alexarm", L"Images/alex-arm.png");
 	rl_->AddCubeTexture("alexleg", L"Images/alex-leg.png");
+
+	rl_->AddPosNormTexModel("tre", "Models/tre.obj", L"Images/tre.png");
+	rl_->AddPosNormTexModel("nsur", "Models/nsur.obj", L"Images/nsur.png");
 }
 
 void BoxyGame::Update()

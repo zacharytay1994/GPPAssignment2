@@ -46,6 +46,13 @@ void Player::Update(const float& dt)
 {
 	Entity::Update(dt);
 	cubeModel_.SetPosition(position_);
+
+	//cubeModel_.SetPosition(cubeModel_.GetPosition() + (Vecf3(0, 0, 1) * dt));
+	//cubeModel_.RotateXTo("head", PI / 2 * dt);
+	//cubeModel_.RotateYTo("head", PI / 2 * dt);
+	//cubeModel_.RotateZTo("head", PI / 2 * dt);
+	cubeModel_.RotateXTo("larm", PI / 2 * dt);
+	//cubeModel_.RotateXTo("rarm", PI / 2 * dt);
 }
 
 void Player::Render()
