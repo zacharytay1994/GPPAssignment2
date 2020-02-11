@@ -24,8 +24,6 @@ BoxyGame::~BoxyGame()
 
 void BoxyGame::Initialize(HWND hwnd)
 {
-	rl_->AddCubeTexture("grassblock", L"Images/grassblock.png");
-	rl_->AddCubeTexture("startblock", L"Images/startblock.png");
 	rl_->AddCubeTexture("alex", L"Images/alex.png");
 	rl_->AddCubeTexture("alexbody", L"Images/alex_body.png");
 	rl_->AddCubeTexture("alexarm", L"Images/alex-arm.png");
@@ -33,6 +31,8 @@ void BoxyGame::Initialize(HWND hwnd)
 	rl_->AddCubeTexture("spacebox", L"Images/spacebox2.png");
 
 	// For le map
+	rl_->AddCubeTexture("grassblock", L"Images/grassblock.png");
+	rl_->AddCubeTexture("startblock", L"Images/startblock.png");
 	rl_->AddPosNormTexModel("tree", "Models\\tree.obj", L"Images\\tree.png");
 	rl_->AddPosNormTexModel("rock", "Models\\rock.obj", L"Images\\rock.png");
 }
