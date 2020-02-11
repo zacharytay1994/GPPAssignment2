@@ -109,10 +109,13 @@ void MapGenerator::GenerateMap()
 				// Set image
 				image = "stoneblock";
 
+				// Spawn rock
+				scene_->AddModel("rock", Vecf3(x, 0.0, z), Vecf3(0.01, 0.01, 0.01), 1);
+
 				// Set above_data_
-				r_type = ResourceBlockType::Rock;
-				walkable = false;
-				
+				resource_data_[curr_chunk_size_ >= 3 ? 48 + (x - curr_chunk_size_ * width_) : x][z] = { ResourceBlockType::Rock, false, nullptr };
+
+				continue;
 			}
 
 			std::shared_ptr<Block> b = std::make_shared<Block>(image, graphics_, input_, rl_);
