@@ -29,6 +29,13 @@ void Scene::BaseUpdate(const float& dt)
 		world_entities_.push_back(*ta);
 	}
 	to_add_.clear();
+
+	// Remove any entities & clear the buffer
+	for (ta = to_remove_.begin(); ta != to_remove_.end(); ta++) {
+		auto i = std::find(world_entities_.begin(), world_entities_.end(), *ta);
+		if (i != world_entities_.end()) world_entities_.erase(i);
+	}
+	to_remove_.clear();
 }
 
 void Scene::Update(const float& dt)
@@ -60,6 +67,11 @@ void Scene::Render(const float& dt)
 void Scene::AddEntity(const std::shared_ptr<Entity>& entity)
 {
 	to_add_.push_back(entity);
+}
+
+void Scene::RemoveEntity(const std::shared_ptr<Entity>& entity)
+{
+	to_remove_.push_back(entity);
 }
 
 std::shared_ptr<Block> Scene::AddBlock(const std::string& texture, const Vecf3& position, const Vecf3& size)
