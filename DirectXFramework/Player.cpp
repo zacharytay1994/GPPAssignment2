@@ -2,9 +2,10 @@
 
 Player::Player(std::shared_ptr<Graphics> gfx, std::shared_ptr<Input> input, std::shared_ptr<ResourceLibrary> rl) :
 	Entity("alex", gfx, input, rl),
-	position_({ 1,2.25,5 }),
-	cubeModel_({1,2,0})
+	cubeModel_({1,2,0}),
+	input_(input)
 {
+	
 
 	cubeModel_.SetRootNode("head", { 0,0,0 });
 	cubeModel_.AddCubeToRootNode(std::make_shared<Cube>(Cube(gfx, input, "alex", rl)), { 0.25,0.25,0.25 }, { 0,0,0 });
@@ -43,25 +44,45 @@ Player::Player(std::shared_ptr<Graphics> gfx, std::shared_ptr<Input> input, std:
 	//cubeModel_.AddCubeTo("rleg", std::make_shared<Cube>(Cube(gfx, input, L"Images/alex-leg.png")), { 0.05,0.05,0.05 }, { 0,0,0 });
 }
 
-void Player::SetPosition(const Vecf3& position)
-{
-	position_ = position;
-}
-
-Vecf3 Player::GetPosition()
-{
-	return position_;
-}
+//void Player::SetPosition(const Vecf3& position)
+//{
+//	position_ = position;
+//}
+//
+//Vecf3 Player::GetPosition()
+//{
+//	return position_;
+//}
 
 void Player::Update(const float& dt)
 {
+	Entity::Update(dt);
 	cubeModel_.SetPosition(position_);
 	//cubeModel_.SetPosition(cubeModel_.GetPosition() + (Vecf3(0, 0, 1) * dt));
 	//cubeModel_.RotateXTo("head", PI / 2 * dt);
-	cubeModel_.RotateYTo("head", PI / 2 * dt);
+	//cubeModel_.RotateYTo("head", PI / 2 * dt);
 	//cubeModel_.RotateZTo("head", PI / 2 * dt);
 	//cubeModel_.RotateYTo("larm", PI / 2 * dt);
 	//cubeModel_.RotateXTo("rarm", PI / 2 * dt);
+
+	// input for player
+	if (input_->KeyIsDown(VK_UP))
+	{
+		SetPosition(GetPosition() + Vecf3(0.0f,0.0f, 2.0f)*dt);
+	}
+	if (input_->KeyIsDown(VK_DOWN))
+	{
+		SetPosition(GetPosition() + Vecf3(0.0f,0.0f, -2.0f)*dt);
+	}
+	if (input_->KeyIsDown(VK_LEFT))
+	{
+		SetPosition(GetPosition() + Vecf3(-2.0f, 0.0f, 0.0f) * dt);
+	}
+	if (input_->KeyIsDown(VK_RIGHT))
+	{
+		SetPosition(GetPosition() + Vecf3(2.0f, 0.0f, 0.0f) * dt);
+	}
+	
 }
 
 void Player::Render()
