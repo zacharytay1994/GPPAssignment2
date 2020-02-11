@@ -39,8 +39,8 @@ private:
 	double fx_ = width_ / frequency_;
 	double fz_ = height_ / frequency_;
 
-	// Current size of map
-	int curr_chunk_size_ = 0;
+	// Total size of map
+	int total_map_size_ = 0;
 
 	// Random number generator
 	std::random_device rd_;
@@ -56,6 +56,7 @@ private:
 	};
 	struct ResourceTileData {
 		ResourceBlockType block_type_;
+		bool breakable_;
 		bool walkable_;
 		std::shared_ptr<Entity> ent_;
 	};
@@ -98,5 +99,7 @@ public:
 	// Getters
 	ResourceTileData* getResourceTileData() { return resource_data_[0]; }
 	GroundTileData* getGroundTileData() { return ground_data_[0]; }
+
+	int GetTotalMapSize() { return total_map_size_; }
 
 };
