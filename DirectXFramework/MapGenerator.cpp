@@ -87,41 +87,23 @@ void MapGenerator::GenerateMap()
 
 			if (n < .4) 
 			{
-				// Set image
-				image = "woodblock";
 
-				// Spawn tree 
+				// Spawn tree & set resource_data_
 				auto t = scene_->AddModel("tree", Vecf3(x, 0.0, z), Vecf3(0.007, 0.007, 0.007), 1);
-
-				// Set above_data_
 				resource_data_[curr_chunk_size_ >= 3 ? 48 + (x - curr_chunk_size_ * width_) : x][z] = { ResourceBlockType::Tree, false, t };
 
-				continue;
 			} else if (n < .6) { 
 
-				// Set above_data_
+				// Set resource_data_
 				resource_data_[curr_chunk_size_ >= 3 ? 48 + (x - curr_chunk_size_ * width_) : x][z] = { ResourceBlockType::Air, true, nullptr };
-
-				continue; 
 
 			} else { 
 
-				// Set image
-				image = "stoneblock";
-
-				// Spawn rock
+				// Spawn rock & set resource_data_
 				auto r = scene_->AddModel("rock", Vecf3(x, 0.0, z), Vecf3(0.01, 0.01, 0.01), 1);
-
-				// Set above_data_
 				resource_data_[curr_chunk_size_ >= 3 ? 48 + (x - curr_chunk_size_ * width_) : x][z] = { ResourceBlockType::Rock, false, r };
 
-				continue;
 			}
-
-			std::shared_ptr<Block> b = std::make_shared<Block>(image, graphics_, input_, rl_);
-			b->SetPosition(Vecf3(x, 0.0, z));
-			resource_data_[curr_chunk_size_ >= 3 ? 48 + (x - curr_chunk_size_ * width_) : x][z] = { r_type, walkable, b };
-			scene_->AddEntity(b);
 		}
 	}
 
