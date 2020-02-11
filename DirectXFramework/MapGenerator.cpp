@@ -79,27 +79,31 @@ void MapGenerator::GenerateMap()
 
 			n = pn_->octaveNoise0_1(x / fx_, z / fz_, octaves_);
 
+			// Don't spawn anything above the checkpoint
+			if (abs(x - checkpoint.x) <= 1 && abs(z - checkpoint.z) <= 1) {
+				resource_data_[curr_chunk_size_ >= 3 ? 48 + (x - curr_chunk_size_ * width_) : x][z] = { ResourceBlockType::Air, true, nullptr };
+				continue;
+			}
+
 			if (n < .4) 
 			{
 				// Set image
 				image = "woodblock";
 
-				// Spawn tree I COMMENTED OUT THIS FOR MERGING CAUSE THE CONSTRUCTOR FOR TESTOBJECT CHANGED
-				/*std::shared_ptr<TestObject> b = std::make_shared<TestObject>(graphics_, input_, "Models\\lowpolytree.obj");
-				b->SetPosition(Vecf3(x, 0.0, z));
-				ents.push_back(b);*/
+				// Spawn tree 
+				scene_->AddModel("tree", Vecf3(x, 0.0, z), Vecf3(0.007, 0.007, 0.007), 1);
 
 				// Set above_data_
-				r_type = ResourceBlockType::Tree;
-				walkable = false;
+				resource_data_[curr_chunk_size_ >= 3 ? 48 + (x - curr_chunk_size_ * width_) : x][z] = { ResourceBlockType::Tree, false, nullptr };
 
-				//continue;
+				continue;
 			} else if (n < .6) { 
 
 				// Set above_data_
 				resource_data_[curr_chunk_size_ >= 3 ? 48 + (x - curr_chunk_size_ * width_) : x][z] = { ResourceBlockType::Air, true, nullptr };
 
 				continue; 
+
 			} else { 
 
 				// Set image
@@ -109,12 +113,6 @@ void MapGenerator::GenerateMap()
 				r_type = ResourceBlockType::Rock;
 				walkable = false;
 				
-			}
-
-			// Don't spawn anything above the checkpoint
-			if (abs(x - checkpoint.x) <= 1 && abs(z - checkpoint.z) <= 1) { 
-				resource_data_[curr_chunk_size_ >= 3 ? 48 + (x - curr_chunk_size_ * width_) : x][z] = { ResourceBlockType::Air, true, nullptr };
-				continue; 
 			}
 
 			std::shared_ptr<Block> b = std::make_shared<Block>(image, graphics_, input_, rl_);
