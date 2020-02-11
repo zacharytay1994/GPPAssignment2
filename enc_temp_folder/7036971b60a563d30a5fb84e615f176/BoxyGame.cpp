@@ -37,6 +37,7 @@ void BoxyGame::Initialize(HWND hwnd)
 	rl_->AddCubeTexture("alexarm", L"Images/alex-arm.png");
 	rl_->AddCubeTexture("alexleg", L"Images/alex-leg.png");
 	rl_->AddCubeTexture("spacebox", L"Images/spacebox2.png");
+	rl_->AddPosNormTexModel("tree", "Models/tree/tree.obj", L"Models/tree/tree.png");
 	rl_->AddPosNormTexModel("nsur", "Models/nsur.obj", L"Images/nsur.png");
 	rl_->AddPosNormTexModel("island", "Models/island.obj", L"Images/island.png");
 }

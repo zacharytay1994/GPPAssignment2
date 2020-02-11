@@ -51,7 +51,7 @@ void Player::Update(const float& dt)
 	//cubeModel_.RotateXTo("head", PI / 2 * dt);
 	//cubeModel_.RotateYTo("head", PI / 2 * dt);
 	//cubeModel_.RotateZTo("head", PI / 2 * dt);
-	cubeModel_.RotateXTo("larm", PI / 2 * dt);
+	//cubeModel_.RotateXTo("larm", PI / 2 * dt);
 	//cubeModel_.RotateXTo("rarm", PI / 2 * dt);
 }
 
