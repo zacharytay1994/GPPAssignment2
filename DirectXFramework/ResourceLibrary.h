@@ -49,6 +49,8 @@ public:
 	void AddPosTexModel(const std::string& mapkey, const std::string& objfile, const std::wstring& texturefile);
 	// loads a .obj file with Positions, Normals, and Texture Coordinates
 	void AddPosNormTexModel(const std::string& mapkey, const std::string& objfile, const std::wstring& texturefile);
+	// loads a .obj file with Positions and Normals
+	void AddPosNormModel(const std::string& mapkey, const std::string& objfile);
 private:
 	// loads a cube mesh with Positions and Texture Coordinates
 	void GenPosTexCube();
@@ -66,6 +68,7 @@ public:
 	void DrawTexturedCube(const std::string& key, const DirectX::XMMATRIX& transform);										// draws textured cube with no normals
 	void DrawTexturedCubeNorm(const std::string& key, const DirectX::XMMATRIX& transform, const DirectX::XMMATRIX& model);	// draws textured cube with normals
 	void DrawTexturedPlane(const std::string& key, const DirectX::XMMATRIX& transform);
+	void DrawUnTexturedModelNorm(const std::string& key, const DirectX::XMMATRIX& transform, const DirectX::XMMATRIX& model);
 private:
 	void CreateShaderResourceView(const std::wstring& texturefile, const std::string& mapkey);
 };

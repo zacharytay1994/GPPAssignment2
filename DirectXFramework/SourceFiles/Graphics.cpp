@@ -798,6 +798,19 @@ void Graphics::InitializeShadersAndInputLayouts()
 		nullptr,							 // same as pixel shader
 		&p_vs_untexturedNorm_				 // same as pixel shader
 	);
+	// fill p_il_PosNormTex
+	const D3D11_INPUT_ELEMENT_DESC input_element_description3[] = {
+		{"Position", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0},
+		{"Normal", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0}
+	};
+	p_device_->CreateInputLayout(
+		input_element_description3,						// specifies how input vertex data structure should be read as types, and processed by the vertex shader through semantic names e.g. "Position"
+		(UINT)std::size(input_element_description3),	// number of input data types
+		p_blob4->GetBufferPointer(),					// pointer to compiled shader
+		p_blob4->GetBufferSize(),						// size of compiled shader
+		&p_il_PosNorm_								// pointer to input layout object, to be filled
+	);
+
 	p_blob->Release();
 	p_blob2->Release();
 	p_blob3->Release();
@@ -829,8 +842,9 @@ void Graphics::SetUseType(const ShaderType& type)
 		shader_type_ = type;
 		break;
 	case ShaderType::UntexturedNormal:
-		p_device_context_->VSSetShader(p_vs_texturedNorm_, nullptr, 0u);
-		p_device_context_->PSSetShader(p_ps_texturedNorm_, nullptr, 0u);
+		p_device_context_->IASetInputLayout(p_il_PosNorm_);
+		p_device_context_->VSSetShader(p_vs_untexturedNorm_, nullptr, 0u);
+		p_device_context_->PSSetShader(p_ps_untexturedNorm_, nullptr, 0u);
 		shader_type_ = type;
 		break;
 	}
