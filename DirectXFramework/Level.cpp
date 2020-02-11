@@ -55,6 +55,13 @@ void Level::Update(const float& dt)
 	// Generate new chunk
 	if (input_->KeyWasPressed('G')) mapGen_->GenerateMap();
 
+	// Collect resource if facing block & within 1 block
+	if (input_->KeyWasPressed('C')) {
+
+		// Check if there is a block in front of the player
+
+
+	}
 }
 
 void Level::Render(const float& dt)
