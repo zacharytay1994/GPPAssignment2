@@ -6,7 +6,7 @@ class Skybox {
 private:
 	std::shared_ptr<ResourceLibrary> rl_;
 	std::shared_ptr<Input> input_;
-	float fov_ = 0.6f;
+	float fov_ = 1.0f;
 	float scale_ = 1500.0f;
 	std::string background_key_ = "spacebox";
 public:
