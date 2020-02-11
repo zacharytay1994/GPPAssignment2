@@ -1,12 +1,13 @@
 #include "MainMenu.h"
 #include "Block.h"
 #include "Player.h"
+#include "InputComponent.h"
 
 MainMenu::MainMenu(std::shared_ptr<Graphics> gfx, std::shared_ptr<Input> input, std::shared_ptr<ResourceLibrary> rl):
 	Scene(gfx, input, rl)
 {
 	std::shared_ptr<Block> tempBlock;
-	for (float z = 3.0f; z < 15.0f; z++) {
+	for (float z = 3.0f; z < 50.0f; z++) {
 
 
 		for (float x = -1.0f; x < 4.0f; x++)
@@ -51,7 +52,7 @@ MainMenu::MainMenu(std::shared_ptr<Graphics> gfx, std::shared_ptr<Input> input, 
 		AddEntity(std::dynamic_pointer_cast<Entity>(tempBlock));
 
 		// rails
-		tempBlock = std::make_shared<Block>(Block("stoneblock", graphics_, input_, rl_));
+		tempBlock = std::make_shared<Block>(Block("rail", graphics_, input_, rl_));
 		tempBlock->SetPosition({ 1,0.5,z });
 		tempBlock->SetScale({ 0.5,0.03125,0.5 });
 		AddEntity(std::dynamic_pointer_cast<Entity>(tempBlock));
@@ -67,8 +68,13 @@ MainMenu::MainMenu(std::shared_ptr<Graphics> gfx, std::shared_ptr<Input> input, 
 	//tempBlock->SetPosition({ 0,2,0 });
 	//AddEntity(std::dynamic_pointer_cast<Entity>(tempBlock));
 
-
-	AddEntity(std::make_shared<Player>(Player(graphics_, input_, rl_)));
+	
+	std::shared_ptr<Player> player = std::make_shared<Player>(Player(graphics_, input_, rl_));
+	player->SetPosition({ 1, 2.25, 10 });
+	player->AddComponent(std::make_shared<InputComponent>(InputComponent(*player, *input_)));
+	AddEntity(player);
+	
+	
 }
 
 void MainMenu::Update(const float& dt)

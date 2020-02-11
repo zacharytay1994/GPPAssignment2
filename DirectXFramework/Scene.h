@@ -23,12 +23,14 @@ protected:
 private:
 	std::vector<std::shared_ptr<Entity>> world_entities_;
 	std::vector<std::shared_ptr<Entity>> to_add_;
+	std::vector<std::shared_ptr<Entity>> to_remove_;
 public:
 	Scene(std::shared_ptr<Graphics> gfx, std::shared_ptr<Input> input, std::shared_ptr<ResourceLibrary> rl);
 	void BaseUpdate(const float& dt);
 	virtual void Update(const float& dt);
 	virtual void Render(const float& dt);
 	void AddEntity(const std::shared_ptr<Entity>& entity);
+	void RemoveEntity(const std::shared_ptr<Entity>& entity);
 
 	// Factory functions
 	std::shared_ptr<Block> AddBlock(const std::string& texture, const Vecf3& position, const Vecf3& size);
