@@ -8,7 +8,8 @@ Scene::Scene(std::shared_ptr<Graphics> gfx, std::shared_ptr<Input> input, std::s
 	:
 	graphics_(gfx),
 	input_(input),
-	rl_(rl)
+	rl_(rl),
+	sb_(rl, input)
 {
 }
 
@@ -56,6 +57,7 @@ void Scene::Update(const float& dt)
 
 void Scene::Render(const float& dt)
 {
+	sb_.Render();
 	std::vector<std::shared_ptr<Entity>>::iterator we;
 	for (we = world_entities_.begin(); we != world_entities_.end(); we++) {
 		(*we)->Render();
@@ -104,6 +106,16 @@ std::shared_ptr<Block> Scene::AddModel(const std::string& texture, const Vecf3& 
 	else {
 		temp->SetDrawMode(2);
 	}
+	temp->SetPosition(position);
+	temp->SetScale(size);
+	AddEntity(std::dynamic_pointer_cast<Entity>(temp));
+	return temp;
+}
+
+std::shared_ptr<Block> Scene::AddUntexturedModel(const std::string& key, const Vecf3& position, const Vecf3& size)
+{
+	std::shared_ptr<Block> temp = std::make_shared<Block>(Block(key, graphics_, input_, rl_));
+	temp->SetDrawMode(4);
 	temp->SetPosition(position);
 	temp->SetScale(size);
 	AddEntity(std::dynamic_pointer_cast<Entity>(temp));

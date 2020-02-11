@@ -51,6 +51,17 @@ dx::XMMATRIX Cube::GetQuaternionTransform()
 	);
 }
 
+dx::XMMATRIX Cube::GetQuaternionModelTransform()
+{
+	// no scaling by 0
+	assert(cube_data_.scale_x_ != 0.0f || cube_data_.scale_y_ != 0.0f || cube_data_.scale_z_ != 0.0f);
+	return	dx::XMMatrixTranspose(
+		dx::XMMatrixScaling(cube_data_.scale_x_, cube_data_.scale_y_, cube_data_.scale_z_) *
+		dx::XMMatrixRotationQuaternion({ cube_data_.rotation_.x, cube_data_.rotation_.y, cube_data_.rotation_.z, cube_data_.rotation_.w }) *
+		dx::XMMatrixTranslation(cube_data_.world_xoffset_, cube_data_.world_yoffset_, cube_data_.world_zoffset_)
+	);
+}
+
 void Cube::SetX(const float& x)
 {
 	cube_data_.world_xoffset_ = x;
@@ -223,7 +234,7 @@ void Cube::DrawWithQuaternion()
 {
 	assert(initialized_ == true);
 	if (visible_) {
-		rl_->DrawTexturedCubeNorm(texture_key_, GetQuaternionTransform(), GetModelTransform());
+		rl_->DrawTexturedCubeNorm(texture_key_, GetQuaternionTransform(), GetQuaternionModelTransform());
 	}
 }
 
@@ -248,7 +259,7 @@ void Cube::HandleDraw()
 		break;
 	case DrawMode::TexturedCubeNormal:
 		if (physics_draw_) {
-			rl_->DrawTexturedCubeNorm(texture_key_, GetQuaternionTransform(), GetModelTransform());
+			rl_->DrawTexturedCubeNorm(texture_key_, GetQuaternionTransform(), GetQuaternionModelTransform());
 		}
 		else {
 			rl_->DrawTexturedCubeNorm(texture_key_, GetTransform(), GetModelTransform());
@@ -264,12 +275,19 @@ void Cube::HandleDraw()
 		break;
 	case DrawMode::TexturedModelNormal:
 		if (physics_draw_) {
-			rl_->DrawModelNorm(texture_key_, GetQuaternionTransform(), GetModelTransform());
+			rl_->DrawModelNorm(texture_key_, GetQuaternionTransform(), GetQuaternionModelTransform());
 		}
 		else {
 			rl_->DrawModelNorm(texture_key_, GetTransform(), GetModelTransform());
 		}
 		break;
+	case DrawMode::UnTexturedModelNormal:
+		if (physics_draw_) {
+			rl_->DrawUnTexturedModelNorm(texture_key_, GetQuaternionTransform(), GetQuaternionModelTransform());
+		}
+		else {
+			rl_->DrawUnTexturedModelNorm(texture_key_, GetTransform(), GetModelTransform());
+		}
 	}
 }
 

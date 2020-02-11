@@ -15,7 +15,8 @@ enum class DrawMode {
 	TexturedCube,
 	TexturedCubeNormal,
 	TexturedModel,
-	TexturedModelNormal
+	TexturedModelNormal,
+	UnTexturedModelNormal
 };
 struct CubeData {
 	float	width_ = 0;									// width of cube in pixels 
@@ -58,6 +59,7 @@ public:
 	dx::XMMATRIX GetTransform();
 	dx::XMMATRIX GetModelTransform();
 	dx::XMMATRIX GetQuaternionTransform();
+	dx::XMMATRIX GetQuaternionModelTransform();
 
 	/*___________________________________*/
 	// SPRITE DATA
