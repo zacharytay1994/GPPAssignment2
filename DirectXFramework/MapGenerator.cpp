@@ -43,6 +43,9 @@ void MapGenerator::GenerateMap()
 	// Generate checkpoint
 	Vecf3 checkpoint = Vecf3((curr_chunk_size_ * width_)+2, 0, dist(rng_));
 
+	Vecf3 dim;
+	std::shared_ptr<Block> b;
+
 	double n;
 	for (int z = 0; z < height_; z++)
 	{
@@ -52,13 +55,13 @@ void MapGenerator::GenerateMap()
 			if (abs(x - checkpoint.x) <= 1 && abs(z - checkpoint.z) <= 1) { 
 
 				// Spawn block & set ground_data_
-				auto b = scene_->AddBlock("startblock", Vecf3(x, -1.0, z), Vecf3(0.5, 0.5, 0.5));
+				b = scene_->AddBlock("startblock", Vecf3(x, -1.0, z), Vecf3(0.5, 0.5, 0.5));
 				ground_data_[curr_chunk_size_ >= 3 ? 48 + (x - curr_chunk_size_ * width_) : x][z] = { GroundBlockType::Checkpoint, true, b };
 
 			} else { 
 
 				// Spawn block & set ground_data_
-				auto b = scene_->AddBlock("grassblock", Vecf3(x, -1.0, z), Vecf3(0.5, 0.5, 0.5));
+				b = scene_->AddBlock("grassblock", Vecf3(x, -1.0, z), Vecf3(0.5, 0.5, 0.5));
 				ground_data_[curr_chunk_size_ >= 3 ? 48 + (x - curr_chunk_size_ * width_) : x][z] = { GroundBlockType::Grass, true, b };
 
 			}
@@ -74,14 +77,16 @@ void MapGenerator::GenerateMap()
 			} else if (n < .4) {
 
 				// Spawn tree & set resource_data_
-				auto t = scene_->AddModel("tree", Vecf3(x, -0.5, z), Vecf3(0.007, 0.007, 0.007), 1);
-				resource_data_[curr_chunk_size_ >= 3 ? 48 + (x - curr_chunk_size_ * width_) : x][z] = { ResourceBlockType::Tree, false, t };
+				dim = rl_->GetDimensions("tree");
+				b = scene_->AddModel("tree", Vecf3(x, -0.5, z), Vecf3(1/dim.x, 1.3/dim.y, 1/dim.z), 1);
+				resource_data_[curr_chunk_size_ >= 3 ? 48 + (x - curr_chunk_size_ * width_) : x][z] = { ResourceBlockType::Tree, false, b };
 
 			} else { 
 
 				// Spawn rock & set resource_data_
-				auto r = scene_->AddModel("rock", Vecf3(x, -0.5, z), Vecf3(0.01, 0.01, 0.01), 1);
-				resource_data_[curr_chunk_size_ >= 3 ? 48 + (x - curr_chunk_size_ * width_) : x][z] = { ResourceBlockType::Rock, false, r };
+				dim = rl_->GetDimensions("rock");
+				b = scene_->AddModel("rock", Vecf3(x, -0.5, z), Vecf3(1/dim.x, .8/dim.y, 1/dim.z), 1);
+				resource_data_[curr_chunk_size_ >= 3 ? 48 + (x - curr_chunk_size_ * width_) : x][z] = { ResourceBlockType::Rock, false, b };
 
 			}
 		}
