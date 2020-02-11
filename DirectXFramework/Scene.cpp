@@ -8,7 +8,8 @@ Scene::Scene(std::shared_ptr<Graphics> gfx, std::shared_ptr<Input> input, std::s
 	:
 	graphics_(gfx),
 	input_(input),
-	rl_(rl)
+	rl_(rl),
+	sb_(rl, input)
 {
 }
 
@@ -28,6 +29,13 @@ void Scene::BaseUpdate(const float& dt)
 		world_entities_.push_back(*ta);
 	}
 	to_add_.clear();
+
+	// Remove any entities & clear the buffer
+	for (ta = to_remove_.begin(); ta != to_remove_.end(); ta++) {
+		auto i = std::find(world_entities_.begin(), world_entities_.end(), *ta);
+		if (i != world_entities_.end()) world_entities_.erase(i);
+	}
+	to_remove_.clear();
 }
 
 void Scene::Update(const float& dt)
@@ -49,6 +57,7 @@ void Scene::Update(const float& dt)
 
 void Scene::Render(const float& dt)
 {
+	sb_.Render();
 	std::vector<std::shared_ptr<Entity>>::iterator we;
 	for (we = world_entities_.begin(); we != world_entities_.end(); we++) {
 		(*we)->Render();
@@ -58,6 +67,11 @@ void Scene::Render(const float& dt)
 void Scene::AddEntity(const std::shared_ptr<Entity>& entity)
 {
 	to_add_.push_back(entity);
+}
+
+void Scene::RemoveEntity(const std::shared_ptr<Entity>& entity)
+{
+	to_remove_.push_back(entity);
 }
 
 std::shared_ptr<Block> Scene::AddBlock(const std::string& texture, const Vecf3& position, const Vecf3& size)
@@ -92,6 +106,16 @@ std::shared_ptr<Block> Scene::AddModel(const std::string& texture, const Vecf3& 
 	else {
 		temp->SetDrawMode(2);
 	}
+	temp->SetPosition(position);
+	temp->SetScale(size);
+	AddEntity(std::dynamic_pointer_cast<Entity>(temp));
+	return temp;
+}
+
+std::shared_ptr<Block> Scene::AddUntexturedModel(const std::string& key, const Vecf3& position, const Vecf3& size)
+{
+	std::shared_ptr<Block> temp = std::make_shared<Block>(Block(key, graphics_, input_, rl_));
+	temp->SetDrawMode(4);
 	temp->SetPosition(position);
 	temp->SetScale(size);
 	AddEntity(std::dynamic_pointer_cast<Entity>(temp));

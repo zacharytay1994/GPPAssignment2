@@ -389,6 +389,11 @@ void Input::EndFrame()
 	state_change_ = false;
 }
 
+Vecf3 Input::GetCameraPosition()
+{
+	return { cam_x_, cam_y_, cam_z_ };
+}
+
 void Input::ResetCamera()
 {
 	mouse_raw_x_ = 0;

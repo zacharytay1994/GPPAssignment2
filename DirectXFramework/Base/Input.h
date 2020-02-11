@@ -1,5 +1,6 @@
 #pragma once
 
+#include "../Vec3.h"
 #include <DirectXMath.h>
 #include <Windows.h>
 #include <windowsx.h>
@@ -83,6 +84,7 @@ public:
 	bool StateChanged();							// returns true if there is a change in buffer state in current frame
 	void TestKeys(HDC hdc, RECT rect);				// visible interface to test virtual key message processing
 	void EndFrame();								// handles all end of frame operations for input
+	Vecf3 GetCameraPosition();
 
 	// Camera Functions
 	void ResetCamera();
