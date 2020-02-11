@@ -91,10 +91,10 @@ void MapGenerator::GenerateMap()
 				image = "woodblock";
 
 				// Spawn tree 
-				scene_->AddModel("tree", Vecf3(x, 0.0, z), Vecf3(0.007, 0.007, 0.007), 1);
+				auto t = scene_->AddModel("tree", Vecf3(x, 0.0, z), Vecf3(0.007, 0.007, 0.007), 1);
 
 				// Set above_data_
-				resource_data_[curr_chunk_size_ >= 3 ? 48 + (x - curr_chunk_size_ * width_) : x][z] = { ResourceBlockType::Tree, false, nullptr };
+				resource_data_[curr_chunk_size_ >= 3 ? 48 + (x - curr_chunk_size_ * width_) : x][z] = { ResourceBlockType::Tree, false, t };
 
 				continue;
 			} else if (n < .6) { 
@@ -110,10 +110,10 @@ void MapGenerator::GenerateMap()
 				image = "stoneblock";
 
 				// Spawn rock
-				scene_->AddModel("rock", Vecf3(x, 0.0, z), Vecf3(0.01, 0.01, 0.01), 1);
+				auto r = scene_->AddModel("rock", Vecf3(x, 0.0, z), Vecf3(0.01, 0.01, 0.01), 1);
 
 				// Set above_data_
-				resource_data_[curr_chunk_size_ >= 3 ? 48 + (x - curr_chunk_size_ * width_) : x][z] = { ResourceBlockType::Rock, false, nullptr };
+				resource_data_[curr_chunk_size_ >= 3 ? 48 + (x - curr_chunk_size_ * width_) : x][z] = { ResourceBlockType::Rock, false, r };
 
 				continue;
 			}
