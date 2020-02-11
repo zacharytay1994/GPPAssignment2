@@ -7,6 +7,7 @@ class Cube;
 struct CubeModelData {
 	std::shared_ptr<Cube> cube;
 	Vecf3 position;
+	Vecf3 scale;
 };
 
 

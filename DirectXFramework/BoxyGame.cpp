@@ -31,12 +31,14 @@ void BoxyGame::Initialize(HWND hwnd)
 	rl_->AddCubeTexture("grassblock", L"Images/grassblock.png");
 	rl_->AddCubeTexture("startblock", L"Images/startblock.png");
 	rl_->AddCubeTexture("stoneblock", L"Images/stoneblock.png");
+	rl_->AddCubeTexture("rail", L"Images/rail.png");
 	rl_->AddCubeTexture("alex", L"Images/alex.png");
 	rl_->AddCubeTexture("alexbody", L"Images/alex_body.png");
 	rl_->AddCubeTexture("alexarm", L"Images/alex-arm.png");
 	rl_->AddCubeTexture("alexleg", L"Images/alex-leg.png");
 	rl_->AddCubeTexture("spacebox", L"Images/spacebox2.png");
-	rl_->AddPosNormModel("untexturedtree", "Models\\lowpolytree.obj");
+	rl_->AddPosNormTexModel("tre", "Models/tre.obj", L"Images/tre.png");
+	rl_->AddPosNormTexModel("nsur", "Models/nsur.obj", L"Images/nsur.png");
 }
 
 void BoxyGame::Update()
