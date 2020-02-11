@@ -12,11 +12,10 @@ Level::Level(std::shared_ptr<Graphics> gfx, std::shared_ptr<Input> input, std::s
 	//test_object_ = std::make_shared<TestObject>(graphics_, input_, mat, "Models\\10021_Giraffe_v04.obj", L"Images/10021_Giraffe_v05.png", rl);
 
 	// Initialize map generator
-	mapGen_ = std::make_unique<MapGenerator>(graphics_, input_, rl_);
+	mapGen_ = std::make_unique<MapGenerator>(graphics_, input_, rl_, this);
 
 	// Generate map
-	for (std::shared_ptr<Entity> e : mapGen_->GenerateMap())
-	{ AddEntity(e); }
+	mapGen_->GenerateMap();
 
 	AddSolidBlock("grassblock", { 0.0f, -60.0f, 5.0f }, { 30.0f, 30.0f, 30.0f }, 500000.0f);
 	//std::shared_ptr<Block> giraffe = AddModel("dogNormie", { 0.0f, -20.0f, 0.0f }, { 1.0f, 1.0f, 1.0f }, true);
@@ -54,8 +53,7 @@ void Level::Update(const float& dt)
 	// Generate new chunk
 	if (input_->KeyWasPressed('G')) 
 	{
-		for (std::shared_ptr<Entity> e : mapGen_->GenerateMap())
-		{ AddEntity(e); }
+		mapGen_->GenerateMap();
 	}
 
 	//test_object_->Draw();
