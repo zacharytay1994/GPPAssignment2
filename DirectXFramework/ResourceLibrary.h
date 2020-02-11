@@ -39,9 +39,11 @@ private:
 	std::shared_ptr<Graphics> gfx;
 	std::unordered_map<std::string, VIBuffer> vi_buffer_map;
 	std::unordered_map<std::string, ID3D11ShaderResourceView*> srv_map;
+	std::unordered_map<std::string, Vecf3> dimensions;
 public:
 	ResourceLibrary(std::shared_ptr<Graphics> gfx);
 	void Initialize();
+	Vecf3 GetDimensions(const std::string& key);
 	/*____________________________________*/
 	// MESH LOADING FUNCTIONS
 	/*____________________________________*/

@@ -2,6 +2,7 @@
 #include "Entity.h"
 #include "Block.h"
 #include "Cube.h"
+#include "Player.h"
 #include "CollisionComponent.h"
 
 Scene::Scene(std::shared_ptr<Graphics> gfx, std::shared_ptr<Input> input, std::shared_ptr<ResourceLibrary> rl)
@@ -121,3 +122,14 @@ std::shared_ptr<Block> Scene::AddUntexturedModel(const std::string& key, const V
 	AddEntity(std::dynamic_pointer_cast<Entity>(temp));
 	return temp;
 }
+
+std::shared_ptr<Player> Scene::AddPlayer(const Vecf3& position, const Vecf3& size)
+{
+	std::shared_ptr<Player> player_ = std::make_shared<Player>(Player(graphics_, input_, rl_));
+	player_->SetDrawMode(4);
+	player_->SetPosition(position);
+	AddEntity(std::dynamic_pointer_cast<Entity>(player_));
+	return player_;
+}
+
+
