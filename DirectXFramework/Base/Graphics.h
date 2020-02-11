@@ -44,6 +44,7 @@ private:
 	/*_______________________________________*/
 	ID3D11InputLayout*		p_il_PosTex_ = nullptr;
 	ID3D11InputLayout*		p_il_PosNormTex_ = nullptr;
+	ID3D11InputLayout*		p_il_PosNorm_ = nullptr;
 	// --->
 
 	ID3D11VertexShader*		p_vertex_shader_ = nullptr;

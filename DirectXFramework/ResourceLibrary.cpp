@@ -11,6 +11,7 @@ void ResourceLibrary::Initialize()
 {
 	GenPosTexCube();
 	GenPosNormTexCube();
+	GenPosTexPlane();
 }
 
 void ResourceLibrary::AddPosTexModel(const std::string& mapkey, const std::string& objfile, const std::wstring& texturefile)
@@ -118,7 +119,7 @@ void ResourceLibrary::AddPosNormTexModel(const std::string& mapkey, const std::s
 		vs_data.push_back(
 			{ 
 				DirectX::XMFLOAT3( pMesh->mVertices[i].x, pMesh->mVertices[i].y, pMesh->mVertices[i].z ),
-				DirectX::XMFLOAT3( -pMesh->mNormals[i].x, -pMesh->mNormals[i].y, pMesh->mNormals[i].z ),
+				DirectX::XMFLOAT3( pMesh->mNormals[i].x, pMesh->mNormals[i].y, pMesh->mNormals[i].z ),
 				DirectX::XMFLOAT2( pMesh->mTextureCoords[0][i].x, pMesh->mTextureCoords[0][i].y )
 			});
 	}
@@ -165,6 +166,79 @@ void ResourceLibrary::AddPosNormTexModel(const std::string& mapkey, const std::s
 
 	// create shader resource view for texture
 	CreateShaderResourceView(texturefile, mapkey);
+}
+
+void ResourceLibrary::AddPosNormModel(const std::string& mapkey, const std::string& objfile)
+{
+	std::vector<PosNorm> vs_data;
+	Assimp::Importer importer;
+
+	// create and map Vertex and Index Buffers
+	vi_buffer_map.emplace(mapkey, VIBuffer());
+
+	// read model into aiMesh*
+	const auto pModel = importer.ReadFile(objfile,
+		aiProcess_Triangulate |
+		aiProcess_JoinIdenticalVertices |
+		aiProcess_FlipUVs
+	);
+	const auto pMesh = pModel->mMeshes[0];
+
+	// check if has vertices, normals, and texturecoords
+	assert(pMesh->HasPositions());
+	assert(pMesh->HasNormals());
+
+	// push back vertices
+	int size = pMesh->mNumVertices;
+	vs_data.reserve(pMesh->mNumVertices);
+	for (unsigned int i = 0; i < pMesh->mNumVertices; i++)
+	{
+		vs_data.push_back(
+			{
+				DirectX::XMFLOAT3(pMesh->mVertices[i].x, pMesh->mVertices[i].y, pMesh->mVertices[i].z),
+				DirectX::XMFLOAT3(pMesh->mNormals[i].x, pMesh->mNormals[i].y, pMesh->mNormals[i].z)
+			});
+	}
+
+	// fill created v_buffer in map
+	D3D11_BUFFER_DESC buffer_description = {};
+	buffer_description.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+	buffer_description.Usage = D3D11_USAGE_DYNAMIC;
+	buffer_description.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+	buffer_description.MiscFlags = 0u;
+	buffer_description.ByteWidth = vs_data.size() * sizeof(PosNorm);
+	buffer_description.StructureByteStride = sizeof(PosNorm);
+	D3D11_SUBRESOURCE_DATA subresource_data = {};
+	subresource_data.pSysMem = &(vs_data[0]);
+
+	gfx->GetGraphicsDevice()->CreateBuffer(&buffer_description, &subresource_data, &vi_buffer_map[mapkey].p_v_buffer_);
+
+	// read indices from mesh
+	std::vector<unsigned short> indices;
+	indices.reserve(pMesh->mNumFaces * 3);
+	for (unsigned int i = 0; i < pMesh->mNumFaces; i++)
+	{
+		const auto& face = pMesh->mFaces[i];
+		assert(face.mNumIndices == 3);
+		indices.push_back(face.mIndices[0]);
+		indices.push_back(face.mIndices[1]);
+		indices.push_back(face.mIndices[2]);
+	}
+
+	vi_buffer_map[mapkey].index_count_ = indices.size();
+
+	// fill created i_buffer in map
+	D3D11_BUFFER_DESC index_buffer_desc = {};
+	index_buffer_desc.BindFlags = D3D11_BIND_INDEX_BUFFER;
+	index_buffer_desc.Usage = D3D11_USAGE_DEFAULT;
+	index_buffer_desc.CPUAccessFlags = 0u;
+	index_buffer_desc.MiscFlags = 0u;
+	index_buffer_desc.ByteWidth = indices.size() * sizeof(unsigned short);
+	index_buffer_desc.StructureByteStride = sizeof(unsigned short);
+	D3D11_SUBRESOURCE_DATA index_subresource_data = {};				// subresource used to create the buffer
+	index_subresource_data.pSysMem = &(indices[0]);
+
+	gfx->GetGraphicsDevice()->CreateBuffer(&index_buffer_desc, &index_subresource_data, &vi_buffer_map[mapkey].p_i_buffer_);
 }
 
 void ResourceLibrary::GenPosTexCube()
@@ -333,6 +407,54 @@ void ResourceLibrary::GenPosNormTexCube()
 	vi_buffer_map["TexturedNormCube"].index_count_ = 36;
 }
 
+void ResourceLibrary::GenPosTexPlane()
+{
+	// create and map Vertex and Index Buffers
+	vi_buffer_map.emplace("TexturedPlane", VIBuffer());
+
+	// cube vertices and texture coordinates
+	PosTex vs_data[] = {
+		// Front face
+		{{-1.0f, -1.0f, 0.5f}, {0.0f, 1.0f}},
+		{{1.0f, -1.0f, 0.5f}, {1.0f, 1.0f}},
+		{{-1.0f, 1.0f, 0.5f}, {0.0f, 0.0f}},
+		{{1.0f, 1.0f, 0.5f}, {1.0f, 0.0f}}
+	};
+
+	// fill created v_buffer in map
+	D3D11_BUFFER_DESC buffer_description = {};
+	buffer_description.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+	buffer_description.Usage = D3D11_USAGE_DYNAMIC;
+	buffer_description.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+	buffer_description.MiscFlags = 0u;
+	buffer_description.ByteWidth = sizeof(vs_data);
+	buffer_description.StructureByteStride = sizeof(PosTex);
+	D3D11_SUBRESOURCE_DATA subresource_data = {};
+	subresource_data.pSysMem = vs_data;
+
+	gfx->GetGraphicsDevice()->CreateBuffer(&buffer_description, &subresource_data, &vi_buffer_map["TexturedPlane"].p_v_buffer_);
+
+	// create indices
+	const unsigned short indices[] = {
+		1,0,2, 1,2,3
+	};
+
+	// fill created i_buffer in map
+	D3D11_BUFFER_DESC index_buffer_desc = {};
+	index_buffer_desc.BindFlags = D3D11_BIND_INDEX_BUFFER;
+	index_buffer_desc.Usage = D3D11_USAGE_DYNAMIC;
+	index_buffer_desc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+	index_buffer_desc.MiscFlags = 0u;
+	index_buffer_desc.ByteWidth = sizeof(indices);
+	index_buffer_desc.StructureByteStride = sizeof(unsigned short);
+	D3D11_SUBRESOURCE_DATA index_subresource_data = {};
+	index_subresource_data.pSysMem = indices;
+
+	gfx->GetGraphicsDevice()->CreateBuffer(&index_buffer_desc, &index_subresource_data, &vi_buffer_map["TexturedPlane"].p_i_buffer_);
+
+	vi_buffer_map["TexturedPlane"].index_count_ = 6;
+}
+
 void ResourceLibrary::AddCubeTexture(const std::string& mapkey, const std::wstring& texturefile)
 {
 	CreateShaderResourceView(texturefile, mapkey);
@@ -376,6 +498,26 @@ void ResourceLibrary::DrawTexturedCubeNorm(const std::string& key, const DirectX
 	gfx->BindShaderResourceView(srv_map[key]);
 	gfx->UpdateCBTransformSubresource({ transform, model });
 	gfx->DrawIndexed(vi_buffer_map["TexturedNormCube"].index_count_);
+}
+
+void ResourceLibrary::DrawTexturedPlane(const std::string& key, const DirectX::XMMATRIX& transform)
+{
+	gfx->SetUseType(ShaderType::Textured);
+	gfx->BindVertexBufferStride(vi_buffer_map["TexturedPlane"].p_v_buffer_, 20u);
+	gfx->BindIndexBuffer(vi_buffer_map["TexturedPlane"].p_i_buffer_);
+	gfx->BindShaderResourceView(srv_map[key]);
+	gfx->UpdateCBTransformSubresource({ transform, DirectX::XMMatrixIdentity() });
+	gfx->DrawIndexed(vi_buffer_map["TexturedPlane"].index_count_);
+}
+
+void ResourceLibrary::DrawUnTexturedModelNorm(const std::string& key, const DirectX::XMMATRIX& transform, const DirectX::XMMATRIX& model)
+{
+	gfx->SetUseType(ShaderType::UntexturedNormal);
+	gfx->BindVertexBufferStride(vi_buffer_map[key].p_v_buffer_, 24u);
+	gfx->BindIndexBuffer(vi_buffer_map[key].p_i_buffer_);
+	gfx->BindShaderResourceView(srv_map[key]);
+	gfx->UpdateCBTransformSubresource({ transform, model });
+	gfx->DrawIndexed(vi_buffer_map[key].index_count_);
 }
 
 void ResourceLibrary::CreateShaderResourceView(const std::wstring& texturefile, const std::string& mapkey)

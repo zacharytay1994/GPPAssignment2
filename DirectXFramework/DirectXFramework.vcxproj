@@ -87,11 +87,13 @@
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(ProjectDir)Shaders\%(Filename).cso</ObjectFileOutput>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
     </FxCompile>
     <FxCompile Include="UntexturedNormVS.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(ProjectDir)Shaders\%(Filename).cso</ObjectFileOutput>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
     </FxCompile>
     <FxCompile Include="UntexturedPS.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
@@ -120,6 +122,7 @@
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="ResourceLibrary.cpp" />
     <ClCompile Include="Scene.cpp" />
+    <ClCompile Include="Skybox.cpp" />
     <ClCompile Include="SourceFiles\Game.cpp" />
     <ClCompile Include="SourceFiles\GameChild.cpp" />
     <ClCompile Include="SourceFiles\GDIPlusManager.cpp" />
@@ -164,6 +167,7 @@
     <ClInclude Include="PhysicsMath.h" />
     <ClInclude Include="SAT.h" />
     <ClInclude Include="Scene.h" />
+    <ClInclude Include="Skybox.h" />
     <ClInclude Include="Vec2.h" />
     <ClInclude Include="Vec3.h" />
     <ClInclude Include="Vec4.h" />
