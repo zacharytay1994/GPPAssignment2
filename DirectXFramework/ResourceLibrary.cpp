@@ -417,8 +417,8 @@ void ResourceLibrary::GenPosTexPlane()
 		// Front face
 		{{-1.0f, -1.0f, 0.5f}, {0.0f, 1.0f}},
 		{{1.0f, -1.0f, 0.5f}, {1.0f, 1.0f}},
-		{{-1.0f, 1.0f, 0.5f}, {1.0f / 3.0f, 0.5f}},
-		{{1.0f, 1.0f, 0.5f}, {2.0f / 3.0f, 0.5f}}
+		{{-1.0f, 1.0f, 0.5f}, {0.0f, 0.0f}},
+		{{1.0f, 1.0f, 0.5f}, {1.0f, 0.0f}}
 	};
 
 	// fill created v_buffer in map
@@ -436,7 +436,7 @@ void ResourceLibrary::GenPosTexPlane()
 
 	// create indices
 	const unsigned short indices[] = {
-		0,1,2, 2,1,3
+		1,0,2, 1,2,3
 	};
 
 	// fill created i_buffer in map
@@ -498,6 +498,16 @@ void ResourceLibrary::DrawTexturedCubeNorm(const std::string& key, const DirectX
 	gfx->BindShaderResourceView(srv_map[key]);
 	gfx->UpdateCBTransformSubresource({ transform, model });
 	gfx->DrawIndexed(vi_buffer_map["TexturedNormCube"].index_count_);
+}
+
+void ResourceLibrary::DrawTexturedPlane(const std::string& key, const DirectX::XMMATRIX& transform)
+{
+	gfx->SetUseType(ShaderType::Textured);
+	gfx->BindVertexBufferStride(vi_buffer_map["TexturedPlane"].p_v_buffer_, 20u);
+	gfx->BindIndexBuffer(vi_buffer_map["TexturedPlane"].p_i_buffer_);
+	gfx->BindShaderResourceView(srv_map[key]);
+	gfx->UpdateCBTransformSubresource({ transform, DirectX::XMMatrixIdentity() });
+	gfx->DrawIndexed(vi_buffer_map["TexturedPlane"].index_count_);
 }
 
 void ResourceLibrary::DrawUnTexturedModelNorm(const std::string& key, const DirectX::XMMATRIX& transform, const DirectX::XMMATRIX& model)

@@ -8,7 +8,8 @@ Scene::Scene(std::shared_ptr<Graphics> gfx, std::shared_ptr<Input> input, std::s
 	:
 	graphics_(gfx),
 	input_(input),
-	rl_(rl)
+	rl_(rl),
+	sb_(rl, input)
 {
 }
 
@@ -49,6 +50,7 @@ void Scene::Update(const float& dt)
 
 void Scene::Render(const float& dt)
 {
+	sb_.Render();
 	std::vector<std::shared_ptr<Entity>>::iterator we;
 	for (we = world_entities_.begin(); we != world_entities_.end(); we++) {
 		(*we)->Render();

@@ -5,6 +5,7 @@
 #include "ResourceLibrary.h"
 #include "CollisionManager.h"
 #include "Vec3.h"
+#include "Skybox.h"
 #include <vector>
 #include <memory>
 #include <string>
@@ -16,6 +17,7 @@ protected:
 	std::shared_ptr<Graphics> graphics_;
 	std::shared_ptr<Input> input_;
 	std::shared_ptr<ResourceLibrary> rl_;
+	Skybox sb_;
 	CollisionManager cm_;
 	std::vector<std::shared_ptr<Block>> gravity_blocks_;
 private:
