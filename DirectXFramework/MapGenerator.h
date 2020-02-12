@@ -60,7 +60,7 @@ private:
 		bool walkable_;
 		std::shared_ptr<Entity> ent_;
 	};
-	ResourceTileData resource_data_[width_*3][height_];
+	ResourceTileData resource_data_[width_*3*height_];
 
 	enum class GroundBlockType {
 		Checkpoint,
@@ -71,7 +71,7 @@ private:
 		bool walkable_;
 		std::shared_ptr<Entity> ent_;
 	};
-	GroundTileData ground_data_[width_*3][height_];
+	GroundTileData ground_data_[width_*3*height_];
 
 	// TODO: Add seed
 
@@ -97,8 +97,8 @@ public:
 	}
 
 	// Getters
-	ResourceTileData* getResourceTileData() { return resource_data_[0]; }
-	GroundTileData* getGroundTileData() { return ground_data_[0]; }
+	ResourceTileData* getResourceTileData() { return resource_data_; }
+	GroundTileData* getGroundTileData() { return ground_data_; }
 
 	int GetTotalMapSize() { return total_map_size_; }
 
