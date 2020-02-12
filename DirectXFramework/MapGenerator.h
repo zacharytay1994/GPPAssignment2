@@ -8,6 +8,7 @@
 #include <random>
 #include "Scene.h"
 #include <vector>
+#include "Vec2.h"
 
 /*
  * TODO: Spawn Start & Checkpoint (should have variable (a) distance between them & (b) z values)
@@ -86,20 +87,24 @@ public:
 	// Constructor
 	MapGenerator(std::shared_ptr<Graphics> graphics, std::shared_ptr<Input> input, std::shared_ptr<ResourceLibrary> rl, Scene* scene);
 
-	// Generates a map based on the WIDTH & HEIGHT attributes & modifies the provided entity vector
+	// Generates a chunk based on the width_ & height_ attributes & adds it to the current map
+	// If total_map_size_ >= 3, the first chunk will be removed as well.
 	void GenerateMap();
 
 	// Setter
-	void setFrequency(double f) 
+	void SetFrequency(double f) 
 	{ 
 		frequency_ = f; 
 		updateFreq();
 	}
 
 	// Getters
-	ResourceTileData* getResourceTileData() { return resource_data_; }
-	GroundTileData* getGroundTileData() { return ground_data_; }
+	ResourceTileData* GetResourceTileData() { return resource_data_; }
+	GroundTileData* GetGroundTileData() { return ground_data_; }
 
-	int GetTotalMapSize() { return total_map_size_; }
+	// Returns number of chunks that have been spawned
+	int GetTotalChunkNo() { return total_map_size_; }
 
+	Vec2<int> GetChunkSize() { return Vec2<int>(width_, height_); }
+	Vec2<int> GetMapSize() { return Vec2<int>(width_*3, height_); }
 };
