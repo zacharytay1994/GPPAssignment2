@@ -2,6 +2,8 @@
 #include "Block.h"
 #include "CollisionComponent.h"
 
+#include <cmath>
+
 Level::Level(std::shared_ptr<Graphics> gfx, std::shared_ptr<Input> input, std::shared_ptr<ResourceLibrary> rl)
 	:
 	Scene(gfx, input, rl)
@@ -58,8 +60,32 @@ void Level::Update(const float& dt)
 	// Collect resource if facing block & within 1 block
 	if (input_->KeyWasPressed('C')) {
 
-		// Check if there is a block in front of the player
+		// Get player heading & check if there is a block in front of the player
+		float y_rot = fmod(player_->GetOrientation().y, 2*PI);
 
+		if ((y_rot >= 7*PI/4) || (y_rot <= PI/4)) {
+
+			// Facing forward
+			OutputDebugString("Facing forward!\n");
+			
+			//mapGen_->getResourceTileData()[(int)round(player_->GetPosition().x)][(int)round(player_->GetPosition().z)]
+
+		} else if (y_rot <= 3*PI/4) {
+
+			// Facing right
+			OutputDebugString("Facing rightward!\n");
+
+		} else if (y_rot <= 5*PI/4) {
+
+			// Facing downward
+			OutputDebugString("Facing downward!\n");
+
+		} else {
+
+			// Facing left
+			OutputDebugString("Facing leftward!\n");
+
+		}
 
 	}
 }
