@@ -84,6 +84,7 @@ MainMenu::MainMenu(std::shared_ptr<Graphics> gfx, std::shared_ptr<Input> input, 
 	tempBlock->GetCube().SetAngleZDeg(180);
 	tempBlock->GetCube().SetAngleYDeg(180);
 	AddEntity(tempBlock);
+	
 }
 
 void MainMenu::Update(const float& dt)
