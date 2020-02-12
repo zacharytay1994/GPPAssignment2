@@ -30,7 +30,7 @@ Level::Level(std::shared_ptr<Graphics> gfx, std::shared_ptr<Input> input, std::s
 	//gravity_blocks_.push_back(AddSolidBlock("grassblock", { 0.0f, 5.0f, 5.0f }, { 1.0f, 1.0f, 1.0f }, 5.0f));
 	//gravity_blocks_[0]->GetComponentOfType<CollisionComponent>("Collision")->SetAngularVelocity({ 1.0f, 1.0f, 1.0f }); // only solid blocks can be added to gravity blocks
 	//AddBlock("grassblock", { 0.0f, -10.0f, 5.0f }, { 5.0f, 1.0f, 5.0f });
-	player_ = AddPlayer({ 6.0f, 1.0f, 6.0f }, { 0.5f, 0.5f, 0.5f });
+	player_ = AddPlayer({ 0.0f, 1.0f, 1.0f }, { 0.5f, 0.5f, 0.5f });
 }
 
 void Level::Update(const float& dt)
@@ -62,66 +62,33 @@ void Level::Update(const float& dt)
 	// Collect resource if facing block & within 1 block
 	if (input_->KeyWasPressed('C')) {
 
-		// Get player heading & check if there is a block in front of the player
-		float y_rot = fmod(player_->GetOrientation().y, 2*PI);
+		// Get normalized player pos
+		Vecf3 norm_player_pos = player_->GetPosition();
+		norm_player_pos.x = (int)round(player_->GetPosition().x) - max(0, (mapGen_->GetTotalChunkNo() - 3) * mapGen_->GetChunkSize().x);
 
-		auto b = mapGen_->GetResourceTileData()[0];
+		// Get player heading & check if there is a block in front of the player
+		float y_rot = fmod(player_->GetOrientation().y > 0 ? player_->GetOrientation().y : player_->GetOrientation().y + 2*PI, 2*PI);
 		if ((y_rot >= 7*PI/4) || (y_rot <= PI/4)) {
 
 			// Facing forward
-			OutputDebugString("Facing forward!\n");
-
-			b = mapGen_->GetResourceTileData()[(int)round(player_->GetPosition().x) * (int)round(player_->GetPosition().z) + mapGen_->GetMapSize().x];
+			RemoveEntity(mapGen_->GetResourceTileData()[(int)(round(norm_player_pos.z + 1) * mapGen_->GetMapSize().x + norm_player_pos.x)].ent_);
 
 		} else if (y_rot <= 3*PI/4) {
 
 			// Facing right
-			OutputDebugString("Facing rightward!\n");
-
-			b = mapGen_->GetResourceTileData()[(int)round(player_->GetPosition().x) * (int)round(player_->GetPosition().z) + 1];
+			RemoveEntity(mapGen_->GetResourceTileData()[(int)(round(norm_player_pos.z) * mapGen_->GetMapSize().x + norm_player_pos.x + 1)].ent_);
 
 		} else if (y_rot <= 5*PI/4) {
 
 			// Facing downward
-			OutputDebugString("Facing downward!\n");
-
-			b = mapGen_->GetResourceTileData()[(int)round(player_->GetPosition().x) * (int)round(player_->GetPosition().z) - mapGen_->GetMapSize().x];
+			RemoveEntity(mapGen_->GetResourceTileData()[(int)(round(norm_player_pos.z - 1) * mapGen_->GetMapSize().x + norm_player_pos.x)].ent_);
 
 		} else {
 
 			// Facing left
-			OutputDebugString("Facing leftward!\n");
-
-			b = mapGen_->GetResourceTileData()[(int)round(player_->GetPosition().x) * (int)round(player_->GetPosition().z) - 1];
+			RemoveEntity(mapGen_->GetResourceTileData()[(int)(round(norm_player_pos.z) * mapGen_->GetMapSize().x + norm_player_pos.x - 1)].ent_);
 
 		}
-
-		std::stringstream p_ss;
-		p_ss << "Player pos: " << player_->GetPosition().x << " " << player_->GetPosition().z << '\n';
-		OutputDebugString(p_ss.str().c_str());
-
-		std::stringstream b_ss;
-		b_ss << "Block ahead: ";
-		switch (b.block_type_)
-		{
-		case MapGenerator::ResourceBlockType::Rock:
-			b_ss << "Rock";
-			break;
-		case MapGenerator::ResourceBlockType::Tree:
-			b_ss << "Tree";
-			break;
-		case MapGenerator::ResourceBlockType::Air:
-			b_ss << "Air";
-			break;
-		default:
-			b_ss << "ykno what idk";
-			break;
-		}
-		b_ss << '\n';
-		OutputDebugString(b_ss.str().c_str());
-
-		RemoveEntity(b.ent_);
-
 	}
 }
 
