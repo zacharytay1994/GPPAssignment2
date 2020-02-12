@@ -65,33 +65,62 @@ void Level::Update(const float& dt)
 		// Get player heading & check if there is a block in front of the player
 		float y_rot = fmod(player_->GetOrientation().y, 2*PI);
 
+		auto b = mapGen_->GetResourceTileData()[0];
 		if ((y_rot >= 7*PI/4) || (y_rot <= PI/4)) {
 
 			// Facing forward
 			OutputDebugString("Facing forward!\n");
-			
-			auto b = mapGen_->GetResourceTileData()[(int)round(player_->GetPosition().x) * (int)round(player_->GetPosition().z) + mapGen_->GetMapSize().x];
 
-			std::stringstream ss;
-			ss << "Block ahead: " << (b.breakable_ ? " " : "not ") << "breakable";
-			OutputDebugString(ss.str().c_str());
+			b = mapGen_->GetResourceTileData()[(int)round(player_->GetPosition().x) * (int)round(player_->GetPosition().z) + mapGen_->GetMapSize().x];
 
 		} else if (y_rot <= 3*PI/4) {
 
 			// Facing right
 			OutputDebugString("Facing rightward!\n");
 
+			b = mapGen_->GetResourceTileData()[(int)round(player_->GetPosition().x) * (int)round(player_->GetPosition().z) + 1];
+
 		} else if (y_rot <= 5*PI/4) {
 
 			// Facing downward
 			OutputDebugString("Facing downward!\n");
+
+			b = mapGen_->GetResourceTileData()[(int)round(player_->GetPosition().x) * (int)round(player_->GetPosition().z) - mapGen_->GetMapSize().x];
 
 		} else {
 
 			// Facing left
 			OutputDebugString("Facing leftward!\n");
 
+			b = mapGen_->GetResourceTileData()[(int)round(player_->GetPosition().x) * (int)round(player_->GetPosition().z) - 1];
+
 		}
+
+		std::stringstream p_ss;
+		p_ss << "Player pos: " << player_->GetPosition().x << " " << player_->GetPosition().z << '\n';
+		OutputDebugString(p_ss.str().c_str());
+
+		std::stringstream b_ss;
+		b_ss << "Block ahead: ";
+		switch (b.block_type_)
+		{
+		case MapGenerator::ResourceBlockType::Rock:
+			b_ss << "Rock";
+			break;
+		case MapGenerator::ResourceBlockType::Tree:
+			b_ss << "Tree";
+			break;
+		case MapGenerator::ResourceBlockType::Air:
+			b_ss << "Air";
+			break;
+		default:
+			b_ss << "ykno what idk";
+			break;
+		}
+		b_ss << '\n';
+		OutputDebugString(b_ss.str().c_str());
+
+		RemoveEntity(b.ent_);
 
 	}
 }
