@@ -71,7 +71,14 @@ void Player::Update(const float& dt)
 	{
 		SetPosition(GetPosition() + Vecf3(2.0f, 0.0f, 0.0f) * dt);
 	}
-	
+	if (input_->KeyIsDown(VK_OEM_COMMA))
+	{
+		cubeModel_.RotateYTo("head", -PI / 2 * dt);
+	}
+	if (input_->KeyIsDown(VK_OEM_PERIOD))
+	{
+		cubeModel_.RotateYTo("head", PI / 2 * dt);
+	}
 }
 
 void Player::Render()
