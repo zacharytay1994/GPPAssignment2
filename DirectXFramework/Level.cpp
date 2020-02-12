@@ -3,6 +3,8 @@
 #include "CollisionComponent.h"
 
 #include <cmath>
+#include <iostream>
+#include <sstream>
 
 Level::Level(std::shared_ptr<Graphics> gfx, std::shared_ptr<Input> input, std::shared_ptr<ResourceLibrary> rl)
 	:
@@ -68,7 +70,11 @@ void Level::Update(const float& dt)
 			// Facing forward
 			OutputDebugString("Facing forward!\n");
 			
-			//mapGen_->getResourceTileData()[(int)round(player_->GetPosition().x)][(int)round(player_->GetPosition().z)]
+			auto b = mapGen_->GetResourceTileData()[(int)round(player_->GetPosition().x) * (int)round(player_->GetPosition().z) + mapGen_->GetMapSize().x];
+
+			std::stringstream ss;
+			ss << "Block ahead: " << (b.breakable_ ? " " : "not ") << "breakable";
+			OutputDebugString(ss.str().c_str());
 
 		} else if (y_rot <= 3*PI/4) {
 
