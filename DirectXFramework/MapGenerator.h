@@ -20,6 +20,18 @@
  */
 
 class MapGenerator {
+public:
+	// Block types
+	enum class ResourceBlockType {
+		Rock,
+		Tree,
+		Rail,
+		Air
+	};
+	enum class GroundBlockType {
+		Checkpoint,
+		Grass
+	};
 private:
 	std::shared_ptr<Graphics> graphics_;
 	std::shared_ptr<Input> input_;
@@ -49,12 +61,6 @@ private:
 	std::uniform_int_distribution<int> dist;
 
 	// Map data
-	enum class ResourceBlockType {
-		Rock,
-		Tree,
-		Rail,
-		Air
-	};
 	struct ResourceTileData {
 		ResourceBlockType block_type_;
 		bool breakable_;
@@ -63,10 +69,6 @@ private:
 	};
 	ResourceTileData resource_data_[width_*3*height_];
 
-	enum class GroundBlockType {
-		Checkpoint,
-		Grass
-	};
 	struct GroundTileData {
 		GroundBlockType block_type_;
 		bool walkable_;
