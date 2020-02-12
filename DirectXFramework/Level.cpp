@@ -3,8 +3,6 @@
 #include "CollisionComponent.h"
 
 #include <cmath>
-#include <iostream>
-#include <sstream>
 
 Level::Level(std::shared_ptr<Graphics> gfx, std::shared_ptr<Input> input, std::shared_ptr<ResourceLibrary> rl)
 	:
