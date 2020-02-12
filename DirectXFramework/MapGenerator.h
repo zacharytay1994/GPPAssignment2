@@ -8,6 +8,7 @@
 #include <random>
 #include "Scene.h"
 #include <vector>
+#include "Vec2.h"
 
 /*
  * TODO: Spawn Start & Checkpoint (should have variable (a) distance between them & (b) z values)
@@ -19,6 +20,18 @@
  */
 
 class MapGenerator {
+public:
+	// Block types
+	enum class ResourceBlockType {
+		Rock,
+		Tree,
+		Rail,
+		Air
+	};
+	enum class GroundBlockType {
+		Checkpoint,
+		Grass
+	};
 private:
 	std::shared_ptr<Graphics> graphics_;
 	std::shared_ptr<Input> input_;
@@ -39,8 +52,8 @@ private:
 	double fx_ = width_ / frequency_;
 	double fz_ = height_ / frequency_;
 
-	// Current size of map
-	int curr_chunk_size_ = 0;
+	// Total size of map
+	int total_map_size_ = 0;
 
 	// Random number generator
 	std::random_device rd_;
@@ -48,29 +61,20 @@ private:
 	std::uniform_int_distribution<int> dist;
 
 	// Map data
-	enum class ResourceBlockType {
-		Rock,
-		Tree,
-		Rail,
-		Air
-	};
 	struct ResourceTileData {
 		ResourceBlockType block_type_;
+		bool breakable_;
 		bool walkable_;
 		std::shared_ptr<Entity> ent_;
 	};
-	ResourceTileData resource_data_[width_*3][height_];
+	ResourceTileData resource_data_[width_*3*height_];
 
-	enum class GroundBlockType {
-		Checkpoint,
-		Grass
-	};
 	struct GroundTileData {
 		GroundBlockType block_type_;
 		bool walkable_;
 		std::shared_ptr<Entity> ent_;
 	};
-	GroundTileData ground_data_[width_*3][height_];
+	GroundTileData ground_data_[width_*3*height_];
 
 	// TODO: Add seed
 
@@ -85,18 +89,24 @@ public:
 	// Constructor
 	MapGenerator(std::shared_ptr<Graphics> graphics, std::shared_ptr<Input> input, std::shared_ptr<ResourceLibrary> rl, Scene* scene);
 
-	// Generates a map based on the WIDTH & HEIGHT attributes & modifies the provided entity vector
+	// Generates a chunk based on the width_ & height_ attributes & adds it to the current map
+	// If total_map_size_ >= 3, the first chunk will be removed as well.
 	void GenerateMap();
 
 	// Setter
-	void setFrequency(double f) 
+	void SetFrequency(double f) 
 	{ 
 		frequency_ = f; 
 		updateFreq();
 	}
 
 	// Getters
-	ResourceTileData* getResourceTileData() { return resource_data_[0]; }
-	GroundTileData* getGroundTileData() { return ground_data_[0]; }
+	ResourceTileData* GetResourceTileData() { return resource_data_; }
+	GroundTileData* GetGroundTileData() { return ground_data_; }
 
+	// Returns number of chunks that have been spawned
+	int GetTotalChunkNo() { return total_map_size_; }
+
+	Vec2<int> GetChunkSize() { return Vec2<int>(width_, height_); }
+	Vec2<int> GetMapSize() { return Vec2<int>(width_*3, height_); }
 };
