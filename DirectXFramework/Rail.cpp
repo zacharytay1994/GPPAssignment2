@@ -1,9 +1,8 @@
 #include "Rail.h"
 
-Rail::Rail(std::shared_ptr<Graphics> gfx, std::shared_ptr<Input> input):
-	Block::Block(L"Images/rail.png", gfx, input)
+Rail::Rail(const std::string& image, std::shared_ptr<Graphics> gfx, std::shared_ptr<Input> input, std::shared_ptr<ResourceLibrary> rl):
+	Block::Block("rail", gfx, input, rl)
 {
-	Block::SetScale({0.5, 0.03125, 0.5});
 }
 
 void Rail::Update(const float& dt)
@@ -11,7 +10,8 @@ void Rail::Update(const float& dt)
 	Block::Update(dt);
 }
 
-void Rail::Render(const float& dt)
+void Rail::Render()
 {
-	Block::Render(dt);
+	Block::Render();
+	cube_.HandleDraw();
 }

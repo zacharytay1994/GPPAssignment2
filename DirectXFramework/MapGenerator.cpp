@@ -157,6 +157,13 @@ MapGenerator::ResourceTileData** MapGenerator::GetTilesAround(ResourceTileData* 
 	return retval;
 }
 
+void MapGenerator::AddResource(ResourceTileData tile)
+{
+	Vecf3 tile_pos = tile.ent_->GetPosition();
+	int index = (int)(tile_pos.z * chunk_width_ * 3 + round(tile_pos.x));
+	resource_data_[index] = tile;
+}
+
 void MapGenerator::RemoveResource(ResourceTileData* tile)
 {
 	*(tile) = { ResourceBlockType::Air, 0, 1, nullptr };;
