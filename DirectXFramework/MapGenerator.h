@@ -19,18 +19,29 @@
  *       A possible solution is to store the size of the map in the map generator & then each time a checkpoint is reached
  */
 
+enum class ResourceBlockType {
+	Rock,
+	Tree,
+	Rail,
+	Air
+};
+enum class GroundBlockType {
+	Checkpoint,
+	Grass
+};
 class MapGenerator {
 public:
 	// Block types
-	enum class ResourceBlockType {
-		Rock,
-		Tree,
-		Rail,
-		Air
+	struct ResourceTileData {
+		ResourceBlockType block_type_;
+		bool breakable_;
+		bool walkable_;
+		std::shared_ptr<Entity> ent_;
 	};
-	enum class GroundBlockType {
-		Checkpoint,
-		Grass
+	struct GroundTileData {
+		GroundBlockType block_type_;
+		bool walkable_;
+		std::shared_ptr<Entity> ent_;
 	};
 private:
 	std::shared_ptr<Graphics> graphics_;
@@ -42,15 +53,15 @@ private:
 	PerlinNoise* pn_;
 
 	// Dimensions of chunks that get generated
-	const static int width_ = 24;
-	const static int height_ = 16;
+	const static int chunk_width_ = 24;
+	const static int chunk_height_ = 16;
 
 	// Factors affecting the granity of the generated maps
 	double frequency_ = 3.0;
 	double octaves_ = 3.0;
 
-	double fx_ = width_ / frequency_;
-	double fz_ = height_ / frequency_;
+	double fx_ = chunk_width_ / frequency_;
+	double fz_ = chunk_height_ / frequency_;
 
 	// Total size of map
 	int total_map_size_ = 0;
@@ -61,35 +72,23 @@ private:
 	std::uniform_int_distribution<int> dist;
 
 	// Map data
-	struct ResourceTileData {
-		ResourceBlockType block_type_;
-		bool breakable_;
-		bool walkable_;
-		std::shared_ptr<Entity> ent_;
-	};
-	ResourceTileData resource_data_[width_*3*height_];
-
-	struct GroundTileData {
-		GroundBlockType block_type_;
-		bool walkable_;
-		std::shared_ptr<Entity> ent_;
-	};
-	GroundTileData ground_data_[width_*3*height_];
+	ResourceTileData resource_data_[chunk_width_*3*chunk_height_];
+	GroundTileData ground_data_[chunk_width_*3*chunk_height_];
 
 	// TODO: Add seed
 
 	// Updates fx_ & fy_. To be called after dimensions/ frequency is set
 	void updateFreq() 
 	{
-		fx_ = width_ / frequency_;
-		fz_ = height_ / frequency_;
+		fx_ = chunk_width_ / frequency_;
+		fz_ = chunk_height_ / frequency_;
 	}
 
 public:
 	// Constructor
 	MapGenerator(std::shared_ptr<Graphics> graphics, std::shared_ptr<Input> input, std::shared_ptr<ResourceLibrary> rl, Scene* scene);
 
-	// Generates a chunk based on the width_ & height_ attributes & adds it to the current map
+	// Generates a chunk based on the chunk_width_ & chunk_height_ attributes & adds it to the current map
 	// If total_map_size_ >= 3, the first chunk will be removed as well.
 	void GenerateMap();
 
@@ -107,6 +106,10 @@ public:
 	// Returns number of chunks that have been spawned
 	int GetTotalChunkNo() { return total_map_size_; }
 
-	Vec2<int> GetChunkSize() { return Vec2<int>(width_, height_); }
-	Vec2<int> GetMapSize() { return Vec2<int>(width_*3, height_); }
+	Vec2<int> GetChunkSize() { return Vec2<int>(chunk_width_, chunk_height_); }
+	Vec2<int> GetMapSize() { return Vec2<int>(chunk_width_*3, chunk_height_); }
+
+	// Returns an array of length 8 of pointers to the blocks surrounding the given block, starting from the block in front & going clockwise
+	// If there is no block (i.e. player is at the edge of the map), array element will be nullptr
+	ResourceTileData** GetTilesAround(ResourceTileData* starting_tile);
 };
