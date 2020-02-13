@@ -28,5 +28,5 @@ public:
 	// <--- test function can remove if need be
 	void SpawnRandomBlocks(const int& val);
 	// --->
-	void EmitDestructionParticles(const MapGenerator::ResourceBlockType& type, const Vecf3& pos);
+	void EmitDestructionParticles(const ResourceBlockType& type, const Vecf3& pos);
 };

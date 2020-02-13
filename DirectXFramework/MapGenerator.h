@@ -112,4 +112,7 @@ public:
 	// Returns an array of length 8 of pointers to the blocks surrounding the given block, starting from the block in front & going clockwise
 	// If there is no block (i.e. player is at the edge of the map), array element will be nullptr
 	ResourceTileData** GetTilesAround(ResourceTileData* starting_tile);
+
+	// Remove resource from resource_data_
+	void RemoveResource(ResourceTileData* tile);
 };
