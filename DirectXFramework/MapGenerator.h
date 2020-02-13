@@ -113,6 +113,9 @@ public:
 	// If there is no block (i.e. player is at the edge of the map), array element will be nullptr
 	ResourceTileData** GetTilesAround(ResourceTileData* starting_tile);
 
+	// Add resource to resource_data_
+	void AddResource(ResourceTileData tile);
+
 	// Remove resource from resource_data_
 	void RemoveResource(ResourceTileData* tile);
 };
