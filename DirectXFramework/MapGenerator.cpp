@@ -152,3 +152,8 @@ MapGenerator::ResourceTileData** MapGenerator::GetTilesAround(ResourceTileData* 
 
 	return retval;
 }
+
+void MapGenerator::RemoveResource(ResourceTileData* tile)
+{
+	*(tile) = { ResourceBlockType::Air, 0, 1, nullptr };;
+}
