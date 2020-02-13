@@ -71,25 +71,33 @@ void Level::Update(const float& dt)
 			// Facing forward
 			RemoveEntity(mapGen_->GetResourceTileData()[(int)(round(norm_player_pos.z + 1) * mapGen_->GetMapSize().x + norm_player_pos.x)].ent_);
 			// testng particle system
-			Vecf3 pos = mapGen_->GetResourceTileData()[(int)(round(norm_player_pos.z + 1) * mapGen_->GetMapSize().x + norm_player_pos.x)].ent_->GetPosition();
-			pos.z += 0.5f;
-			ps_.EmitSphere(10, pos, 1, 1.0f, 0.1f, 2.0f, { 0.0f, 1.0f, 0.0f, 1.0f });
+			EmitDestructionParticles(mapGen_->GetResourceTileData()[(int)(round(norm_player_pos.z + 1) * mapGen_->GetMapSize().x + norm_player_pos.x)].block_type_,
+				mapGen_->GetResourceTileData()[(int)(round(norm_player_pos.z + 1) * mapGen_->GetMapSize().x + norm_player_pos.x)].ent_->GetPosition());
 
 		} else if (y_rot <= 3*PI/4) {
 			// Facing right
 			RemoveEntity(mapGen_->GetResourceTileData()[(int)(round(norm_player_pos.z) * mapGen_->GetMapSize().x + norm_player_pos.x + 1)].ent_);
+			// testng particle system
+			EmitDestructionParticles(mapGen_->GetResourceTileData()[(int)(round(norm_player_pos.z) * mapGen_->GetMapSize().x + norm_player_pos.x + 1)].block_type_,
+				mapGen_->GetResourceTileData()[(int)(round(norm_player_pos.z) * mapGen_->GetMapSize().x + norm_player_pos.x + 1)].ent_->GetPosition());
 
 		}
 		else if (y_rot <= 5 * PI / 4) {
 
 			// Facing downward
 			RemoveEntity(mapGen_->GetResourceTileData()[(int)(round(norm_player_pos.z - 1) * mapGen_->GetMapSize().x + norm_player_pos.x)].ent_);
+			// testng particle system
+			EmitDestructionParticles(mapGen_->GetResourceTileData()[(int)(round(norm_player_pos.z - 1) * mapGen_->GetMapSize().x + norm_player_pos.x)].block_type_,
+				mapGen_->GetResourceTileData()[(int)(round(norm_player_pos.z - 1) * mapGen_->GetMapSize().x + norm_player_pos.x)].ent_->GetPosition());
 
 		}
 		else {
 
 			// Facing left
 			RemoveEntity(mapGen_->GetResourceTileData()[(int)(round(norm_player_pos.z) * mapGen_->GetMapSize().x + norm_player_pos.x - 1)].ent_);
+			// testng particle system
+			EmitDestructionParticles(mapGen_->GetResourceTileData()[(int)(round(norm_player_pos.z) * mapGen_->GetMapSize().x + norm_player_pos.x - 1)].block_type_,
+				mapGen_->GetResourceTileData()[(int)(round(norm_player_pos.z) * mapGen_->GetMapSize().x + norm_player_pos.x - 1)].ent_->GetPosition());
 
 		}
 	}
@@ -115,4 +123,21 @@ void Level::SpawnRandomBlocks(const int& val)
 	float z_rand = float(-val + (rand() % val + 1));
 	float rand_size = float(rand() % 4 + 1);
 	gravity_blocks_.push_back(AddSolidBlock("grassblock", { x_rand, 8.0f, z_rand }, { rand_size, 1.0f, rand_size }, 5.0f * rand_size));
+}
+
+void Level::EmitDestructionParticles(const MapGenerator::ResourceBlockType& type, const Vecf3& pos)
+{
+	switch (type) {
+	case MapGenerator::ResourceBlockType::Rock:
+		// params are : (no. of particles, position, radius, mass, scale, force, colour)
+		ps_.EmitSphere(5, pos + Vecf3(0.0f, 0.5f, 0.0f), 0.8f, 4.0f, 0.1f, 2.0f, { 0.0f, 1.0f, 0.0f, 1.0f }); // larger rock chunks
+		ps_.EmitSphere(10, pos + Vecf3(0.0f, 0.5f, 0.0f), 1.0f, 1.0f, 0.05f, 2.0f, { 0.0f, 0.5f, 0.0f, 1.0f }); // smaller rock chunks
+		break;
+	case MapGenerator::ResourceBlockType::Tree:
+		ps_.EmitSphere(5, pos + Vecf3(0.0f, 0.5f, 0.0f), 0.8f, 0.8f, 0.1f, 1.0f, { 0.4f, 0.2f, 0.0f, 1.0f }); // trunk
+		ps_.EmitSphere(10, pos + Vecf3(0.0f, 0.5f, 0.0f), 0.1, Randf(0.8f, 1.2f), 0.05f, 1.0f, { 0.0f, Randf(0.8f, 1.0f), 1.0f, 1.0f }); // lower leaves
+		ps_.EmitSphere(15, pos + Vecf3(0.0f, 1.5f, 0.0f), 0.1, Randf(0.8f, 1.2f), 0.05f, 1.0f, { 0.0f, Randf(0.8f, 1.0f), 1.0f, 1.0f }); // upper leaves
+
+		break;
+	}
 }
