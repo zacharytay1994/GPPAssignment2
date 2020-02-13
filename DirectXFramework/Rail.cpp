@@ -15,7 +15,7 @@ void Rail::Update(const float& dt)
 void Rail::Render()
 {
 	Block::Render();
-	cube_.HandleDraw();
+	//cube_.HandleDraw();
 }
 
 void Rail::SetDirection(Direction direction) {

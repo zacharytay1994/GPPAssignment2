@@ -114,7 +114,7 @@ void Level::Update(const float& dt)
 			
 			// Spawn rail
 			std::shared_ptr<Block> r = std::make_shared<Rail>("rail", graphics_, input_, rl_);
-			r->SetScale({ 0.5, 0.03125, 0.5 });
+			r->SetScale({ 0.5f, 0.03125f, 0.5f });
 			r->SetPosition(Vecf3((int)round(norm_player_pos.x), -0.5f, (int)round(norm_player_pos.z)));
 			
 			AddEntity(r);

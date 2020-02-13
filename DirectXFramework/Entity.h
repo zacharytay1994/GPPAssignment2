@@ -16,6 +16,7 @@ protected:
 	Vecf3 position_ = {0.0f, 0.0f, 0.0f};
 	QuaternionUWU rotation_;
 	Cube cube_;
+	std::shared_ptr<Input> input_;
 	
 	std::vector<ComponentPtr> components_;
 
