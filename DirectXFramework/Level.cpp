@@ -70,6 +70,10 @@ void Level::Update(const float& dt)
 
 			// Facing forward
 			RemoveEntity(mapGen_->GetResourceTileData()[(int)(round(norm_player_pos.z + 1) * mapGen_->GetMapSize().x + norm_player_pos.x)].ent_);
+			// testng particle system
+			Vecf3 pos = mapGen_->GetResourceTileData()[(int)(round(norm_player_pos.z + 1) * mapGen_->GetMapSize().x + norm_player_pos.x)].ent_->GetPosition();
+			pos.z += 0.5f;
+			ps_.EmitSphere(10, pos, 1, 1.0f, 0.1f, 2.0f, { 0.0f, 1.0f, 0.0f, 1.0f });
 
 		} else if (y_rot <= 3*PI/4) {
 			// Facing right
