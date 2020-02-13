@@ -51,12 +51,16 @@ void MapGenerator::GenerateMap()
 	{
 		for (int x = total_map_size_ * chunk_width_; x < (total_map_size_ * chunk_width_) + chunk_width_; x++)
 		{
+			// Spawn rail and train
+
 			// Spawn checkpoint
 			if (abs(x - checkpoint.x) <= 1 && abs(z - checkpoint.z) <= 1) {
 
 				// Spawn block & set ground_data_
 				b = scene_->AddBlock("startblock", Vecf3(x, -1.0, z), Vecf3(0.5, 0.5, 0.5));
 				ground_data_[3*chunk_width_ * z + (total_map_size_ >= 3 ? 48 + (x - total_map_size_ * chunk_width_) : x)] = { GroundBlockType::Checkpoint, true, b };
+				b = scene_->AddBlock("rail", Vecf3(x, -0.5, z), Vecf3(0.5, 0.5, 0.5));
+				resource_data_[3 * chunk_width_ * z + (total_map_size_ >= 3 ? 48 + (x - total_map_size_ * chunk_width_) : x)] = { ResourceBlockType::Rail, false, true, b };
 
 			}
 			else {
