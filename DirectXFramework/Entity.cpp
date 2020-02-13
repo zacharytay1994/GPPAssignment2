@@ -63,6 +63,21 @@ void Entity::AddComponent(ComponentPtr component)
 	components_.push_back(component);
 }
 
+bool Entity::AABB2dCollision(std::shared_ptr<Entity> ent_)
+{
+	float player_left = ent_->GetPosition().x - 0.5f;
+	float player_right = ent_->GetPosition().x + 0.5f;
+	float player_front = ent_->GetPosition().z - 0.5f;
+	float player_back = ent_->GetPosition().z + 0.5f;
+
+	float ent_left = GetPosition().x - 0.5f;
+	float ent_right = GetPosition().x + 0.5f;
+	float ent_front = GetPosition().z - 0.5f;
+	float ent_back = GetPosition().z + 0.5f;
+
+	return !(player_left > ent_right || player_right < ent_left || player_front > ent_back || player_back < ent_front);
+}
+
 ComponentPtr Entity::GetComponent(std::string type) {
 	for (ComponentPtr c : components_) {
 		if (c->GetType() == type) {

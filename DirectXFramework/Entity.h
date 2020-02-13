@@ -36,6 +36,7 @@ public:
 	void SetRotation(const QuaternionUWU& q);
 	void SetQuatRotate(const bool& b);
 	void SetDrawMode(const int& drawmode);
+	bool AABB2dCollision(std::shared_ptr<Entity> ent_);
 };
 
 template<typename T>

@@ -22,6 +22,6 @@ public:
 	void Render() override;
 	bool AABBCollision();
 
-	Vecf3 GetOrientation() { return cubeModel_.GetOrientation(); };
+	//Vecf3 GetOrientation() { return cubeModel_.GetOrientation(); };
 };
 

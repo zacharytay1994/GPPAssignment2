@@ -1,6 +1,8 @@
 #include "Level.h"
 #include "Block.h"
 #include "CollisionComponent.h"
+#include <sstream>
+#include <string>
 
 #include <cmath>
 
@@ -18,6 +20,8 @@ Level::Level(std::shared_ptr<Graphics> gfx, std::shared_ptr<Input> input, std::s
 	// Generate map
 	mapGen_->GenerateMap();
 
+	
+
 	//AddSolidBlock("grassblock", { 0.0f, -60.0f, 5.0f }, { 30.0f, 30.0f, 30.0f }, 500000.0f);
 	//std::shared_ptr<Block> giraffe = AddModel("nsur", { 1.0f, 0.0f, 10.0f }, { 0.10f, 0.10f, 0.10f }, true);
 
@@ -29,11 +33,14 @@ Level::Level(std::shared_ptr<Graphics> gfx, std::shared_ptr<Input> input, std::s
 	//gravity_blocks_[0]->GetComponentOfType<CollisionComponent>("Collision")->SetAngularVelocity({ 1.0f, 1.0f, 1.0f }); // only solid blocks can be added to gravity blocks
 	//AddBlock("grassblock", { 0.0f, -10.0f, 5.0f }, { 5.0f, 1.0f, 5.0f });
 	player_ = AddPlayer({ 0.0f, 1.0f, 1.0f }, { 0.5f, 0.5f, 0.5f });
+	
 }
 
 void Level::Update(const float& dt)
 {
 	Scene::Update(dt);
+
+	resourceTileData_ = mapGen_->GetResourceTileData();
 
 	// <--- test code can remove if need be
 	if (input_->KeyWasPressed('B')) {
@@ -65,29 +72,31 @@ void Level::Update(const float& dt)
 		norm_player_pos.x = (int)round(player_->GetPosition().x) - max(0, (mapGen_->GetTotalChunkNo() - 3) * mapGen_->GetChunkSize().x);
 
 		// Get player heading & check if there is a block in front of the player
-		float y_rot = fmod(player_->GetOrientation().y > 0 ? player_->GetOrientation().y : player_->GetOrientation().y + 2*PI, 2*PI);
-		if ((y_rot >= 7*PI/4) || (y_rot <= PI/4)) {
+		//float y_rot = fmod(player_->GetOrientation().y > 0 ? player_->GetOrientation().y : player_->GetOrientation().y + 2*PI, 2*PI);
+		//if ((y_rot >= 7*PI/4) || (y_rot <= PI/4)) {
 
-			// Facing forward
-			RemoveEntity(mapGen_->GetResourceTileData()[(int)(round(norm_player_pos.z + 1) * mapGen_->GetMapSize().x + norm_player_pos.x)].ent_);
+		//	// Facing forward
+		//	RemoveEntity(mapGen_->GetResourceTileData()[(int)(round(norm_player_pos.z + 1) * mapGen_->GetMapSize().x + norm_player_pos.x)].ent_);
 
-		} else if (y_rot <= 3*PI/4) {
+		//} else if (y_rot <= 3*PI/4) {
 
-			// Facing right
-			RemoveEntity(mapGen_->GetResourceTileData()[(int)(round(norm_player_pos.z) * mapGen_->GetMapSize().x + norm_player_pos.x + 1)].ent_);
+		//	// Facing right
+		//	RemoveEntity(mapGen_->GetResourceTileData()[(int)(round(norm_player_pos.z) * mapGen_->GetMapSize().x + norm_player_pos.x + 1)].ent_);
 
-		} else if (y_rot <= 5*PI/4) {
+		//} else if (y_rot <= 5*PI/4) {
 
-			// Facing downward
-			RemoveEntity(mapGen_->GetResourceTileData()[(int)(round(norm_player_pos.z - 1) * mapGen_->GetMapSize().x + norm_player_pos.x)].ent_);
+		//	// Facing downward
+		//	RemoveEntity(mapGen_->GetResourceTileData()[(int)(round(norm_player_pos.z - 1) * mapGen_->GetMapSize().x + norm_player_pos.x)].ent_);
 
-		} else {
+		//} else {
 
-			// Facing left
-			RemoveEntity(mapGen_->GetResourceTileData()[(int)(round(norm_player_pos.z) * mapGen_->GetMapSize().x + norm_player_pos.x - 1)].ent_);
+		//	// Facing left
+		//	RemoveEntity(mapGen_->GetResourceTileData()[(int)(round(norm_player_pos.z) * mapGen_->GetMapSize().x + norm_player_pos.x - 1)].ent_);
 
-		}
+		//}
 	}
+
+	isCollideWithPlayer();
 }
 
 void Level::Render(const float& dt)
@@ -102,4 +111,44 @@ void Level::SpawnRandomBlocks(const int& val)
 	float z_rand = float(-val + (rand() % val + 1));
 	float rand_size = float(rand() % 4 + 1);
 	gravity_blocks_.push_back(AddSolidBlock("grassblock", { x_rand, 8.0f, z_rand }, { rand_size, 1.0f, rand_size }, 5.0f * rand_size));
+}
+
+bool Level::isCollideWithPlayer()
+{
+	int chunkSize = mapGen_->GetChunkSize().x * mapGen_->GetChunkSize().y;
+	for (int i = 1; i < chunkSize; i++)
+	{
+		//switch (static_cast<int>((resourceTileData_ + i)->block_type_))
+		//{
+		//case 0:
+		//	OutputDebugString("Rock");
+		//case 1:
+		//	OutputDebugString("Tree");
+		//case 2:
+		//	OutputDebugString("Rail");
+		//case 3:
+		//	OutputDebugString("Air");
+		//}
+
+				
+		if ((resourceTileData_ + i)->ent_ != nullptr)
+		{
+			if ((resourceTileData_ + i)->ent_->AABB2dCollision(std::dynamic_pointer_cast<Entity>(player_)))
+			{
+				std::stringstream ss;
+				ss << (resourceTileData_ + i)->ent_->GetPosition().x << ", " << (resourceTileData_ + i)->ent_->GetPosition().y << ", " << (resourceTileData_ + i)->ent_->GetPosition().z << "\n";
+				OutputDebugString(ss.str().c_str());
+				
+
+					
+				//OutputDebugString("Colliding\n");
+				return(true);
+			}
+			else
+			{
+				//OutputDebugString("Not Colliding\n");
+			}
+		}
+	}
+	return (false);
 }
