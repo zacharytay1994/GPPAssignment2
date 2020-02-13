@@ -11,12 +11,19 @@
 
 namespace dx = DirectX;
 
+struct Colour {
+	float r;
+	float g;
+	float b;
+	float a;
+};
 enum class DrawMode {
 	TexturedCube,
 	TexturedCubeNormal,
 	TexturedModel,
 	TexturedModelNormal,
-	UnTexturedModelNormal
+	UnTexturedModelNormal,
+	UntexturedCubeNormal
 };
 struct CubeData {
 	float	width_ = 0;									// width of cube in pixels 
@@ -31,6 +38,7 @@ struct CubeData {
 	float	angle_z = 0.0f;								// rotation angle of sprite in radians
 	float	angle_x = 0.0f;
 	float	angle_y = 0.0f;
+	DirectX::XMFLOAT4 colour_ = { 1.0f, 1.0f, 1.0f, 1.0f };
 	// quaternion rotation
 	QuaternionUWU rotation_ = QuaternionUWU(0.0f, 0.0f, 0.0f, 1.0f);
 };
@@ -79,6 +87,7 @@ public:
 	void	SetAngleZDeg(const float& angle);
 	void	SetAngleXDeg(const float& angle);
 	void	SetAngleYDeg(const float& angle);
+	void	SetColour(const DirectX::XMFLOAT4& colour);
 	void	SetQuatRotation(const QuaternionUWU& q);
 	float	GetX();
 	float	GetY();

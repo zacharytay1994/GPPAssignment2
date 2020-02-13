@@ -32,7 +32,6 @@ void Block::Update(const float& dt)
 	cube_.SetX(position_.x);
 	cube_.SetY(position_.y);
 	cube_.SetZ(position_.z);
-	cube_.SetQuatRotation(rotation_);
 }
 
 void Block::Render()

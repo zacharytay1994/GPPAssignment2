@@ -34,7 +34,7 @@ Level::Level(std::shared_ptr<Graphics> gfx, std::shared_ptr<Input> input, std::s
 void Level::Update(const float& dt)
 {
 	Scene::Update(dt);
-
+	ps_.Update(dt);
 	// <--- test code can remove if need be
 	if (input_->KeyWasPressed('B')) {
 		start_spawning_ = true;
@@ -60,6 +60,9 @@ void Level::Update(const float& dt)
 		mapGen_->GenerateMap();
 	}
 
+	if (input_->KeyWasPressed('E')) {
+		ps_.EmitSphere(15, {6.0f, 5.0f, 6.0f}, 3.0f);
+	}
 	//test_object_->Draw();
 	//test_object_2_->Draw();
 	// --->
@@ -68,6 +71,7 @@ void Level::Update(const float& dt)
 void Level::Render(const float& dt)
 {
 	Scene::Render(dt);
+	ps_.Render();
 }
 
 void Level::SpawnRandomBlocks(const int& val)
