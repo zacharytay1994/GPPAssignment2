@@ -80,7 +80,7 @@ public:
 	void	SetAngleXDeg(const float& angle);
 	void	SetAngleYDeg(const float& angle);
 	void	SetQuatRotation(const QuaternionUWU& q);
-	void    SetTextureKey(const std::string image);
+	void	SetTextureKey(const std::string& image);
 	float	GetX();
 	float	GetY();
 	float	GetZ();

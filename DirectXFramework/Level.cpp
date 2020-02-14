@@ -109,12 +109,17 @@ void Level::Update(const float& dt)
 		norm_player_pos.x = (int)round(player_->GetPosition().x) - max(0, (mapGen_->GetTotalChunkNo() - 3) * mapGen_->GetChunkSize().x);
 		norm_player_pos.z = (int)round(player_->GetPosition().z) - max(0, (mapGen_->GetTotalChunkNo() - 3) * mapGen_->GetChunkSize().x);
 		
-		// Create rail
-		std::shared_ptr<Rail> rail = std::make_shared<Rail>("rail", graphics_, input_, rl_);
-		rail->SetScale({ 0.5, 0.03125, 0.5 });
-		rail->SetPosition(Vecf3((int)round(norm_player_pos.x), -0.5f, (int)round(norm_player_pos.z)));
+		// Check if rail can be placed on player pos
+		if (mapGen_->GetResourceTileData()[(int)(round(norm_player_pos.z) * mapGen_->GetMapSize().x + norm_player_pos.x)].walkable_ &&
+			mapGen_->GetResourceTileData()[(int)(round(norm_player_pos.z) * mapGen_->GetMapSize().x + norm_player_pos.x)].block_type_ != ResourceBlockType::Rail) {
 
-		mapGen_->AddResource({ ResourceBlockType::Rail, 0, 1, rail });
+			// Spawn rail
+			std::shared_ptr<Block> r = std::make_shared<Rail>("rail", graphics_, input_, rl_);
+			r->SetScale({ 0.5f, 0.03125f, 0.5f });
+			r->SetPosition(Vecf3((int)round(norm_player_pos.x), -0.5f, (int)round(norm_player_pos.z)));
+
+			mapGen_->AddResource({ ResourceBlockType::Rail, 0, 1, r });
+		}
 
 	}
 }

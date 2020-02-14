@@ -142,7 +142,7 @@ void Cube::SetQuatRotation(const QuaternionUWU& q)
 	cube_data_.rotation_ = q;
 }
 
-void Cube::SetTextureKey(const std::string image)
+void Cube::SetTextureKey(const std::string& image)
 {
 	texture_key_ = image;
 }

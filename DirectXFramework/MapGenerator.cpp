@@ -1,6 +1,8 @@
 #include "MapGenerator.h"
 
 #include "Block.h"
+#include "Rail.h"
+#include "ChooChoo.h"
 
 MapGenerator::MapGenerator(std::shared_ptr<Graphics> graphics, std::shared_ptr<Input> input, std::shared_ptr<ResourceLibrary> rl, Scene* scene)
 	:
@@ -101,6 +103,19 @@ void MapGenerator::GenerateMap()
 
 			}
 		}
+	}
+
+	// Spawn train in first chunk
+	if (total_map_size_ == 0) {
+		std::shared_ptr<Entity> train = std::dynamic_pointer_cast<Entity>(std::make_shared<ChooChoo>("train", graphics_, input_, rl_, this));
+		train->SetDrawMode(2);
+		train->GetCube().SetScaleX(0.0005f);
+		train->GetCube().SetScaleY(0.0005f);
+		train->GetCube().SetScaleZ(0.0005f);
+		train->GetCube().SetAngleXDeg(-90);
+		train->GetCube().SetAngleYDeg(90);
+		train->SetPosition({ checkpoint.x - 1.0f, -0.5, checkpoint.z });
+		scene_->AddEntity(train);
 	}
 
 	// Increment total_map_size_
@@ -263,12 +278,18 @@ MapGenerator::ResourceTileData** MapGenerator::GetTilesAround(ResourceTileData* 
 	return retval;
 }
 
+MapGenerator::ResourceTileData& MapGenerator::GetCurrentTile(const Vecf3& pos)
+{
+	int index = (int)(round(pos.z) * chunk_width_ * 3 + round(pos.x));
+	return resource_data_[index];
+}
+
 void MapGenerator::AddResource(ResourceTileData tile)
 {
 	if (tile.block_type_ == ResourceBlockType::Rail && !CanAddRail(std::dynamic_pointer_cast<Rail>(tile.ent_))) { return; }
 
 	Vecf3 tile_pos = tile.ent_->GetPosition();
-	int index = (int)(tile_pos.z * chunk_width_ * 3 + round(tile_pos.x));
+	int index = (int)(round(tile_pos.z) * chunk_width_ * 3 + round(tile_pos.x));
 	resource_data_[index] = tile;
 
 	scene_->AddEntity(tile.ent_);
