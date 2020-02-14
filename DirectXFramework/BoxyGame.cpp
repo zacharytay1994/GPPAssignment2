@@ -12,10 +12,10 @@ BoxyGame::BoxyGame(HWND hwnd)
 	Initialize(hwnd);
 	EnableCursor();
 	// Go to main menu
-	current_scene_ = std::make_unique<MainMenu>(graphics_, input_, rl_);
+	current_scene_ = std::make_unique<MainMenu>(graphics_, input_, rl_, this);
 
 	// Go to level
-	current_scene_ = std::make_unique<Level>(graphics_, input_, rl_);
+	//current_scene_ = std::make_unique<Level>(graphics_, input_, rl_, this);
 }
 
 BoxyGame::~BoxyGame()
@@ -29,7 +29,14 @@ void BoxyGame::Initialize(HWND hwnd)
 	rl_->AddCubeTexture("alexarm", L"Images/alex-arm.png");
 	rl_->AddCubeTexture("alexleg", L"Images/alex-leg.png");
 	rl_->AddCubeTexture("spacebox", L"Images/spacebox2.png");
+
+	// main menu
 	rl_->AddPosNormTexModel("nsur", "Models/nsur.obj", L"Images/nsur.png");
+	rl_->AddPosNormTexModel("island", "Models/island.obj", L"Images/island.png");
+	rl_->AddCubeTexture("startbtn", L"Images/Button/start-button.png");
+	rl_->AddCubeTexture("quitbtn", L"Images/Button/quit-button.png");
+	rl_->AddCubeTexture("creditbtn", L"Images/Button/credit-button.png");
+	rl_->AddCubeTexture("progress", L"Images/Button/progress.png");
 
 	// For le map
 	rl_->AddCubeTexture("grassblock", L"Images/grassblock.png");
@@ -52,6 +59,11 @@ void BoxyGame::Update()
 
 	if (current_scene_ != nullptr) 
 	{ current_scene_->BaseUpdate(frame_time_); }
+
+	if (new_scene_ != nullptr) {
+		current_scene_ = new_scene_;
+		new_scene_ = nullptr;
+	}
 }
 
 void BoxyGame::AI()
@@ -66,4 +78,13 @@ void BoxyGame::Render()
 {
 	if (current_scene_ != nullptr) 
 	{ current_scene_->Render(frame_time_); }
+}
+
+void BoxyGame::ChangeScene(std::string key) {
+	if (key == "level") {
+		new_scene_ = std::make_shared<Level>(graphics_, input_, rl_, this);
+	}
+}
+void BoxyGame::ChangeScene(std::shared_ptr<Scene> scene) {
+	new_scene_ = scene;
 }

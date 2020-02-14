@@ -15,7 +15,13 @@ private:
 	std::shared_ptr<Input> input_;
 	
 public:
-	Vecf2 velocity_ = { 0,0 };
+	float movementSpeed = 20;
+	float maxVelocity_ = 20;
+	float frictionPower_ = 5;
+	Vecf3 friction_ = { 0,0,0 };
+	Vecf3 acceleration_ = { 0,0,0 };
+	Vecf3 velocity_ = { 0,0,0 };
+	
 	Player(std::shared_ptr<Graphics> gfx, std::shared_ptr<Input> input, std::shared_ptr<ResourceLibrary> rl);
 
 	void Update(const float& dt) override;

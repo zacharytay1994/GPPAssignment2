@@ -2,9 +2,9 @@
 #include "Block.h"
 #include "CollisionComponent.h"
 
-Level::Level(std::shared_ptr<Graphics> gfx, std::shared_ptr<Input> input, std::shared_ptr<ResourceLibrary> rl)
+Level::Level(std::shared_ptr<Graphics> gfx, std::shared_ptr<Input> input, std::shared_ptr<ResourceLibrary> rl, Game* game)
 	:
-	Scene(gfx, input, rl)
+	Scene(gfx, input, rl, game)
 {
 	std::mt19937 rng{ std::random_device{}() };
 	std::uniform_real_distribution<float> cdist{ 0.0f,1.0f };

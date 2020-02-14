@@ -45,32 +45,38 @@ Player::Player(std::shared_ptr<Graphics> gfx, std::shared_ptr<Input> input, std:
 void Player::Update(const float& dt)
 {
 	Entity::Update(dt);
+
+	velocity_ += acceleration_ * dt;
+	velocity_.Max(maxVelocity_);
+	position_ += velocity_ * dt;
+	friction_ = -velocity_ * frictionPower_;
+
+	velocity_ += friction_ * dt;
+
+	acceleration_ = { 0,0,0 };
+
 	cubeModel_.SetPosition(position_);
 
-	//cubeModel_.SetPosition(cubeModel_.GetPosition() + (Vecf3(0, 0, 1) * dt));
-	//cubeModel_.RotateXTo("head", PI / 2 * dt);
-	//cubeModel_.RotateYTo("head", PI / 2 * dt);
-	//cubeModel_.RotateZTo("head", PI / 2 * dt);
-	//cubeModel_.RotateXTo("larm", PI / 2 * dt);
-	//cubeModel_.RotateXTo("rarm", PI / 2 * dt);
+	//cubeModel_.RotateYTo("head", 1*dt);
+
 
 	// input for player
-	if (input_->KeyIsDown(VK_UP))
-	{
-		SetPosition(GetPosition() + Vecf3(0.0f,0.0f, 2.0f)*dt);
-	}
-	if (input_->KeyIsDown(VK_DOWN))
-	{
-		SetPosition(GetPosition() + Vecf3(0.0f,0.0f, -2.0f)*dt);
-	}
-	if (input_->KeyIsDown(VK_LEFT))
-	{
-		SetPosition(GetPosition() + Vecf3(-2.0f, 0.0f, 0.0f) * dt);
-	}
-	if (input_->KeyIsDown(VK_RIGHT))
-	{
-		SetPosition(GetPosition() + Vecf3(2.0f, 0.0f, 0.0f) * dt);
-	}
+	//if (input_->KeyIsDown(VK_UP))
+	//{
+	//	SetPosition(GetPosition() + Vecf3(0.0f,0.0f, 2.0f)*dt);
+	//}
+	//if (input_->KeyIsDown(VK_DOWN))
+	//{
+	//	SetPosition(GetPosition() + Vecf3(0.0f,0.0f, -2.0f)*dt);
+	//}
+	//if (input_->KeyIsDown(VK_LEFT))
+	//{
+	//	SetPosition(GetPosition() + Vecf3(-2.0f, 0.0f, 0.0f) * dt);
+	//}
+	//if (input_->KeyIsDown(VK_RIGHT))
+	//{
+	//	SetPosition(GetPosition() + Vecf3(2.0f, 0.0f, 0.0f) * dt);
+	//}
 	
 }
 

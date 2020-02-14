@@ -21,7 +21,7 @@ private:
 	int spawn_iterations_ = 20;
 	// --->
 public:
-	Level(std::shared_ptr<Graphics> gfx, std::shared_ptr<Input> input, std::shared_ptr<ResourceLibrary> rl);
+	Level(std::shared_ptr<Graphics> gfx, std::shared_ptr<Input> input, std::shared_ptr<ResourceLibrary> rl, Game* game);
 	void Update(const float& dt) override;
 	void Render(const float& dt) override;
 

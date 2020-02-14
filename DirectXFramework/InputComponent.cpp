@@ -1,5 +1,6 @@
 #include "InputComponent.h"
 #include "Entity.h"
+#include "Player.h"
 
 InputComponent::InputComponent(Entity& owner, Input& input):
 	Component(owner,"InputComponent"),
@@ -11,31 +12,32 @@ void InputComponent::Update(const float& frametime)
 {
 	Component::Update(frametime);
 
-	Vecf3 pos = owner_.GetPosition();
+	Player* player = (Player*)(&owner_);
+	//Vecf3 pos = player->GetPosition();
 
 	if (input_.KeyIsDown(VK_UP)) {
-		//owner_.position_.z += movementSpeed*frametime;
-		pos.z += movementSpeed * frametime;
+		//pos.z += player->maxVelocity_ * frametime;
 		// z++
-
+		player->acceleration_.z = player->movementSpeed;
 	}
 	if (input_.KeyIsDown(VK_DOWN)) {
-		//owner_.position_.z -= movementSpeed * frametime;
-		pos.z -= movementSpeed * frametime;
+		//pos.z -= player->maxVelocity_ * frametime;
 		// z--
+		player->acceleration_.z = -player->movementSpeed;
 	}
 	if (input_.KeyIsDown(VK_LEFT)) {
-		//owner_.position_.x -= movementSpeed * frametime;
-		pos.x -= movementSpeed * frametime;
+		//pos.x -= player->maxVelocity_ * frametime;
 		// x--
+		player->acceleration_.x = -player->movementSpeed;
 	}
 	if (input_.KeyIsDown(VK_RIGHT)) {
-		//owner_.position_.x += movementSpeed * frametime;
-		pos.x += movementSpeed * frametime;
+		//pos.x += player->maxVelocity_ * frametime;
 		// x++
+		player->acceleration_.x = player->movementSpeed;
 	}
 
-	owner_.SetPosition(pos);
+	//player->SetPosition(pos);
+	//owner_.SetPosition(pos);
 
 	if (input_.KeyIsDown(VK_SHIFT)) {
 		// dash
