@@ -118,6 +118,9 @@ void GUI::DrawSteamtrainSprite(const float& dt)
 void GUI::SetTrainX(const int& i)
 {
 	train_x = i;
+	if (train_x > max_distance_) {
+		max_distance_ += 10;
+	}
 }
 
 void GUI::SetMaximumX(const int& i)
