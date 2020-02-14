@@ -104,92 +104,19 @@ void MapGenerator::GenerateMap()
 			}
 		}
 	}
-	//// Spawn rail and train
-	//b = std::make_shared<Rail>("rail", graphics_, input_, rl_);
-	//b->SetScale({ 0.5f, 0.03125f, 0.5f });
-	//b->SetPosition({ checkpoint.x, -0.5, checkpoint.z });
-	//scene_->AddEntity(b);
-	//AddResource({ ResourceBlockType::Rail, false, true, b });
 
-	//b = std::make_shared<Rail>("rail", graphics_, input_, rl_);
-	//b->SetScale({ 0.5f, 0.03125f, 0.5f });
-	//b->SetPosition({ checkpoint.x - 1.0f, -0.5, checkpoint.z });
-	//scene_->AddEntity(b);
-	//AddResource({ ResourceBlockType::Rail, false, true, b });
-
-	//b = std::make_shared<Rail>("rail", graphics_, input_, rl_);
-	//b->SetScale({ 0.5f, 0.03125f, 0.5f });
-	//b->SetPosition({ checkpoint.x + 1.0f, -0.5, checkpoint.z });
-	//std::dynamic_pointer_cast<Rail>(b)->SetDirection(Rail::Direction::LTopCurved);
-	//scene_->AddEntity(b);
-	//AddResource({ ResourceBlockType::Rail, false, true, b });
-
-	//// <--- TEST RAILS CAN REMOVE IF NEED
-	//b = std::make_shared<Rail>("rail", graphics_, input_, rl_);
-	//b->SetScale({ 0.5f, 0.03125f, 0.5f });
-	//b->SetPosition({ checkpoint.x + 1.0f, -0.5, checkpoint.z + 1.0f });
-	//std::dynamic_pointer_cast<Rail>(b)->SetDirection(Rail::Direction::Vertical);
-	//scene_->AddEntity(b);
-	//AddResource({ ResourceBlockType::Rail, false, true, b });
-
-	//b = std::make_shared<Rail>("rail", graphics_, input_, rl_);
-	//b->SetScale({ 0.5f, 0.03125f, 0.5f });
-	//b->SetPosition({ checkpoint.x + 1.0f, -0.5, checkpoint.z + 2.0f });
-	//std::dynamic_pointer_cast<Rail>(b)->SetDirection(Rail::Direction::RBottomCurved);
-	//scene_->AddEntity(b);
-	//AddResource({ ResourceBlockType::Rail, false, true, b });
-
-	//b = std::make_shared<Rail>("rail", graphics_, input_, rl_);
-	//b->SetScale({ 0.5f, 0.03125f, 0.5f });
-	//b->SetPosition({ checkpoint.x + 2.0f, -0.5, checkpoint.z + 2.0f });
-	//std::dynamic_pointer_cast<Rail>(b)->SetDirection(Rail::Direction::LBottomCurved);
-	//scene_->AddEntity(b);
-	//AddResource({ ResourceBlockType::Rail, false, true, b });
-
-	//b = std::make_shared<Rail>("rail", graphics_, input_, rl_);
-	//b->SetScale({ 0.5f, 0.03125f, 0.5f });
-	//b->SetPosition({ checkpoint.x + 2.0f, -0.5, checkpoint.z + 1.0f });
-	//std::dynamic_pointer_cast<Rail>(b)->SetDirection(Rail::Direction::Vertical);
-	//scene_->AddEntity(b);
-	//AddResource({ ResourceBlockType::Rail, false, true, b });
-
-	//b = std::make_shared<Rail>("rail", graphics_, input_, rl_);
-	//b->SetScale({ 0.5f, 0.03125f, 0.5f });
-	//b->SetPosition({ checkpoint.x + 2.0f, -0.5, checkpoint.z });
-	//std::dynamic_pointer_cast<Rail>(b)->SetDirection(Rail::Direction::RTopCurved);
-	//scene_->AddEntity(b);
-	//AddResource({ ResourceBlockType::Rail, false, true, b });
-
-	//b = std::make_shared<Rail>("rail", graphics_, input_, rl_);
-	//b->SetScale({ 0.5f, 0.03125f, 0.5f });
-	//b->SetPosition({ checkpoint.x + 3.0f, -0.5, checkpoint.z });
-	//std::dynamic_pointer_cast<Rail>(b)->SetDirection(Rail::Direction::Horizontal);
-	//scene_->AddEntity(b);
-	//AddResource({ ResourceBlockType::Rail, false, true, b });
-
-	//b = std::make_shared<Rail>("rail", graphics_, input_, rl_);
-	//b->SetScale({ 0.5f, 0.03125f, 0.5f });
-	//b->SetPosition({ checkpoint.x + 4.0f, -0.5, checkpoint.z });
-	//std::dynamic_pointer_cast<Rail>(b)->SetDirection(Rail::Direction::LTopCurved);
-	//scene_->AddEntity(b);
-	//AddResource({ ResourceBlockType::Rail, false, true, b });
-
-	//b = std::make_shared<Rail>("rail", graphics_, input_, rl_);
-	//b->SetScale({ 0.5f, 0.03125f, 0.5f });
-	//b->SetPosition({ checkpoint.x + 4.0f, -0.5, checkpoint.z + 1.0f });
-	//std::dynamic_pointer_cast<Rail>(b)->SetDirection(Rail::Direction::Vertical);
-	//scene_->AddEntity(b);
-	//AddResource({ ResourceBlockType::Rail, false, true, b });
-	// --->
-	std::shared_ptr<Entity> train = std::dynamic_pointer_cast<Entity>(std::make_shared<ChooChoo>("train", graphics_, input_, rl_, this));
-	train->SetDrawMode(2);
-	train->GetCube().SetScaleX(0.0005f);
-	train->GetCube().SetScaleY(0.0005f);
-	train->GetCube().SetScaleZ(0.0005f);
-	train->GetCube().SetAngleXDeg(-90);
-	train->GetCube().SetAngleYDeg(90);
-	train->SetPosition({ checkpoint.x - 1.0f, -0.5, checkpoint.z });
-	scene_->AddEntity(train);
+	// Spawn train in first chunk
+	if (total_map_size_ == 0) {
+		std::shared_ptr<Entity> train = std::dynamic_pointer_cast<Entity>(std::make_shared<ChooChoo>("train", graphics_, input_, rl_, this));
+		train->SetDrawMode(2);
+		train->GetCube().SetScaleX(0.0005f);
+		train->GetCube().SetScaleY(0.0005f);
+		train->GetCube().SetScaleZ(0.0005f);
+		train->GetCube().SetAngleXDeg(-90);
+		train->GetCube().SetAngleYDeg(90);
+		train->SetPosition({ checkpoint.x - 1.0f, -0.5, checkpoint.z });
+		scene_->AddEntity(train);
+	}
 
 	// Increment total_map_size_
  	total_map_size_++;
