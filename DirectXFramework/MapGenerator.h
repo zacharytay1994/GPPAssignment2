@@ -21,10 +21,10 @@
  */
 
 enum class ResourceBlockType {
-	Air,
 	Rock,
 	Tree,
-	Rail
+	Rail,
+	Air
 };
 enum class GroundBlockType {
 	Checkpoint,
