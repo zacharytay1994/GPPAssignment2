@@ -109,6 +109,7 @@
   <ItemGroup>
     <ClCompile Include="Block.cpp" />
     <ClCompile Include="BoxyGame.cpp" />
+    <ClCompile Include="ChooChoo.cpp" />
     <ClCompile Include="CollisionComponent.cpp" />
     <ClCompile Include="CollisionManager.cpp" />
     <ClCompile Include="Component.cpp" />
@@ -148,6 +149,7 @@
     <ClInclude Include="Block.h" />
     <ClInclude Include="Box.h" />
     <ClInclude Include="BoxyGame.h" />
+    <ClInclude Include="ChooChoo.h" />
     <ClInclude Include="CollisionComponent.h" />
     <ClInclude Include="CollisionManager.h" />
     <ClInclude Include="CollisionSolver.h" />

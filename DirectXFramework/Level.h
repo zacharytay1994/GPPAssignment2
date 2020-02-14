@@ -1,10 +1,7 @@
 #pragma once
 
 #include "MapGenerator.h"
-#include "Scene.h"
-#include "Drawable.h"
 #include "Player.h"
-#include "Rail.h"
 
 class Block;
 class Level : public Scene {

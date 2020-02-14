@@ -35,6 +35,7 @@ void BoxyGame::Initialize(HWND hwnd)
 	rl_->AddCubeTexture("grassblock", L"Images/grassblock.png");
 	rl_->AddCubeTexture("startblock", L"Images/startblock.png");
 	rl_->AddCubeTexture("rail", L"Images/rail.png");
+	rl_->AddCubeTexture("railcurved", L"Images/corner-rail.png");
 	rl_->AddPosNormTexModel("tree", "Models\\tree.obj", L"Images\\tree.png");
 	rl_->AddPosNormTexModel("rock", "Models\\rock.obj", L"Images\\rock.png");
 
@@ -46,6 +47,8 @@ void BoxyGame::Initialize(HWND hwnd)
 	rl_->AddCubeTexture("stopwatchlogo", L"Images/stopwatchlogo.png");
 	rl_->AddCubeTexture("steamtrainsprite", L"Images/steamtrain.png");
 	rl_->AddCubeTexture("bottombar", L"Images/bar.png");
+	// train
+	rl_->AddPosTexModel("train", "Models\\SteamTrain.obj", L"Images\\Train.png");
 }
 
 void BoxyGame::Update()
