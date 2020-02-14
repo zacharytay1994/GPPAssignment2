@@ -88,11 +88,11 @@ void GUI::DrawLevelHUD(const float& dt)
 	// draw string ontop of train
 	ss.str("");
 	ss << train_x << "m";
-	DrawString({ current_steam_train_position_, -0.60f, -0.0002f }, 0.04f, ss.str());
+	DrawString({ current_steam_train_position_, -0.60f, 0.0f }, 0.04f, ss.str());
 	// draw string at end max distance
 	ss.str("");
 	ss << max_distance_ << "m";
-	DrawString({ 0.75f, -0.60f, -0.002f }, 0.04f, ss.str());
+	DrawString({ 0.75f, -0.60f, 0.0f }, 0.04f, ss.str());
 }
 
 void GUI::DrawSteamtrainSprite(const float& dt)
@@ -110,7 +110,7 @@ void GUI::DrawSteamtrainSprite(const float& dt)
 		steam_train_counter_ = 0.0f;
 		steam_train_index_ = ((steam_train_index_ + 1) % steam_train_total_index_) + 1;
 	}
-	rl_->DrawTexturedPlaneSlice("steamtrainsprite", GetTransform({current_steam_train_position_, -0.85f, -0.001f}, 
+	rl_->DrawTexturedPlaneSlice("steamtrainsprite", GetTransform({current_steam_train_position_, -0.85f, -0.1f}, 
 		{ 0.2f, 0.2f, 0.2f }), 3, 1, steam_train_index_);
 }
 
