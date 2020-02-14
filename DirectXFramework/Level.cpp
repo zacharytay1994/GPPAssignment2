@@ -1,6 +1,7 @@
 #include "Level.h"
 #include "Block.h"
 #include "CollisionComponent.h"
+#include "ChooChoo.h"
 
 #include <cmath>
 
@@ -36,6 +37,12 @@ void Level::Update(const float& dt)
 	Scene::Update(dt);
 	ps_.Update(dt);
 	gui_.Update(dt);
+	ps_.SetCameraSuckPosition(input_->GetCameraPosition() + Vecf3(0.0f, 1.2f, 0.0f));
+	gui_.SetTrainX(std::dynamic_pointer_cast<ChooChoo>(mapGen_->train_)->GetPosition().x);
+
+	if (input_->KeyWasPressed('P')) {
+		gui_.AddResource({ 1.0f, 0 });
+	}
 	// <--- test code can remove if need be
 	if (input_->KeyWasPressed('B')) {
 		start_spawning_ = true;
@@ -152,11 +159,13 @@ void Level::EmitDestructionParticles(const ResourceBlockType& type, const Vecf3&
 		// params are : (no. of particles, position, radius, mass, scale, force, colour)
 		ps_.EmitSphere(5, pos + Vecf3(0.0f, 0.5f, 0.0f), 0.8f, 4.0f, 0.1f, 2.0f, { 0.0f, 1.0f, 0.0f, 1.0f }); // larger rock chunks
 		ps_.EmitSphere(10, pos + Vecf3(0.0f, 0.5f, 0.0f), 1.0f, 1.0f, 0.05f, 2.0f, { 0.0f, 0.5f, 0.0f, 1.0f }); // smaller rock chunks
+		gui_.AddResource({ 1.0f, 0 });
 		break;
 	case ResourceBlockType::Tree:
 		ps_.EmitSphere(5, pos + Vecf3(0.0f, 0.5f, 0.0f), 0.8f, 0.8f, 0.1f, 1.0f, { 0.4f, 0.2f, 0.0f, 1.0f }); // trunk
 		ps_.EmitSphere(10, pos + Vecf3(0.0f, 0.5f, 0.0f), 0.1, Randf(0.8f, 1.2f), 0.05f, 1.0f, { 0.0f, Randf(0.8f, 1.0f), 1.0f, 1.0f }); // lower leaves
 		ps_.EmitSphere(15, pos + Vecf3(0.0f, 1.5f, 0.0f), 0.1, Randf(0.8f, 1.2f), 0.05f, 1.0f, { 0.0f, Randf(0.8f, 1.0f), 1.0f, 1.0f }); // upper leaves
+		gui_.AddResource({ 1.0f, 1 });
 
 		break;
 	}

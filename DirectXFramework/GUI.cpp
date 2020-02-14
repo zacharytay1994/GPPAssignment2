@@ -61,6 +61,7 @@ void GUI::Update(const float& dt)
 {
 	// update time passed
 	level_data_.time_passed_ += dt;
+	ProcessResourceQueue(dt);
 }
 
 void GUI::DrawLevelHUD(const float& dt)
@@ -100,7 +101,7 @@ void GUI::DrawSteamtrainSprite(const float& dt)
 	// move train to current position
 	if (abs(current_steam_train_position_ - steam_train_position_.x) > 0.01f) {
 		int i = steam_train_position_.x - current_steam_train_position_ > 0 ? 1 : -1;
-		current_steam_train_position_ += i * 1.0f * dt;
+		current_steam_train_position_ += i * 0.2f * dt;
 	}
 	steam_train_position_.x = -0.9f + 1.8f * ((float)train_x / (float)max_distance_);
 	if (steam_train_counter_ < steam_train_anim_rate_) {
@@ -121,6 +122,41 @@ void GUI::SetTrainX(const int& i)
 
 void GUI::SetMaximumX(const int& i)
 {
+}
+
+void GUI::ProcessResourceQueue(const float& dt)
+{
+	ResourceQueue rq;
+	while (resource_queue_.size() > 0) {
+		rq = resource_queue_.front();
+		resource_queue_.pop();
+		// check timer
+		if (rq.time_delay_ > 0.0f) {
+			rq.time_delay_ -= dt;
+			// if not 0 add back to queue
+			if (rq.time_delay_ > 0.0f) {
+				resource_queue_copy_.push(rq);
+			}
+			else {
+				// increment type resource by 1
+				switch (rq.type_) {
+				case 0: // rock
+					level_data_.stone_collected_++;
+					break;
+				case 1: // tree
+					level_data_.wood_collected_++;
+					break;
+				}
+			}
+		}
+	}
+	// swap queues
+	std::swap(resource_queue_copy_, resource_queue_);
+}
+
+void GUI::AddResource(const ResourceQueue& rq)
+{
+	resource_queue_.push(rq);
 }
 
 void GUI::Draw()

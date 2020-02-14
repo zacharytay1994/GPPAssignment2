@@ -13,8 +13,12 @@ void ParticleSystem::Update(const float& dt)
 			particle_pool_[i].Update(dt);
 			// apply gravity to activated particles
 			particle_pool_[i].ApplyGravitationalForce(gravity_ * dt);
+			// apply camera suck force
+			if (particle_pool_[i].start_sucking_) {
+				particle_pool_[i].ApplyForceToCamera((camera_suck_position_ - particle_pool_[i].GetPosition()).GetNormalized() * 240.0f * dt);
+			}
 			// deactivte when too low
-			particle_pool_[i].CheckActivated(deactivating_threshold_);
+			particle_pool_[i].CheckActivated(deactivating_threshold_, camera_suck_position_.y);
 		}
 	}
 }
@@ -75,4 +79,9 @@ Vecf3 ParticleSystem::GetRandAngle()
 			-1.0f + (static_cast <float> (rand()) / static_cast <float> (RAND_MAX/2.0f)),
 			-1.0f + (static_cast <float> (rand()) / static_cast <float> (RAND_MAX/2.0f)) };
 	return random.Normalize();
+}
+
+void ParticleSystem::SetCameraSuckPosition(const Vecf3& cam)
+{
+	camera_suck_position_ = cam;
 }

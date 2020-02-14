@@ -24,9 +24,17 @@ void Particle::ApplyGravitationalForce(const float& g)
 	velocity_.y += g / mass_;
 }
 
-void Particle::CheckActivated(const float& thres)
+void Particle::ApplyForceToCamera(const Vecf3& force)
+{
+	velocity_ = velocity_ + (force / mass_);
+}
+
+void Particle::CheckActivated(const float& thres, const float& upperthres)
 {
 	if (cube_.GetY() < thres) {
+		start_sucking_ = true;
+	}
+	else if (cube_.GetY() > upperthres) {
 		activated_ = false;
 		ResetParticle();
 	}
@@ -57,4 +65,5 @@ void Particle::ResetParticle()
 {
 	force_ = { 0.0f, 0.0f, 0.0f };
 	velocity_ = { 0.0f, 0.0f, 0.0f };
+	start_sucking_ = false;
 }

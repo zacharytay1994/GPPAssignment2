@@ -4,10 +4,15 @@
 #include "Vec3.h"
 
 #include <string>
+#include <queue>
 #include <memory>
 
 class GUI {
 private:
+	struct ResourceQueue {
+		float time_delay_;
+		int type_; // 0 for rock, 1 for tree
+	};
 	struct LevelData {
 		float time_passed_;
 		int wood_collected_;
@@ -15,6 +20,8 @@ private:
 		int rails_collected_;
 		int train_distance_;
 	};
+	std::queue<ResourceQueue> resource_queue_;
+	std::queue<ResourceQueue> resource_queue_copy_;
 	std::shared_ptr<ResourceLibrary> rl_;
 	float steam_train_counter_ = 0.0f;
 	float steam_train_anim_rate_ = 0.1f;
@@ -35,5 +42,7 @@ public:
 	void DrawSteamtrainSprite(const float& dt);
 	void SetTrainX(const int& i);
 	void SetMaximumX(const int& i);
+	void ProcessResourceQueue(const float& dt);
+	void AddResource(const ResourceQueue& rq);
 	void Draw();
 };
