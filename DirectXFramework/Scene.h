@@ -6,6 +6,7 @@
 #include "CollisionManager.h"
 #include "Vec3.h"
 #include "Skybox.h"
+#include "GUI.h"
 #include <vector>
 #include <memory>
 #include <string>
@@ -21,6 +22,7 @@ protected:
 	Skybox sb_;
 	CollisionManager cm_;
 	std::vector<std::shared_ptr<Block>> gravity_blocks_;
+	GUI gui_;
 private:
 	std::vector<std::shared_ptr<Entity>> world_entities_;
 	std::vector<std::shared_ptr<Entity>> to_add_;

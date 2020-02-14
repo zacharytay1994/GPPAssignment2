@@ -119,15 +119,14 @@ void Level::Update(const float& dt)
 			
 			AddEntity(r);
 			mapGen_->AddResource({ ResourceBlockType::Rail, 0, 1, r });
-
 		}
-
 	}
 }
 
 void Level::Render(const float& dt)
 {
 	Scene::Render(dt);
+	gui_.Draw();
 }
 
 void Level::SpawnRandomBlocks(const int& val)
