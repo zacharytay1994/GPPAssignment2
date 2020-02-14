@@ -118,6 +118,8 @@ public:
 	T z;
 };
 
+
+
 typedef Vec3<float> Vecf3;
 typedef Vec3<double> Vecd3;
 typedef Vec3<int> Veci3;

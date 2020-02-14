@@ -11,6 +11,7 @@ Scene::Scene(std::shared_ptr<Graphics> gfx, std::shared_ptr<Input> input, std::s
 	input_(input),
 	rl_(rl),
 	sb_(rl, input),
+	ps_(gfx, input, rl),
 	gui_(rl)
 {
 }

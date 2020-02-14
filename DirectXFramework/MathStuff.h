@@ -1,6 +1,7 @@
 #pragma once
 
 #include <math.h>
+#include <algorithm>
 
 constexpr float PI = 3.14159265f;
 constexpr double PI_D = 3.1415926535897932;
@@ -30,4 +31,8 @@ template<typename T>
 constexpr T to_rad(T deg)
 {
 	return deg * PI / (T)180.0;
+}
+
+static float Randf(const float& f1, const float& f2) {
+	return (f2 - static_cast <float> (rand()) / static_cast <float> (RAND_MAX/(f2 - f1)));
 }

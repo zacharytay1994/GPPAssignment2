@@ -13,6 +13,7 @@ void ResourceLibrary::Initialize()
 	GenPosTexCube();
 	GenPosNormTexCube();
 	GenPosTexPlane();
+	GenPosNormCube();
 }
 
 Vecf3 ResourceLibrary::GetDimensions(const std::string& key)
@@ -479,6 +480,89 @@ void ResourceLibrary::GenPosTexPlane()
 	vi_buffer_map["TexturedPlane"].index_count_ = 6;
 }
 
+void ResourceLibrary::GenPosNormCube()
+{
+	// create and map Vertex and Index Buffers
+	vi_buffer_map.emplace("TexturedCube", VIBuffer());
+
+	// cube vertices and texture coordinates
+	PosNorm vs_data[] = {
+		// Back face
+		{{1.0f, -1.0f, -1.0f}, {0.0f, 0.0f, -1.0f}},
+		{{-1.0f, -1.0f, -1.0f}, {0.0f, 0.0f, -1.0f}},
+		{{1.0f, 1.0f, -1.0f}, {0.0f, 0.0f, -1.0f}},
+		{{-1.0f, 1.0f, -1.0f}, {0.0f, 0.0f, -1.0f}},
+
+		// Front face
+		{{-1.0f, -1.0f, 1.0f}, {0.0f, 0.0f, 1.0f}},
+		{{1.0f, -1.0f, 1.0f}, {0.0f, 0.0f, 1.0f}},
+		{{-1.0f, 1.0f, 1.0f}, {0.0f, 0.0f, 1.0f}},
+		{{1.0f, 1.0f, 1.0f}, {0.0f, 0.0f, 1.0f}},
+
+		// Right face
+		{{1.0f, -1.0f, 1.0f}, {1.0f, 0.0f, 0.0f}},
+		{{1.0f, -1.0f, -1.0f}, {1.0f, 0.0f, 0.0f}},
+		{{1.0f, 1.0f, 1.0f}, {1.0f, 0.0f, 0.0f}},
+		{{1.0f, 1.0f, -1.0f}, {1.0f, 0.0f, 0.0f}},
+
+		// Left face
+		{{-1.0f, -1.0f, -1.0f}, {-1.0f, 0.0f, 0.0f}},
+		{{-1.0f, -1.0f, 1.0f}, {-1.0f, 0.0f, 0.0f}},
+		{{-1.0f, 1.0f, -1.0f}, {-1.0f, 0.0f, 0.0f}},
+		{{-1.0f, 1.0f, 1.0f}, {-1.0f, 0.0f, 0.0f}},
+
+		// Top face
+		{{-1.0f, 1.0f, 1.0f}, {0.0f, 1.0f, 0.0f}},
+		{{1.0f, 1.0f, 1.0f}, {0.0f, 1.0f, 0.0f}},
+		{{-1.0f, 1.0f, -1.0f}, {0.0f, 1.0f, 0.0f}},
+		{{1.0f, 1.0f, -1.0f}, {0.0f, 1.0f, 0.0f}},
+
+		// Bottom face
+		{{-1.0f, -1.0f, -1.0f}, {0.0f, -1.0f, 0.0f}},
+		{{1.0f, -1.0f, -1.0f}, {0.0f, -1.0f, 0.0f}},
+		{{-1.0f, -1.0f, 1.0f}, {0.0f, -1.0f, 0.0f}},
+		{{1.0f, -1.0f, 1.0f}, {0.0f, -1.0f, 0.0f}}
+	};
+
+	// fill created v_buffer in map
+	D3D11_BUFFER_DESC buffer_description = {};
+	buffer_description.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+	buffer_description.Usage = D3D11_USAGE_DYNAMIC;
+	buffer_description.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+	buffer_description.MiscFlags = 0u;
+	buffer_description.ByteWidth = sizeof(vs_data);
+	buffer_description.StructureByteStride = sizeof(PosNorm);
+	D3D11_SUBRESOURCE_DATA subresource_data = {};
+	subresource_data.pSysMem = vs_data;
+
+	gfx->GetGraphicsDevice()->CreateBuffer(&buffer_description, &subresource_data, &vi_buffer_map["UntexturedCube"].p_v_buffer_);
+
+	// create indices
+	const unsigned short indices[] = {
+		0,1,2, 2,1,3,
+		4,5,6, 6,5,7,
+		8,9,10, 10,9,11,
+		12,13,14, 14,13,15,
+		16,17,18, 18,17,19,
+		20,21,22, 22,21,23
+	};
+
+	// fill created i_buffer in map
+	D3D11_BUFFER_DESC index_buffer_desc = {};
+	index_buffer_desc.BindFlags = D3D11_BIND_INDEX_BUFFER;
+	index_buffer_desc.Usage = D3D11_USAGE_DYNAMIC;
+	index_buffer_desc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+	index_buffer_desc.MiscFlags = 0u;
+	index_buffer_desc.ByteWidth = sizeof(indices);
+	index_buffer_desc.StructureByteStride = sizeof(unsigned short);
+	D3D11_SUBRESOURCE_DATA index_subresource_data = {};
+	index_subresource_data.pSysMem = indices;
+
+	gfx->GetGraphicsDevice()->CreateBuffer(&index_buffer_desc, &index_subresource_data, &vi_buffer_map["UntexturedCube"].p_i_buffer_);
+
+	vi_buffer_map["UntexturedCube"].index_count_ = 36;
+}
+
 void ResourceLibrary::AddCubeTexture(const std::string& mapkey, const std::wstring& texturefile)
 {
 	CreateShaderResourceView(texturefile, mapkey);
@@ -522,6 +606,16 @@ void ResourceLibrary::DrawTexturedCubeNorm(const std::string& key, const DirectX
 	gfx->BindShaderResourceView(srv_map[key]);
 	gfx->UpdateCBTransformSubresource({ transform, model });
 	gfx->DrawIndexed(vi_buffer_map["TexturedNormCube"].index_count_);
+}
+
+void ResourceLibrary::DrawUntexturedCubeNorm(const DirectX::XMMATRIX& transform, const DirectX::XMMATRIX& model, const DirectX::XMFLOAT4& colour)
+{
+	gfx->SetUseType(ShaderType::UntexturedNormal);
+	gfx->BindVertexBufferStride(vi_buffer_map["UntexturedCube"].p_v_buffer_, 24u);
+	gfx->BindIndexBuffer(vi_buffer_map["UntexturedCube"].p_i_buffer_);
+	gfx->UpdateCBTransformSubresource({ transform, model });
+	gfx->UpdateCBColourSubresource({colour.x, colour.y, colour.z, colour.w});
+	gfx->DrawIndexed(vi_buffer_map["UntexturedCube"].index_count_);
 }
 
 void ResourceLibrary::DrawTexturedPlane(const std::string& key, const DirectX::XMMATRIX& transform)
