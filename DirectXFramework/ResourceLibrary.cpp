@@ -457,6 +457,7 @@ void ResourceLibrary::GenPosTexPlane()
 	subresource_data.pSysMem = vs_data;
 
 	gfx->GetGraphicsDevice()->CreateBuffer(&buffer_description, &subresource_data, &vi_buffer_map["TexturedPlane"].p_v_buffer_);
+	gfx->GetGraphicsDevice()->CreateBuffer(&buffer_description, &subresource_data, &p_v_sprite_buffer_);
 
 	// create indices
 	const unsigned short indices[] = {
@@ -627,6 +628,34 @@ void ResourceLibrary::DrawTexturedPlane(const std::string& key, const DirectX::X
 	gfx->DrawIndexed(vi_buffer_map["TexturedPlane"].index_count_);
 }
 
+void ResourceLibrary::DrawTexturedPlaneSlice(const std::string& key, const DirectX::XMMATRIX& transform, const int& columns, const int& rows, const int& index)
+{
+	float column_spacing = 1.0f / columns;
+	float row_spacing = 1.0f / rows;
+	float y_offset = (int)(index / columns);
+	float x_offset = (index - 1) % columns;
+	float y_top = y_offset * row_spacing;
+	float y_bottom = y_offset * row_spacing + row_spacing;
+	float x_left = x_offset * column_spacing;
+	float x_right = x_offset * column_spacing + column_spacing;
+
+	// slice up texture base don texture coordinates
+	PosTex vs_data[] = {
+		// Front face
+		{{-1.0f, -1.0f, 0.5f}, {x_left, y_bottom}},
+		{{1.0f, -1.0f, 0.5f}, {x_right, y_bottom}},
+		{{-1.0f, 1.0f, 0.5f}, {x_left, y_top}},
+		{{1.0f, 1.0f, 0.5f}, {x_right, y_top}}
+	};
+	BindPosTexVBSubresource(vs_data);
+	gfx->SetUseType(ShaderType::Textured);
+	gfx->BindVertexBufferStride(p_v_sprite_buffer_, 20u);
+	gfx->BindIndexBuffer(vi_buffer_map["TexturedPlane"].p_i_buffer_);
+	gfx->BindShaderResourceView(srv_map[key]);
+	gfx->UpdateCBTransformSubresource({ transform, DirectX::XMMatrixIdentity() });
+	gfx->DrawIndexed(vi_buffer_map["TexturedPlane"].index_count_);
+}
+
 void ResourceLibrary::DrawUnTexturedModelNorm(const std::string& key, const DirectX::XMMATRIX& transform, const DirectX::XMMATRIX& model)
 {
 	gfx->SetUseType(ShaderType::UntexturedNormal);
@@ -674,5 +703,23 @@ void ResourceLibrary::CreateShaderResourceView(const std::wstring& texturefile, 
 		gfx->GetDevice().CreateShaderResourceView(p_texture, &srv_descriptor, &srv_map[mapkey]);
 	}
 	p_texture->Release();
+}
+
+void ResourceLibrary::BindPosTexVBSubresource(PosTex* sr)
+{
+	D3D11_MAPPED_SUBRESOURCE mapped_subresource;
+	gfx->GetGraphicsDeviceContext()->Map(p_v_sprite_buffer_, 0u, D3D11_MAP_WRITE_DISCARD, 0u, &mapped_subresource);
+	memcpy(mapped_subresource.pData, sr, sizeof(PosTex) * 4);
+	gfx->GetGraphicsDeviceContext()->Unmap(p_v_sprite_buffer_, 0u);
+
+	const UINT stride = sizeof(PosTex);
+	const UINT offset = 0u;
+	gfx->GetGraphicsDeviceContext()->IASetVertexBuffers(
+		0u,								   // start slot, multiple vertex buffers can be bound to various slots
+		1u,								   // number of buffers
+		&p_v_sprite_buffer_,			   // buffer to be bound
+		&stride,						   // pointer to array of stride values, i.e. 1 stride for each buffer, pointer to UINT is the same as an array of 1
+		&offset							   // pointer to array of offset values, 0u offset for first and only buffer
+	);
 }
 

@@ -16,7 +16,7 @@ void Particle::Update(const float& dt)
 void Particle::Render()
 {
 	Entity::Render();
-	cube_.HandleDraw();
+	//cube_.HandleDraw();
 }
 
 void Particle::ApplyGravitationalForce(const float& g)
@@ -45,16 +45,7 @@ void Particle::IntegrateForce(const float& dt)
 
 void Particle::IntegrateVelocity(const float& dt)
 {
-	cube_.SetX(cube_.GetX() + velocity_.x * dt);
-	cube_.SetY(cube_.GetY() + velocity_.y * dt);
-	cube_.SetZ(cube_.GetZ() + velocity_.z * dt);
-}
-
-void Particle::SetPosition(const Vecf3& pos)
-{
-	cube_.SetX(pos.x);
-	cube_.SetY(pos.y);
-	cube_.SetZ(pos.z);
+	SetPosition(position_ + velocity_ * dt);
 }
 
 void Particle::SetMass(const float& mass)

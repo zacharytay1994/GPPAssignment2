@@ -147,6 +147,11 @@ void Cube::SetQuatRotation(const QuaternionUWU& q)
 	cube_data_.rotation_ = q;
 }
 
+void Cube::SetTextureKey(const std::string& image)
+{
+	texture_key_ = image;
+}
+
 float Cube::GetX()
 {
 	return cube_data_.world_xoffset_;

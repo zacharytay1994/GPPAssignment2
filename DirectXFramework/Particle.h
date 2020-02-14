@@ -23,7 +23,6 @@ public:
 	void ApplyForce(const Vecf3& force);
 	void IntegrateForce(const float& dt);
 	void IntegrateVelocity(const float& dt);
-	void SetPosition(const Vecf3& pos);
 	void SetMass(const float& mass);
 	void ResetParticle();
 };

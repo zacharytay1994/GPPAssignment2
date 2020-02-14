@@ -5,6 +5,7 @@
 #include "Base/Input.h"
 #include "PerlinNoise.h"
 #include "ResourceLibrary.h"
+#include "Rail.h"
 #include <random>
 #include "Scene.h"
 #include <vector>
@@ -20,10 +21,10 @@
  */
 
 enum class ResourceBlockType {
+	Air,
 	Rock,
 	Tree,
-	Rail,
-	Air
+	Rail
 };
 enum class GroundBlockType {
 	Checkpoint,
@@ -48,6 +49,9 @@ private:
 	std::shared_ptr<Input> input_;
 	std::shared_ptr<ResourceLibrary> rl_;
 	Scene* scene_;
+
+	// Rails
+	std::vector<std::shared_ptr<Rail>> rails_;
 
 	// To be used to generate the noise values
 	PerlinNoise* pn_;
@@ -84,6 +88,9 @@ private:
 		fz_ = chunk_height_ / frequency_;
 	}
 
+	// Checks if a rail can be placed
+	bool CanAddRail(std::shared_ptr<Rail> r);
+
 public:
 	// Constructor
 	MapGenerator(std::shared_ptr<Graphics> graphics, std::shared_ptr<Input> input, std::shared_ptr<ResourceLibrary> rl, Scene* scene);
@@ -109,9 +116,17 @@ public:
 	Vec2<int> GetChunkSize() { return Vec2<int>(chunk_width_, chunk_height_); }
 	Vec2<int> GetMapSize() { return Vec2<int>(chunk_width_*3, chunk_height_); }
 
+	std::vector<std::shared_ptr<Rail>> GetRails() { return rails_; }
+	std::shared_ptr<Rail> GetLastRail() { return (rails_.size() > 0 ? rails_.back() : nullptr); }
+	std::shared_ptr<Rail> GetSecondLastRail() { return (rails_.size() > 1 ? rails_.at(rails_.size() - 2) : nullptr); }
+
 	// Returns an array of length 8 of pointers to the blocks surrounding the given block, starting from the block in front & going clockwise
 	// If there is no block (i.e. player is at the edge of the map), array element will be nullptr
 	ResourceTileData** GetTilesAround(ResourceTileData* starting_tile);
+	ResourceTileData& GetCurrentTile(const Vecf3& pos);
+
+	// Add resource to resource_data_
+	void AddResource(ResourceTileData tile);
 
 	// Remove resource from resource_data_
 	void RemoveResource(ResourceTileData* tile);

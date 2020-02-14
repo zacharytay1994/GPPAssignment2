@@ -35,6 +35,7 @@ void Level::Update(const float& dt)
 {
 	Scene::Update(dt);
 	ps_.Update(dt);
+	gui_.Update(dt);
 	// <--- test code can remove if need be
 	if (input_->KeyWasPressed('B')) {
 		start_spawning_ = true;
@@ -78,7 +79,7 @@ void Level::Update(const float& dt)
 
 		} else if (y_rot <= 3*PI/4) {
 			// Facing right
-			if (mapGen_->GetResourceTileData()[(int)(round(norm_player_pos.z + 1) * mapGen_->GetMapSize().x + norm_player_pos.x)].breakable_) {
+		if (mapGen_->GetResourceTileData()[(int)(round(norm_player_pos.z) * mapGen_->GetMapSize().x + norm_player_pos.x + 1)].breakable_) {
 				EmitDestructionParticles(mapGen_->GetResourceTileData()[(int)(round(norm_player_pos.z) * mapGen_->GetMapSize().x + norm_player_pos.x + 1)].block_type_,
 					mapGen_->GetResourceTileData()[(int)(round(norm_player_pos.z) * mapGen_->GetMapSize().x + norm_player_pos.x + 1)].ent_->GetPosition());
 				RemoveEntity(mapGen_->GetResourceTileData()[(int)(round(norm_player_pos.z) * mapGen_->GetMapSize().x + norm_player_pos.x + 1)].ent_);
@@ -88,7 +89,7 @@ void Level::Update(const float& dt)
 		else if (y_rot <= 5 * PI / 4) {
 
 			// Facing downward
-			if (mapGen_->GetResourceTileData()[(int)(round(norm_player_pos.z + 1) * mapGen_->GetMapSize().x + norm_player_pos.x)].breakable_) {
+		if (mapGen_->GetResourceTileData()[(int)(round(norm_player_pos.z - 1) * mapGen_->GetMapSize().x + norm_player_pos.x)].breakable_) {
 				EmitDestructionParticles(mapGen_->GetResourceTileData()[(int)(round(norm_player_pos.z - 1) * mapGen_->GetMapSize().x + norm_player_pos.x)].block_type_,
 					mapGen_->GetResourceTileData()[(int)(round(norm_player_pos.z - 1) * mapGen_->GetMapSize().x + norm_player_pos.x)].ent_->GetPosition());
 				RemoveEntity(mapGen_->GetResourceTileData()[(int)(round(norm_player_pos.z - 1) * mapGen_->GetMapSize().x + norm_player_pos.x)].ent_);
@@ -98,7 +99,7 @@ void Level::Update(const float& dt)
 		else {
 
 			// Facing left
-			if (mapGen_->GetResourceTileData()[(int)(round(norm_player_pos.z + 1) * mapGen_->GetMapSize().x + norm_player_pos.x)].breakable_) {
+			if (mapGen_->GetResourceTileData()[(int)(round(norm_player_pos.z) * mapGen_->GetMapSize().x + norm_player_pos.x - 1)].breakable_) {
 				EmitDestructionParticles(mapGen_->GetResourceTileData()[(int)(round(norm_player_pos.z) * mapGen_->GetMapSize().x + norm_player_pos.x - 1)].block_type_,
 					mapGen_->GetResourceTileData()[(int)(round(norm_player_pos.z) * mapGen_->GetMapSize().x + norm_player_pos.x - 1)].ent_->GetPosition());
 				RemoveEntity(mapGen_->GetResourceTileData()[(int)(round(norm_player_pos.z) * mapGen_->GetMapSize().x + norm_player_pos.x - 1)].ent_);
@@ -106,19 +107,33 @@ void Level::Update(const float& dt)
 			}
 		}
 	}
+	// Place rail
+	if (input_->KeyWasPressed('R')) {
+		
+		// Get normalized player pos
+		Vecf3 norm_player_pos = player_->GetPosition();
+		norm_player_pos.x = (int)round(player_->GetPosition().x) - max(0, (mapGen_->GetTotalChunkNo() - 3) * mapGen_->GetChunkSize().x);
+		norm_player_pos.z = (int)round(player_->GetPosition().z) - max(0, (mapGen_->GetTotalChunkNo() - 3) * mapGen_->GetChunkSize().x);
+		
+		// Check if rail can be placed on player pos
+		if (mapGen_->GetResourceTileData()[(int)(round(norm_player_pos.z) * mapGen_->GetMapSize().x + norm_player_pos.x)].walkable_ &&
+			mapGen_->GetResourceTileData()[(int)(round(norm_player_pos.z) * mapGen_->GetMapSize().x + norm_player_pos.x)].block_type_ != ResourceBlockType::Rail) {
 
-	if (input_->KeyWasPressed('E')) {
-		//ps_.EmitSphere(15, {6.0f, 5.0f, 6.0f}, 3.0f);
+			// Spawn rail
+			std::shared_ptr<Block> r = std::make_shared<Rail>("rail", graphics_, input_, rl_);
+			r->SetScale({ 0.5f, 0.03125f, 0.5f });
+			r->SetPosition(Vecf3((int)round(norm_player_pos.x), -0.5f, (int)round(norm_player_pos.z)));
+			AddEntity(r);
+			mapGen_->AddResource({ ResourceBlockType::Rail, 0, 1, r });
+		}
 	}
-	//test_object_->Draw();
-	//test_object_2_->Draw();
-	// --->
 }
 
 void Level::Render(const float& dt)
 {
 	Scene::Render(dt);
 	ps_.Render();
+	gui_.DrawLevelHUD(dt);
 }
 
 void Level::SpawnRandomBlocks(const int& val)

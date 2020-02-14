@@ -1,8 +1,6 @@
 #pragma once
 
 #include "MapGenerator.h"
-#include "Scene.h"
-#include "Drawable.h"
 #include "Player.h"
 
 class Block;

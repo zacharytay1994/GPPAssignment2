@@ -43,6 +43,9 @@
     <ClCompile Include="Skybox.cpp" />
     <ClCompile Include="ParticleSystem.cpp" />
     <ClCompile Include="Particle.cpp" />
+    <ClCompile Include="Rail.cpp" />
+    <ClCompile Include="GUI.cpp" />
+    <ClCompile Include="ChooChoo.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="assimp\include\assimp\config.h" />
@@ -85,6 +88,9 @@
     <ClInclude Include="Skybox.h" />
     <ClInclude Include="ParticleSystem.h" />
     <ClInclude Include="Particle.h" />
+    <ClInclude Include="Rail.h" />
+    <ClInclude Include="GUI.h" />
+    <ClInclude Include="ChooChoo.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Images\alpha_donald.png" />

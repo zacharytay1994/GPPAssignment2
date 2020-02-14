@@ -89,6 +89,7 @@ public:
 	void	SetAngleYDeg(const float& angle);
 	void	SetColour(const DirectX::XMFLOAT4& colour);
 	void	SetQuatRotation(const QuaternionUWU& q);
+	void	SetTextureKey(const std::string& image);
 	float	GetX();
 	float	GetY();
 	float	GetZ();

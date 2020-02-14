@@ -3,17 +3,21 @@
 
 Entity::Entity(const std::string& image, std::shared_ptr<Graphics> gfx, std::shared_ptr<Input> input, std::shared_ptr<ResourceLibrary> rl)
 	:
-	cube_(gfx, input, image, rl)
+	cube_(gfx, input, image, rl),
+	input_(input)
 {
 }
 
 void Entity::Update(const float& dt)
 {
-	cube_.SetQuatRotation(rotation_);
 	std::vector<std::shared_ptr<Component>>::iterator i;
 	for (i = components_.begin(); i != components_.end(); i++) {
 		(*i)->Update(dt);
 	}
+	cube_.SetX(position_.x);
+	cube_.SetY(position_.y);
+	cube_.SetZ(position_.z);
+	cube_.SetQuatRotation(rotation_);
 }
 
 void Entity::Render()
@@ -22,6 +26,7 @@ void Entity::Render()
 	for (i = components_.begin(); i != components_.end(); i++) {
 		(*i)->Render();
 	}
+	cube_.HandleDraw();
 }
 
 Vecf3 Entity::GetPosition()
