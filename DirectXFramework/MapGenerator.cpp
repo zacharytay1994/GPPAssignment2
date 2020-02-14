@@ -72,7 +72,15 @@ void MapGenerator::GenerateMap()
 			// Generate noise value for current block
 			n = pn_->octaveNoise0_1(x / fx_, z / fz_, octaves_);
 
-			if (abs(x - checkpoint.x) <= 1 && abs(z - checkpoint.z) <= 1 || n > .4 && n < .6) {
+			if ((z - checkpoint.z) == 0 && abs(x - checkpoint.x) <= 1) {
+
+				// temp rails
+				std::shared_ptr<Rail> rail = std::make_shared<Rail>("rail", graphics_, input_, rl_);
+				rail->SetScale({ 0.5, 0.03125, 0.5 });
+				rail->SetPosition(Vecf3(x, -0.5f, z));
+				AddResource({ ResourceBlockType::Rail, 0, 1, rail });
+
+			} else if (abs(z - checkpoint.z) <= 1 && abs(x - checkpoint.x) <= 1|| n > .4 && n < .6) {
 
 				// Set resource_data_
 				resource_data_[3*chunk_width_ * z + (total_map_size_ >= 3 ? 48 + (x - total_map_size_ * chunk_width_) : x)] = { ResourceBlockType::Air, 0, 1, nullptr };
@@ -96,82 +104,82 @@ void MapGenerator::GenerateMap()
 			}
 		}
 	}
-	// Spawn rail and train
-	b = std::make_shared<Rail>("rail", graphics_, input_, rl_);
-	b->SetScale({ 0.5f, 0.03125f, 0.5f });
-	b->SetPosition({ checkpoint.x, -0.5, checkpoint.z });
-	scene_->AddEntity(b);
-	AddResource({ ResourceBlockType::Rail, false, true, b });
+	//// Spawn rail and train
+	//b = std::make_shared<Rail>("rail", graphics_, input_, rl_);
+	//b->SetScale({ 0.5f, 0.03125f, 0.5f });
+	//b->SetPosition({ checkpoint.x, -0.5, checkpoint.z });
+	//scene_->AddEntity(b);
+	//AddResource({ ResourceBlockType::Rail, false, true, b });
 
-	b = std::make_shared<Rail>("rail", graphics_, input_, rl_);
-	b->SetScale({ 0.5f, 0.03125f, 0.5f });
-	b->SetPosition({ checkpoint.x - 1.0f, -0.5, checkpoint.z });
-	scene_->AddEntity(b);
-	AddResource({ ResourceBlockType::Rail, false, true, b });
+	//b = std::make_shared<Rail>("rail", graphics_, input_, rl_);
+	//b->SetScale({ 0.5f, 0.03125f, 0.5f });
+	//b->SetPosition({ checkpoint.x - 1.0f, -0.5, checkpoint.z });
+	//scene_->AddEntity(b);
+	//AddResource({ ResourceBlockType::Rail, false, true, b });
 
-	b = std::make_shared<Rail>("rail", graphics_, input_, rl_);
-	b->SetScale({ 0.5f, 0.03125f, 0.5f });
-	b->SetPosition({ checkpoint.x + 1.0f, -0.5, checkpoint.z });
-	std::dynamic_pointer_cast<Rail>(b)->SetDirection(Rail::Direction::LTopCurved);
-	scene_->AddEntity(b);
-	AddResource({ ResourceBlockType::Rail, false, true, b });
+	//b = std::make_shared<Rail>("rail", graphics_, input_, rl_);
+	//b->SetScale({ 0.5f, 0.03125f, 0.5f });
+	//b->SetPosition({ checkpoint.x + 1.0f, -0.5, checkpoint.z });
+	//std::dynamic_pointer_cast<Rail>(b)->SetDirection(Rail::Direction::LTopCurved);
+	//scene_->AddEntity(b);
+	//AddResource({ ResourceBlockType::Rail, false, true, b });
 
-	// <--- TEST RAILS CAN REMOVE IF NEED
-	b = std::make_shared<Rail>("rail", graphics_, input_, rl_);
-	b->SetScale({ 0.5f, 0.03125f, 0.5f });
-	b->SetPosition({ checkpoint.x + 1.0f, -0.5, checkpoint.z + 1.0f });
-	std::dynamic_pointer_cast<Rail>(b)->SetDirection(Rail::Direction::Vertical);
-	scene_->AddEntity(b);
-	AddResource({ ResourceBlockType::Rail, false, true, b });
+	//// <--- TEST RAILS CAN REMOVE IF NEED
+	//b = std::make_shared<Rail>("rail", graphics_, input_, rl_);
+	//b->SetScale({ 0.5f, 0.03125f, 0.5f });
+	//b->SetPosition({ checkpoint.x + 1.0f, -0.5, checkpoint.z + 1.0f });
+	//std::dynamic_pointer_cast<Rail>(b)->SetDirection(Rail::Direction::Vertical);
+	//scene_->AddEntity(b);
+	//AddResource({ ResourceBlockType::Rail, false, true, b });
 
-	b = std::make_shared<Rail>("rail", graphics_, input_, rl_);
-	b->SetScale({ 0.5f, 0.03125f, 0.5f });
-	b->SetPosition({ checkpoint.x + 1.0f, -0.5, checkpoint.z + 2.0f });
-	std::dynamic_pointer_cast<Rail>(b)->SetDirection(Rail::Direction::RBottomCurved);
-	scene_->AddEntity(b);
-	AddResource({ ResourceBlockType::Rail, false, true, b });
+	//b = std::make_shared<Rail>("rail", graphics_, input_, rl_);
+	//b->SetScale({ 0.5f, 0.03125f, 0.5f });
+	//b->SetPosition({ checkpoint.x + 1.0f, -0.5, checkpoint.z + 2.0f });
+	//std::dynamic_pointer_cast<Rail>(b)->SetDirection(Rail::Direction::RBottomCurved);
+	//scene_->AddEntity(b);
+	//AddResource({ ResourceBlockType::Rail, false, true, b });
 
-	b = std::make_shared<Rail>("rail", graphics_, input_, rl_);
-	b->SetScale({ 0.5f, 0.03125f, 0.5f });
-	b->SetPosition({ checkpoint.x + 2.0f, -0.5, checkpoint.z + 2.0f });
-	std::dynamic_pointer_cast<Rail>(b)->SetDirection(Rail::Direction::LBottomCurved);
-	scene_->AddEntity(b);
-	AddResource({ ResourceBlockType::Rail, false, true, b });
+	//b = std::make_shared<Rail>("rail", graphics_, input_, rl_);
+	//b->SetScale({ 0.5f, 0.03125f, 0.5f });
+	//b->SetPosition({ checkpoint.x + 2.0f, -0.5, checkpoint.z + 2.0f });
+	//std::dynamic_pointer_cast<Rail>(b)->SetDirection(Rail::Direction::LBottomCurved);
+	//scene_->AddEntity(b);
+	//AddResource({ ResourceBlockType::Rail, false, true, b });
 
-	b = std::make_shared<Rail>("rail", graphics_, input_, rl_);
-	b->SetScale({ 0.5f, 0.03125f, 0.5f });
-	b->SetPosition({ checkpoint.x + 2.0f, -0.5, checkpoint.z + 1.0f });
-	std::dynamic_pointer_cast<Rail>(b)->SetDirection(Rail::Direction::Vertical);
-	scene_->AddEntity(b);
-	AddResource({ ResourceBlockType::Rail, false, true, b });
+	//b = std::make_shared<Rail>("rail", graphics_, input_, rl_);
+	//b->SetScale({ 0.5f, 0.03125f, 0.5f });
+	//b->SetPosition({ checkpoint.x + 2.0f, -0.5, checkpoint.z + 1.0f });
+	//std::dynamic_pointer_cast<Rail>(b)->SetDirection(Rail::Direction::Vertical);
+	//scene_->AddEntity(b);
+	//AddResource({ ResourceBlockType::Rail, false, true, b });
 
-	b = std::make_shared<Rail>("rail", graphics_, input_, rl_);
-	b->SetScale({ 0.5f, 0.03125f, 0.5f });
-	b->SetPosition({ checkpoint.x + 2.0f, -0.5, checkpoint.z });
-	std::dynamic_pointer_cast<Rail>(b)->SetDirection(Rail::Direction::RTopCurved);
-	scene_->AddEntity(b);
-	AddResource({ ResourceBlockType::Rail, false, true, b });
+	//b = std::make_shared<Rail>("rail", graphics_, input_, rl_);
+	//b->SetScale({ 0.5f, 0.03125f, 0.5f });
+	//b->SetPosition({ checkpoint.x + 2.0f, -0.5, checkpoint.z });
+	//std::dynamic_pointer_cast<Rail>(b)->SetDirection(Rail::Direction::RTopCurved);
+	//scene_->AddEntity(b);
+	//AddResource({ ResourceBlockType::Rail, false, true, b });
 
-	b = std::make_shared<Rail>("rail", graphics_, input_, rl_);
-	b->SetScale({ 0.5f, 0.03125f, 0.5f });
-	b->SetPosition({ checkpoint.x + 3.0f, -0.5, checkpoint.z });
-	std::dynamic_pointer_cast<Rail>(b)->SetDirection(Rail::Direction::Horizontal);
-	scene_->AddEntity(b);
-	AddResource({ ResourceBlockType::Rail, false, true, b });
+	//b = std::make_shared<Rail>("rail", graphics_, input_, rl_);
+	//b->SetScale({ 0.5f, 0.03125f, 0.5f });
+	//b->SetPosition({ checkpoint.x + 3.0f, -0.5, checkpoint.z });
+	//std::dynamic_pointer_cast<Rail>(b)->SetDirection(Rail::Direction::Horizontal);
+	//scene_->AddEntity(b);
+	//AddResource({ ResourceBlockType::Rail, false, true, b });
 
-	b = std::make_shared<Rail>("rail", graphics_, input_, rl_);
-	b->SetScale({ 0.5f, 0.03125f, 0.5f });
-	b->SetPosition({ checkpoint.x + 4.0f, -0.5, checkpoint.z });
-	std::dynamic_pointer_cast<Rail>(b)->SetDirection(Rail::Direction::LTopCurved);
-	scene_->AddEntity(b);
-	AddResource({ ResourceBlockType::Rail, false, true, b });
+	//b = std::make_shared<Rail>("rail", graphics_, input_, rl_);
+	//b->SetScale({ 0.5f, 0.03125f, 0.5f });
+	//b->SetPosition({ checkpoint.x + 4.0f, -0.5, checkpoint.z });
+	//std::dynamic_pointer_cast<Rail>(b)->SetDirection(Rail::Direction::LTopCurved);
+	//scene_->AddEntity(b);
+	//AddResource({ ResourceBlockType::Rail, false, true, b });
 
-	b = std::make_shared<Rail>("rail", graphics_, input_, rl_);
-	b->SetScale({ 0.5f, 0.03125f, 0.5f });
-	b->SetPosition({ checkpoint.x + 4.0f, -0.5, checkpoint.z + 1.0f });
-	std::dynamic_pointer_cast<Rail>(b)->SetDirection(Rail::Direction::Vertical);
-	scene_->AddEntity(b);
-	AddResource({ ResourceBlockType::Rail, false, true, b });
+	//b = std::make_shared<Rail>("rail", graphics_, input_, rl_);
+	//b->SetScale({ 0.5f, 0.03125f, 0.5f });
+	//b->SetPosition({ checkpoint.x + 4.0f, -0.5, checkpoint.z + 1.0f });
+	//std::dynamic_pointer_cast<Rail>(b)->SetDirection(Rail::Direction::Vertical);
+	//scene_->AddEntity(b);
+	//AddResource({ ResourceBlockType::Rail, false, true, b });
 	// --->
 	std::shared_ptr<Entity> train = std::dynamic_pointer_cast<Entity>(std::make_shared<ChooChoo>("train", graphics_, input_, rl_, this));
 	train->SetDrawMode(2);
@@ -185,6 +193,108 @@ void MapGenerator::GenerateMap()
 
 	// Increment total_map_size_
  	total_map_size_++;
+}
+
+bool MapGenerator::CanAddRail(std::shared_ptr<Rail> r)
+{
+	// Check if rail can be placed on rail pos
+	auto tile = GetResourceTileData()[(int)(round(r->GetPosition().z) * GetMapSize().x + r->GetPosition().x)];
+	if (tile.block_type_ == ResourceBlockType::Air) {
+
+		if (GetLastRail() == nullptr) {
+			rails_.push_back(r);
+			return true;
+		}
+		else if (abs(GetLastRail()->GetPosition().x - r->GetPosition().x) + abs(GetLastRail()->GetPosition().z - r->GetPosition().z) <= 1) {
+
+			if ((int)round(GetLastRail()->GetPosition().z - r->GetPosition().z) == 1) {
+				// Last rail is above 
+				// Place vertical rail
+				r->SetDirection(Rail::Direction::Vertical);
+
+				// Make correction to second last rail (if needed)
+				if (GetLastRail()->GetDirection() == Rail::Direction::Horizontal) {
+					if (GetSecondLastRail() == nullptr) {
+						GetLastRail()->SetDirection(Rail::Direction::Vertical);
+					}
+					else {
+						if ((GetSecondLastRail()->GetPosition().x - GetLastRail()->GetPosition().x) == -1) {
+							GetLastRail()->SetDirection(Rail::Direction::LBottomCurved);
+						}
+						else {
+							GetLastRail()->SetDirection(Rail::Direction::RBottomCurved);
+						}
+					}
+				}
+			}
+			else if ((int)round(GetLastRail()->GetPosition().z - r->GetPosition().z) == -1) {
+				// Last rail is below
+				// Place vertical rail
+				r->SetDirection(Rail::Direction::Vertical);
+
+				// Make correction to second last rail (if needed)
+				if (GetLastRail()->GetDirection() == Rail::Direction::Horizontal) {
+					if (GetSecondLastRail() == nullptr) {
+						GetLastRail()->SetDirection(Rail::Direction::Vertical);
+					}
+					else {
+						if ((GetSecondLastRail()->GetPosition().x - GetLastRail()->GetPosition().x) == -1) {
+							GetLastRail()->SetDirection(Rail::Direction::LTopCurved);
+						}
+						else {
+							GetLastRail()->SetDirection(Rail::Direction::RTopCurved);
+						}
+					}
+				}
+			}
+			else if ((int)round(GetLastRail()->GetPosition().x - r->GetPosition().x) == 1) {
+				// Last rail is on the right
+				// Place horizontal rail
+				r->SetDirection(Rail::Direction::Horizontal);
+
+				// Make correction to second last rail (if needed)
+				if (GetLastRail()->GetDirection() == Rail::Direction::Vertical) {
+					if (GetSecondLastRail() == nullptr) {
+						GetLastRail()->SetDirection(Rail::Direction::Horizontal);
+					}
+					else {
+						if ((GetSecondLastRail()->GetPosition().z - GetLastRail()->GetPosition().z) == -1) {
+							GetLastRail()->SetDirection(Rail::Direction::LBottomCurved);
+						}
+						else {
+							GetLastRail()->SetDirection(Rail::Direction::LTopCurved);
+						}
+					}
+				}
+			}
+			else if ((int)round(GetLastRail()->GetPosition().x - r->GetPosition().x) == -1) {
+				// Last rail is on the left
+				// Place horizontal rail
+				r->SetDirection(Rail::Direction::Horizontal);
+
+				// Make correction to second last rail (if needed)
+				if (GetLastRail()->GetDirection() == Rail::Direction::Vertical) {
+					if (GetSecondLastRail() == nullptr) {
+						GetLastRail()->SetDirection(Rail::Direction::Horizontal);
+					}
+					else {
+						if ((GetSecondLastRail()->GetPosition().z - GetLastRail()->GetPosition().z) == -1) {
+							GetLastRail()->SetDirection(Rail::Direction::RBottomCurved);
+						}
+						else {
+							GetLastRail()->SetDirection(Rail::Direction::RTopCurved);
+						}
+					}
+				}
+			}
+			else { return false; }
+
+ 			rails_.push_back(r);
+			return true;
+
+		}
+	}
+	return false;
 }
 
 MapGenerator::ResourceTileData** MapGenerator::GetTilesAround(ResourceTileData* starting_tile) {
@@ -249,9 +359,13 @@ MapGenerator::ResourceTileData& MapGenerator::GetCurrentTile(const Vecf3& pos)
 
 void MapGenerator::AddResource(ResourceTileData tile)
 {
+	if (tile.block_type_ == ResourceBlockType::Rail && !CanAddRail(std::dynamic_pointer_cast<Rail>(tile.ent_))) { return; }
+
 	Vecf3 tile_pos = tile.ent_->GetPosition();
 	int index = (int)(round(tile_pos.z) * chunk_width_ * 3 + round(tile_pos.x));
 	resource_data_[index] = tile;
+
+	scene_->AddEntity(tile.ent_);
 }
 
 void MapGenerator::RemoveResource(ResourceTileData* tile)
