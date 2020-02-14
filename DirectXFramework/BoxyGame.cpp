@@ -37,6 +37,15 @@ void BoxyGame::Initialize(HWND hwnd)
 	rl_->AddCubeTexture("rail", L"Images/rail.png");
 	rl_->AddPosNormTexModel("tree", "Models\\tree.obj", L"Images\\tree.png");
 	rl_->AddPosNormTexModel("rock", "Models\\rock.obj", L"Images\\rock.png");
+
+	// gui resources
+	rl_->AddCubeTexture("mariofont", L"Images/Fixedsys16x28.png");
+	rl_->AddCubeTexture("woodlogo", L"Images/woodlogo.png");
+	rl_->AddCubeTexture("stonelogo", L"Images/stonelogo.png");
+	rl_->AddCubeTexture("tracklogo", L"Images/tracklogo.png");
+	rl_->AddCubeTexture("stopwatchlogo", L"Images/stopwatchlogo.png");
+	rl_->AddCubeTexture("steamtrainsprite", L"Images/steamtrain.png");
+	rl_->AddCubeTexture("bottombar", L"Images/bar.png");
 }
 
 void BoxyGame::Update()

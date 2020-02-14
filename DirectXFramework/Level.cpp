@@ -34,6 +34,7 @@ Level::Level(std::shared_ptr<Graphics> gfx, std::shared_ptr<Input> input, std::s
 void Level::Update(const float& dt)
 {
 	Scene::Update(dt);
+	gui_.Update(dt);
 
 	// <--- test code can remove if need be
 	if (input_->KeyWasPressed('B')) {
@@ -126,7 +127,7 @@ void Level::Update(const float& dt)
 void Level::Render(const float& dt)
 {
 	Scene::Render(dt);
-	gui_.Draw();
+	gui_.DrawLevelHUD(dt);
 }
 
 void Level::SpawnRandomBlocks(const int& val)
