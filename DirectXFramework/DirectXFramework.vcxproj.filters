@@ -42,6 +42,7 @@
     <ClCompile Include="SourceFiles\WinMain.cpp" />
     <ClCompile Include="Skybox.cpp" />
     <ClCompile Include="Button.cpp" />
+    <ClCompile Include="SceneGraph.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="assimp\include\assimp\config.h" />
@@ -83,6 +84,7 @@
     <ClInclude Include="Vec4.h" />
     <ClInclude Include="Skybox.h" />
     <ClInclude Include="Button.h" />
+    <ClInclude Include="SceneGraph.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Images\alpha_donald.png" />
