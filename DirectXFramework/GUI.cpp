@@ -162,6 +162,21 @@ void GUI::AddResource(const ResourceQueue& rq)
 	resource_queue_.push(rq);
 }
 
+void GUI::DrawSprite(const std::string& key, const Vecf3& position, const Vecf3& scale)
+{
+	rl_->DrawTexturedPlane(key, GetTransform(position, scale));
+	//rl_->DrawTexturedCube("blackoverlay", GetTransform(position, scale));
+}
+
+void GUI::DrawOverlay(const std::string& key)
+{
+}
+
+int GUI::GetTrainX()
+{
+	return train_x;
+}
+
 void GUI::Draw()
 {
 	//rl_->DrawTexturedPlaneSlice("halogencaps", GetTransform({ 0.0f, 0.0f, 0.0f }, { 0.5f, 0.5f, 0.5f }), 26, 1, 1);

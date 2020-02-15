@@ -1,10 +1,12 @@
 #include "ChooChoo.h"
 #include "Rail.h"
 
-ChooChoo::ChooChoo(const std::string& image, std::shared_ptr<Graphics> gfx, std::shared_ptr<Input> input, std::shared_ptr<ResourceLibrary> rl, MapGenerator* mg)
+ChooChoo::ChooChoo(const std::string& image, std::shared_ptr<Graphics> gfx, std::shared_ptr<Input> input,
+	std::shared_ptr<ResourceLibrary> rl, MapGenerator* mg, ParticleSystem& ps)
 	:
 	Entity(image, gfx, input, rl),
-	mg_(mg)
+	mg_(mg),
+	ps_(ps)
 {
 }
 
@@ -34,8 +36,13 @@ bool ChooChoo::MoveTrain(const float& dt)
 	}
  	MapGenerator::ResourceTileData tile = mg_->GetCurrentTile(GetPosition());
 	// check if on tile
-	if (tile.block_type_ != ResourceBlockType::Rail) {
+	if (tile.block_type_ != ResourceBlockType::Rail && !game_over_) {
 		game_over_ = true;
+		ps_.EmitSphere(35, position_, 3.0f, Randf(2.0f, 3.0f), Randf(0.4f, 0.5f), 20.0f, { Randf(0.5f, 1.0f), 0.0f, 0.0f, 1.0f });
+		ps_.EmitSphere(65, position_, 5.0f, Randf(1.0f, 2.0f), Randf(0.01f, 0.2f), 10.0f, { Randf(0.5f, 1.0f), 0.0f, 0.0f, 1.0f });
+		return false;
+	}
+	if (game_over_) {
 		return false;
 	}
 	std::shared_ptr<Rail> rail = std::dynamic_pointer_cast<Rail>(tile.ent_);
@@ -140,4 +147,9 @@ bool ChooChoo::MoveTrain(const float& dt)
 	position_.y += current_velocity.y * dt / time_to_move_one_tile_;
 	position_.z += current_velocity.z * dt / time_to_move_one_tile_;
 	return true;
+}
+
+bool ChooChoo::GameOver()
+{
+	return game_over_;
 }

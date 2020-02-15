@@ -22,7 +22,9 @@ protected:
 	std::shared_ptr<Graphics> graphics_;
 	std::shared_ptr<Input> input_;
 	std::shared_ptr<ResourceLibrary> rl_;
+public:
 	ParticleSystem ps_;
+protected:
 	Skybox sb_;
 	CollisionManager cm_;
 	WorldLights wl_;

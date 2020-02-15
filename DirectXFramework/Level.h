@@ -18,6 +18,7 @@ private:
 	float interval_tracker_ = 0.0f;
 	int spawn_iterations_ = 20;
 	// --->
+	bool game_over_ = false;
 public:
 	Level(std::shared_ptr<Graphics> gfx, std::shared_ptr<Input> input, std::shared_ptr<ResourceLibrary> rl, Game* game);
 	void Update(const float& dt) override;

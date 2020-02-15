@@ -55,6 +55,7 @@ private:
 	ID3D11Buffer*			p_cb_color_ = nullptr;
 	ID3D11Buffer*			p_cb_lights_ = nullptr;
 	ID3D11DepthStencilView*	p_depth_stencil_view_ = nullptr;
+	ID3D11BlendState*		p_blend_state = nullptr;
 	bool initialized_;
 	bool has_depth_stencil_ = false;
 
@@ -109,6 +110,7 @@ public:
 	void ClearBuffer();													  // fills back buffer with colour (e.g. white)
 	void Draw();														  // draw call for sprites
 	void DrawIndexed(int indexcount);
+	void EnableTransparency(const bool& b);
 
 	void BindCubeVertices(const CubeVertexBuffer v);
 	void BindCubeIndices(const unsigned short* i, int size);

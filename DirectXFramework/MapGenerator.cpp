@@ -154,7 +154,7 @@ void MapGenerator::GenerateMap()
 
 	// Spawn train in first chunk
 	if (total_map_size_ == 0) {
-		std::shared_ptr<Entity> train = std::dynamic_pointer_cast<Entity>(std::make_shared<ChooChoo>("train", graphics_, input_, rl_, this));
+		std::shared_ptr<Entity> train = std::dynamic_pointer_cast<Entity>(std::make_shared<ChooChoo>("train", graphics_, input_, rl_, this, scene_->ps_));
 		train->SetDrawMode(2);
 		train->GetCube().SetScaleX(0.0005f);
 		train->GetCube().SetScaleY(0.0005f);
