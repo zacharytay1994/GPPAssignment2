@@ -10,7 +10,10 @@ MainMenu::MainMenu(std::shared_ptr<Graphics> gfx, std::shared_ptr<Input> input, 
 {
 
 	player_ = AddPlayer({ 0, 1.75, 0 }, { 0,0,0 });
-	player_->AddComponent(std::make_shared<InputComponent>(InputComponent(*player_, *input_)));
+	player_->AddComponent(std::make_shared<InputComponent>(InputComponent(*player_, *input_, 'W', 'S', 'A', 'D')));
+	player2_ = AddPlayer({ 0.0f, 1.0f, 1.0f }, { 0.5f, 0.5f, 0.5f });
+	player2_->AddComponent(std::make_shared<InputComponent>(InputComponent(*player2_, *input_, VK_UP, VK_DOWN, VK_LEFT, VK_RIGHT)));
+	player2_->active_ = false;
 
 	std::shared_ptr<Entity> tempEntity;
 	Vecf3 tempDimension;
@@ -79,10 +82,29 @@ void MainMenu::Update(const float& dt)
 	}
 	// give player a light
 	wl_.SetPoint1(player_->GetPosition() + RotateVectorY(Vecf3(0.0f, 0.0f, 1.0f), -player_->GetOrientation().y) * 2.0f + Vecf3(0.0f, 1.0f, 0.0f));
+	if (multiplayer_) {
+		wl_.SetPoint2(player2_->GetPosition() + RotateVectorY(Vecf3(0.0f, 0.0f, 1.0f), -player2_->GetOrientation().y) * 2.0f + Vecf3(0.0f, 1.0f, 0.0f));
+	}
+	else {
+		wl_.SetPoint2({ 0.0f, -1000.0f, 0.0f });
+	}
+	if (input_->KeyWasPressed('M')) {
+		multiplayer_ = !multiplayer_;
+		if (multiplayer_) {
+			player2_->active_ = true;
+			player2_->SetPosition(player_->GetPosition());
+		}
+		else {
+			player2_->active_ = false;
+		}
+	}
 	/*__________________________________*/
 	// CAMERA TRACKING MODE
 	/*__________________________________*/
 	Vecf3 cam_to_target;
+	if (multiplayer_) {
+		camera_mode_ = 2;
+	}
 	switch (camera_mode_) {
 	case 0: // free roam
 		break;
@@ -96,7 +118,15 @@ void MainMenu::Update(const float& dt)
 		}
 		break;
 	case 2: // top down
-		cam_to_target = ((player_->GetPosition() + Vecf3(0.0f, 8.0f, -2.0f)) - input_->GetCameraPosition());
+		if (multiplayer_) {
+			Vecf3 center = player2_->GetPosition() - player_->GetPosition();
+			float distance = center.Len();
+			center = player_->GetPosition() + (center / 2.0f);
+			cam_to_target = ((center + Vecf3(0.0f, 5.0f + distance * 0.5f, -2.0f - distance * 0.1f)) - input_->GetCameraPosition());
+		}
+		else {
+			cam_to_target = ((player_->GetPosition() + Vecf3(0.0f, 8.0f, -2.0f)) - input_->GetCameraPosition());
+		}
 		if (!(cam_to_target.LenSq() < 0.1f)) {
 			input_->TranslateCamera({ cam_to_target.x, cam_to_target.y, cam_to_target.z }, dt);
 		}

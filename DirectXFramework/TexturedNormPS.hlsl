@@ -5,6 +5,7 @@ SamplerState samplr;
 cbuffer LightPositions : register(b1) {
 	float4 point1;
 	float4 point2;
+	float4 point3;
 	float4 directional1;
 }
 
@@ -54,6 +55,15 @@ float4 main(float3 worldPos : Position, float3 normal : Normal, float2 tc : TexC
 	// diffuse intensity
 	float3 diffuse2 = colour * point2.w * att * max(0.0f, dot(dirTol, normal));
 
+	// fragment to light vector data - Point3
+	vTol = point3 - worldPos;
+	distTol = length(vTol);
+	dirTol = vTol / distTol;
+	// diffuse attenuation
+	att = 1.0f / (attConst + attLin * distTol + attQuad * (distTol * distTol));
+	// diffuse intensity
+	float3 diffuse3 = colour * point2.w * att * max(0.0f, dot(dirTol, normal));
+
 	// final color
-	return float4(saturate(diffuse + diffuse2 + ambient + dirColour), 1.0f);
+	return float4(saturate(diffuse + diffuse2 + diffuse3 + ambient + dirColour), 1.0f);
 }

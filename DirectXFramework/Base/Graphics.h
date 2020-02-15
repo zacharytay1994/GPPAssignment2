@@ -71,7 +71,7 @@ private:
 	// to be used in the vertex shader stage as generic world, view, transform
 	struct ConstantBuffer { DirectX::XMMATRIX transform; DirectX::XMMATRIX model; };
 	struct Colour { float r; float g; float b; float a; };
-	struct Lights { DirectX::XMFLOAT4 point_1; DirectX::XMFLOAT4 point_2; DirectX::XMFLOAT4 directional_1; };
+	struct Lights { DirectX::XMFLOAT4 point_1; DirectX::XMFLOAT4 point_2; DirectX::XMFLOAT4 point_3; DirectX::XMFLOAT4 directional_1; };
 	/*_______________________________________*/
 public:
 	static const int viewport_width_ = 800, viewport_height_ = 600;

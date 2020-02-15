@@ -2,9 +2,13 @@
 #include "Entity.h"
 #include "Player.h"
 
-InputComponent::InputComponent(Entity& owner, Input& input):
+InputComponent::InputComponent(Entity& owner, Input& input, const char& up, const char& down, const char& left, const char& right):
 	Component(owner,"InputComponent"),
-	input_(input)
+	input_(input),
+	up_(up),
+	down_(down),
+	left_(left),
+	right_(right)
 {
 }
 
@@ -15,22 +19,22 @@ void InputComponent::Update(const float& frametime)
 	Player* player = (Player*)(&owner_);
 	//Vecf3 pos = player->GetPosition();
 
-	if (input_.KeyIsDown(VK_UP)) {
+	if (input_.KeyIsDown(up_)) {
 		//pos.z += player->maxVelocity_ * frametime;
 		// z++
 		player->acceleration_.z = player->movementSpeed;
 	}
-	if (input_.KeyIsDown(VK_DOWN)) {
+	if (input_.KeyIsDown(down_)) {
 		//pos.z -= player->maxVelocity_ * frametime;
 		// z--
 		player->acceleration_.z = -player->movementSpeed;
 	}
-	if (input_.KeyIsDown(VK_LEFT)) {
+	if (input_.KeyIsDown(left_)) {
 		//pos.x -= player->maxVelocity_ * frametime;
 		// x--
 		player->acceleration_.x = -player->movementSpeed;
 	}
-	if (input_.KeyIsDown(VK_RIGHT)) {
+	if (input_.KeyIsDown(right_)) {
 		//pos.x += player->maxVelocity_ * frametime;
 		// x++
 		player->acceleration_.x = player->movementSpeed;
