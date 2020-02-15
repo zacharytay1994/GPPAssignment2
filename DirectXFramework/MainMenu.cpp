@@ -1,99 +1,98 @@
 #include "MainMenu.h"
 #include "Block.h"
 #include "InputComponent.h"
+#include "Button.h"
+#include "BoxyGame.h"
 
-MainMenu::MainMenu(std::shared_ptr<Graphics> gfx, std::shared_ptr<Input> input, std::shared_ptr<ResourceLibrary> rl):
-	Scene(gfx, input, rl)
+
+MainMenu::MainMenu(std::shared_ptr<Graphics> gfx, std::shared_ptr<Input> input, std::shared_ptr<ResourceLibrary> rl, Game* game):
+	Scene(gfx, input, rl, game)
 {
-	//std::shared_ptr<Block> tempBlock;
-	//for (float z = 3.0f; z < 50.0f; z++) {
 
-
-	//	for (float x = -1.0f; x < 4.0f; x++)
-	//	{
-	//		//floor
-	//		tempBlock = std::make_shared<Block>(Block("stoneblock", graphics_, input_, rl_));
-	//		tempBlock->SetPosition({ x,0,z });
-	//		AddEntity(std::dynamic_pointer_cast<Entity>(tempBlock));
-
-	//		// ceiling
-	//		tempBlock = std::make_shared<Block>(Block("stoneblock", graphics_, input_, rl_));
-	//		tempBlock->SetPosition({ x,6,z });
-	//		AddEntity(std::dynamic_pointer_cast<Entity>(tempBlock));
-	//	}
-
-
-	//	//walls
-	//	for (float y = 1.0f; y < 6.0f; y++) {
-	//		tempBlock = std::make_shared<Block>(Block("stoneblock", graphics_, input_, rl_));
-	//		tempBlock->SetPosition({ -2,y,z });
-	//		AddEntity(std::dynamic_pointer_cast<Entity>(tempBlock));
-
-	//		tempBlock = std::make_shared<Block>(Block("stoneblock", graphics_, input_, rl_));
-	//		tempBlock->SetPosition({ 4,y,z });
-	//		AddEntity(std::dynamic_pointer_cast<Entity>(tempBlock));
-	//	}
-
-	//	tempBlock = std::make_shared<Block>(Block("stoneblock", graphics_, input_, rl_));
-	//	tempBlock->SetPosition({ -1,1,z });
-	//	AddEntity(std::dynamic_pointer_cast<Entity>(tempBlock));
-
-	//	tempBlock = std::make_shared<Block>(Block("stoneblock", graphics_, input_, rl_));
-	//	tempBlock->SetPosition({ 3,1,z });
-	//	AddEntity(std::dynamic_pointer_cast<Entity>(tempBlock));
-
-	//	tempBlock = std::make_shared<Block>(Block("stoneblock", graphics_, input_, rl_));
-	//	tempBlock->SetPosition({ -1,5,z });
-	//	AddEntity(std::dynamic_pointer_cast<Entity>(tempBlock));
-
-	//	tempBlock = std::make_shared<Block>(Block("stoneblock", graphics_, input_, rl_));
-	//	tempBlock->SetPosition({ 3,5,z });
-	//	AddEntity(std::dynamic_pointer_cast<Entity>(tempBlock));
-
-	//	// rails
-	//	tempBlock = std::make_shared<Block>(Block("rail", graphics_, input_, rl_));
-	//	tempBlock->SetPosition({ 1,0.5,z });
-	//	tempBlock->SetScale({ 0.5,0.03125,0.5 });
-	//	AddEntity(std::dynamic_pointer_cast<Entity>(tempBlock));
-	//}
-
-	//tempBlock = std::make_shared<Block>(Block(L"Images/glassblock.png", graphics_, input_));
-	//tempBlock->SetPosition({ 0,0,0 });
-	//AddEntity(std::dynamic_pointer_cast<Entity>(tempBlock));
-	//tempBlock = std::make_shared<Block>(Block(L"Images/glassblock.png", graphics_, input_));
-	//tempBlock->SetPosition({ 0,1,0 });
-	//AddEntity(std::dynamic_pointer_cast<Entity>(tempBlock));
-	//tempBlock = std::make_shared<Block>(Block(L"Images/glassblock.png", graphics_, input_));
-	//tempBlock->SetPosition({ 0,2,0 });
-	//AddEntity(std::dynamic_pointer_cast<Entity>(tempBlock));
-
-	
-	player_ = std::make_shared<Player>(Player(graphics_, input_, rl_));
-	player_->SetPosition({ 1, 2.25, 10 });
+	player_ = AddPlayer({ 0, 1.75, 0 }, { 0,0,0 });
 	player_->AddComponent(std::make_shared<InputComponent>(InputComponent(*player_, *input_)));
-	AddEntity(player_);
 
-	std::shared_ptr<Block> tempBlock;
+	std::shared_ptr<Entity> tempEntity;
+	Vecf3 tempDimension;
+	Vecf3 tempScale;
+	Vecf3 tempPosition;
 
-	tempBlock = AddModel("island", { 0.0f, 0.0f, 0.0f }, { 0.25f,0.25f,0.25f }, true);
-	tempBlock->GetCube().SetAngleZDeg(180);
-	tempBlock->GetCube().SetAngleYDeg(180);
-	AddEntity(tempBlock);
+	tempDimension = rl_->GetDimensions("island");
+	tempScale = { 0.25f, 0.25f, 0.25f };
+	tempPosition = { 0.0f, 0.0f, 0.0f };
+	tempEntity = AddModel("island", MAKEPOSITION(tempPosition,tempScale,tempDimension), tempScale, true);
+	tempEntity->GetCube().SetAngleZDeg(180);
+	tempEntity->GetCube().SetAngleYDeg(180);
+	
+	tempDimension = rl_->GetDimensions("nsur");	
+	tempScale = { 0.1f, 0.05f, 0.1f };
+	tempPosition = { title_pos.x, title_pos.y + tempDimension.y * tempScale.y, title_pos.z };
+	tempEntity = AddModel("nsur", MAKEPOSITION(tempPosition,tempScale,tempDimension), tempScale, true);
+	tempEntity->GetCube().SetAngleZDeg(180);
+	tempEntity->GetCube().SetAngleYDeg(180);
+	
+	tempEntity = std::make_shared<Button>("startbtn", graphics_, input_, rl_, player_, this, button_size, "start");
+	tempEntity->SetPosition({ button_pos.x,button_pos.y + button_size.y,button_pos.z });
+	AddEntity(tempEntity);
 
-	tempBlock = AddModel("nsur", { 5.0f, 1.5f, 3.5f }, { 0.10f, 0.10f, 0.10f }, true);
-	tempBlock->GetCube().SetAngleZDeg(180);
-	tempBlock->GetCube().SetAngleYDeg(180);
-	AddEntity(tempBlock);
+	tempEntity = std::make_shared<Button>("creditbtn", graphics_, input_, rl_, player_, this, button_size, "credit");
+	tempEntity->SetPosition({ button_pos.x,button_pos.y + button_size.y, button_pos.z - button_size.z * 2.5f * 1 });
+	AddEntity(tempEntity);
+
+	tempEntity = std::make_shared<Button>("quitbtn", graphics_, input_, rl_, player_, this, button_size, "quit");
+	tempEntity->SetPosition({ button_pos.x,button_pos.y + button_size.y, button_pos.z - button_size.z * 2.5f * 2 });
+	AddEntity(tempEntity);
+
+	tempDimension = rl_->GetDimensions("gndblk");
+	tempScale = { 1 / tempDimension.x, 1 / tempDimension.y, 1 / tempDimension.z };
+	tempPosition = { 0,1,0};
+	
+	tempDimension = rl_->GetDimensions("tree");
+	Vecf3 tempSca2 = { 1 / tempDimension.x, 2 / tempDimension.y, 1 / tempDimension.z };
+
+	tempDimension = rl_->GetDimensions("rock");
+	Vecf3 tempSca3 = { 1 / tempDimension.x, 1 / tempDimension.y, 1 / tempDimension.z };
+
+	for (float i = 0; i < 10; i++)
+	{
+		for (float j = 0; j < 10; j++) {
+			AddModel("gndblk", { i,1,j }, tempScale, true);
+
+			if (fmod(i,2) == 1) {
+				AddModel("tree", { i,2,j }, tempSca2, true);
+			}
+			else {
+				AddModel("rock", { i,2,j }, tempSca3, true);
+			}
+		}
+		
+	}
+	
+	
 }
 
 void MainMenu::Update(const float& dt)
 {
-	//if (input_->KeyWasPressed('B')) {
-	//	AddEntity(std::dynamic_pointer_cast<Entity>(std::make_shared<Block>((Block("grassblock", graphics_, input_, rl_)))));
-	//}
+	if (input_->KeyWasPressed('B')) {
+		ChangeScene("level");
+	}
 }
 
 void MainMenu::Render(const float& dt)
 {
 	Scene::Render(dt);
+}
+
+void MainMenu::HandleActiveButton(std::string btnId)
+{
+	if (btnId == "start") {
+		ChangeScene("level");
+	}
+	else if (btnId == "credit") {
+		// switch to credit scene or smmth
+	}
+	else if (btnId == "quit") {
+		int hehe = 0;
+		hehe = 1 / hehe;
+	}
 }

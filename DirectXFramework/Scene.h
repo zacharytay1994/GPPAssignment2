@@ -11,6 +11,7 @@
 #include <vector>
 #include <memory>
 #include <string>
+#include "Base/Game.h";
 
 class Entity;
 class Block;
@@ -25,12 +26,13 @@ protected:
 	CollisionManager cm_;
 	std::vector<std::shared_ptr<Block>> gravity_blocks_;
 	GUI gui_;
+	Game* game_;
 private:
 	std::vector<std::shared_ptr<Entity>> world_entities_;
 	std::vector<std::shared_ptr<Entity>> to_add_;
 	std::vector<std::shared_ptr<Entity>> to_remove_;
 public:
-	Scene(std::shared_ptr<Graphics> gfx, std::shared_ptr<Input> input, std::shared_ptr<ResourceLibrary> rl);
+	Scene(std::shared_ptr<Graphics> gfx, std::shared_ptr<Input> input, std::shared_ptr<ResourceLibrary> rl, Game* game);
 	void BaseUpdate(const float& dt);
 	virtual void Update(const float& dt);
 	virtual void Render(const float& dt);
@@ -44,4 +46,8 @@ public:
 	std::shared_ptr<Block> AddUntexturedModel(const std::string& key, const Vecf3& position, const Vecf3& size);
 	std::shared_ptr<Player> AddPlayer(const Vecf3& position, const Vecf3& size);
 	
+	void ChangeScene(std::string key);
+	void ChangeScene(std::shared_ptr<Scene> scene);
+
+	virtual void HandleActiveButton(std::string btnId);
 };

@@ -4,6 +4,10 @@
 #include <memory>
 #include "Vec3.h";
 class Cube;
+
+
+
+
 struct CubeModelData {
 	std::shared_ptr<Cube> cube;
 	Vecf3 position;
@@ -37,8 +41,11 @@ public:
 	void Translate(Vecf3 v);
 	void TranslateTo(std::string id, Vecf3 v);
 	void RotateX(float angle);
+	void SetRotationX(float angle);
 	void RotateY(float angle);
+	void SetRotationY(float angle);
 	void RotateZ(float angle);
+	void SetRotationZ(float angle);
 	void Draw(Vecf3 totalOffSet, Vecf3 absPos);
 };
 
@@ -53,8 +60,11 @@ public:
 	CubeModel(Vecf3 position);
 	void TranslateTo(std::string id, Vecf3 v); // Applies Vector v to target node
 	void RotateXTo(std::string id, float angle);
+	void SetRotationXTo(std::string id, float angle);
 	void RotateYTo(std::string id, float angle);
+	void SetRotationYTo(std::string id, float angle);
 	void RotateZTo(std::string id, float angle);
+	void SetRotationZTo(std::string id, float angle);
 
 	void SetPosition(Vecf3 position);
 	Vecf3 GetPosition();
