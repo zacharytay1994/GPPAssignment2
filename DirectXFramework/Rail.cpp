@@ -26,7 +26,7 @@ void Rail::SetDirection(Direction direction) {
 	// Update image
 	if (direction_ == Direction::Vertical) {
 		
-		cube_.SetTextureKey("rail");
+		cube_.SetTextureKey(is_ghost_ ? "grail" : "rail");
 		SetRotation(ToQuaternion(Vecf3(0.f, 0.f, 0.f)));
 
 	} else if (direction_ == Direction::RTopCurved) {
@@ -52,8 +52,14 @@ void Rail::SetDirection(Direction direction) {
 
 	} else {
 
-		cube_.SetTextureKey("rail");
+		cube_.SetTextureKey(is_ghost_?"grail":"rail");
 		SetRotation(ToQuaternion(Vecf3(0.f, PI/2, 0.f)));
 
 	}
+
+}
+
+void Rail::MakeGhost()
+{
+	is_ghost_ = true;
 }

@@ -32,6 +32,8 @@ Level::Level(std::shared_ptr<Graphics> gfx, std::shared_ptr<Input> input, std::s
 	//AddBlock("grassblock", { 0.0f, -10.0f, 5.0f }, { 5.0f, 1.0f, 5.0f });
 	player_ = AddPlayer({ 0.0f, 1.0f, 1.0f }, { 0.5f, 0.5f, 0.5f });
 	player_->AddComponent(std::make_shared<InputComponent>(InputComponent(*player_, *input_)));
+
+	highlight_block_ = AddBlock("highlight", player_->GetPosition(), { 0.5f,0.03125,0.5f });
 }
 
 void Level::Update(const float& dt)
@@ -133,6 +135,29 @@ void Level::Update(const float& dt)
 			mapGen_->AddResource({ ResourceBlockType::Rail, 0, 1, r });
 		}
 	}
+
+
+
+	Vecf3 player_pos = player_->GetPosition();
+	Vecf3 player_orientation = player_->GetOrientation();
+	float y_rot = fmod(player_->GetOrientation().y > 0 ? player_->GetOrientation().y : player_->GetOrientation().y + 2 * PI, 2 * PI);
+	Vecf3 highlight_block_pos = {round(player_pos.x), round(player_pos.y-2)+0.5f, round(player_pos.z)};
+	if ((y_rot >= 7 * PI / 4) || (y_rot <= PI / 4)) {
+		highlight_block_pos.z += 1;
+	}
+	else if (y_rot <= 3 * PI / 4) {
+		highlight_block_pos.x += 1;
+	}
+	else if (y_rot <= 5 * PI / 4) {
+		highlight_block_pos.z -= 1;
+	}
+	else {
+		highlight_block_pos.x -= 1;
+	}
+
+
+
+	highlight_block_->SetPosition(highlight_block_pos);
 }
 
 void Level::Render(const float& dt)

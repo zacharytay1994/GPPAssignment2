@@ -19,6 +19,7 @@ private:
 	
 public:
 	float movementSpeed = 30;
+	float dashSpeed = 40;
 	float maxVelocity_ = 30;
 	float frictionPower_ = 5;
 	Vecf3 friction_ = { 0,0,0 };
@@ -33,6 +34,9 @@ public:
 	float limb_rotation_speed_ = 10;
 	float arm_max_rotation_ = PI * 30 / 180;
 	float leg_max_rotation_ = PI * 15 / 180;
+
+	float dash_cooldown_ = 1;
+	float dash_cooldown_timer_ = 0;
 	
 	Player(std::shared_ptr<Graphics> gfx, std::shared_ptr<Input> input, std::shared_ptr<ResourceLibrary> rl);
 

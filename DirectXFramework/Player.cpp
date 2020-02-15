@@ -81,6 +81,10 @@ void Player::Update(const float& dt)
 	}
 
 	cubeModel_.SetRotationYTo("body", current_orientation_);
+
+	if (dash_cooldown_timer_ > 0) {
+		dash_cooldown_timer_ -= dt;
+	}
 	
 	//cubeModel_.SetRotationXTo("larm", current_orientation_);
 

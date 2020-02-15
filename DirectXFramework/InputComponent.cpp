@@ -39,11 +39,18 @@ void InputComponent::Update(const float& frametime)
 	//player->SetPosition(pos);
 	//owner_.SetPosition(pos);
 
-	if (input_.KeyIsDown(VK_SHIFT)) {
+	if (input_.KeyIsDown(VK_CONTROL)) {
 		// dash
+		if (player->dash_cooldown_timer_ <= 0) {
+			player->dash_cooldown_timer_ = player->dash_cooldown_;
+			//player->velocity_ *= 5;
+			player->velocity_ = player->velocity_.GetNormalized() * player->dashSpeed;
+		}
+		
 	}
 	if (input_.KeyIsDown(VK_SPACE)) {
 		// place rail
+		
 	}
 
 

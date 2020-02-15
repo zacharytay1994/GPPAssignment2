@@ -10,6 +10,7 @@ private:
 	std::unique_ptr<MapGenerator> mapGen_ = nullptr;
 	std::shared_ptr<Block> giraffe_ = nullptr;
 	std::shared_ptr<Player> player_;
+	std::shared_ptr<Block> highlight_block_;
 	/*std::shared_ptr<TestObject> test_object_;
 	std::shared_ptr<TestObject> test_object_2_;*/
 	// <--- test variables can remove if need be
