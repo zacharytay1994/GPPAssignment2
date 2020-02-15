@@ -116,6 +116,7 @@
     <ClCompile Include="Cube.cpp" />
     <ClCompile Include="CubeModel.cpp" />
     <ClCompile Include="Entity.cpp" />
+    <ClCompile Include="EntityPool.cpp" />
     <ClCompile Include="GUI.cpp" />
     <ClCompile Include="MapGenerator.cpp" />
     <ClCompile Include="InputComponent.cpp" />
@@ -168,6 +169,7 @@
     <ClInclude Include="MathStuff.h" />
     <ClInclude Include="MatTemplate.h" />
     <ClInclude Include="Model.h" />
+    <ClInclude Include="EntityPool.h" />
     <ClInclude Include="Particle.h" />
     <ClInclude Include="ParticleSystem.h" />
     <ClInclude Include="Player.h" />

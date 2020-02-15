@@ -46,6 +46,7 @@
     <ClCompile Include="Rail.cpp" />
     <ClCompile Include="GUI.cpp" />
     <ClCompile Include="ChooChoo.cpp" />
+    <ClCompile Include="EntityPool.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="assimp\include\assimp\config.h" />
@@ -91,6 +92,7 @@
     <ClInclude Include="Rail.h" />
     <ClInclude Include="GUI.h" />
     <ClInclude Include="ChooChoo.h" />
+    <ClInclude Include="EntityPool.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Images\alpha_donald.png" />
