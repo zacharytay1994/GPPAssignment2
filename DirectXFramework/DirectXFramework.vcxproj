@@ -120,6 +120,7 @@
     <ClCompile Include="Level.cpp" />
     <ClCompile Include="MainMenu.cpp" />
     <ClCompile Include="Player.cpp" />
+    <ClCompile Include="Rail.cpp" />
     <ClCompile Include="ResourceLibrary.cpp" />
     <ClCompile Include="Scene.cpp" />
     <ClCompile Include="Skybox.cpp" />
@@ -162,6 +163,7 @@
     <ClInclude Include="MatTemplate.h" />
     <ClInclude Include="Model.h" />
     <ClInclude Include="Player.h" />
+    <ClInclude Include="Rail.h" />
     <ClInclude Include="ResourceLibrary.h" />
     <ClInclude Include="OBB.h" />
     <ClInclude Include="PhysicsMath.h" />

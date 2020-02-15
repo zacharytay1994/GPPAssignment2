@@ -4,6 +4,7 @@
 #include "Scene.h"
 #include "Drawable.h"
 #include "Player.h"
+#include "Rail.h"
 
 class Block;
 class Level : public Scene {
@@ -12,6 +13,7 @@ private:
 	std::unique_ptr<MapGenerator> mapGen_ = nullptr;
 	std::shared_ptr<Block> giraffe_ = nullptr;
 	std::shared_ptr<Player> player_;
+	MapGenerator::ResourceTileData* resourceTileData_;
 	/*std::shared_ptr<TestObject> test_object_;
 	std::shared_ptr<TestObject> test_object_2_;*/
 	// <--- test variables can remove if need be
@@ -24,6 +26,7 @@ public:
 	Level(std::shared_ptr<Graphics> gfx, std::shared_ptr<Input> input, std::shared_ptr<ResourceLibrary> rl);
 	void Update(const float& dt) override;
 	void Render(const float& dt) override;
+	bool isCollideWithPlayer();
 
 	// <--- test function can remove if need be
 	void SpawnRandomBlocks(const int& val);

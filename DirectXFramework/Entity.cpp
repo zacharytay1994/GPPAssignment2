@@ -70,10 +70,10 @@ bool Entity::AABB2dCollision(std::shared_ptr<Entity> ent_)
 	float player_front = ent_->GetPosition().z - 0.5f;
 	float player_back = ent_->GetPosition().z + 0.5f;
 
-	float ent_left = GetPosition().x - 0.5f;
-	float ent_right = GetPosition().x + 0.5f;
-	float ent_front = GetPosition().z - 0.5f;
-	float ent_back = GetPosition().z + 0.5f;
+	float ent_left = GetPosition().x - 0.4f;
+	float ent_right = GetPosition().x + 0.4f;
+	float ent_front = GetPosition().z - 0.4f;
+	float ent_back = GetPosition().z + 0.4f;
 
 	return !(player_left > ent_right || player_right < ent_left || player_front > ent_back || player_back < ent_front);
 }

@@ -1,16 +1,24 @@
 #pragma once
+
 #include "Block.h"
-class Rail :
-	public Block
+
+class Rail : public Block
 {
-
-private:
-	boolean cornered = false;
-
-	//std::vector<const std::wstring&> texture = std::vector<const std::wstring&>(L"Images/rail.png", L"Images/rail-corner.png");
 public:
-	Rail(std::shared_ptr<Graphics> gfx, std::shared_ptr<Input> input);
+	enum class Direction {
+		Vertical,
+		Horizontal,
+		RTopCurved,
+		RBottomCurved,
+		LBottomCurved,
+		LTopCurved
+	};
+private:
+	Direction direction_ = Direction::Vertical;
+
+public:
+	Rail(const std::string& image, std::shared_ptr<Graphics> gfx, std::shared_ptr<Input> input, std::shared_ptr<ResourceLibrary> rl);
 	void Update(const float& dt) override;
-	void Render(const float& dt) override;
+	void Render() override;
 };
 

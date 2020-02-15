@@ -57,19 +57,31 @@ void Player::Update(const float& dt)
 	// input for player
 	if (input_->KeyIsDown(VK_UP))
 	{
-		SetPosition(GetPosition() + Vecf3(0.0f,0.0f, 2.0f)*dt);
+		if (!(player_touch_front))
+		{
+			SetPosition(GetPosition() + Vecf3(0.0f, 0.0f, 2.0f) * dt);
+		}
 	}
 	if (input_->KeyIsDown(VK_DOWN))
 	{
-		SetPosition(GetPosition() + Vecf3(0.0f,0.0f, -2.0f)*dt);
+		if (!(player_touch_back))
+		{
+			SetPosition(GetPosition() + Vecf3(0.0f, 0.0f, -2.0f) * dt);
+		}
 	}
 	if (input_->KeyIsDown(VK_LEFT))
 	{
-		SetPosition(GetPosition() + Vecf3(-2.0f, 0.0f, 0.0f) * dt);
+		if (!(player_touch_left))
+		{
+			SetPosition(GetPosition() + Vecf3(-2.0f, 0.0f, 0.0f) * dt);
+		}
 	}
 	if (input_->KeyIsDown(VK_RIGHT))
 	{
-		SetPosition(GetPosition() + Vecf3(2.0f, 0.0f, 0.0f) * dt);
+		if (!(player_touch_right))
+		{
+			SetPosition(GetPosition() + Vecf3(2.0f, 0.0f, 0.0f) * dt);
+		}
 	}
 	if (input_->KeyIsDown(VK_OEM_COMMA))
 	{
