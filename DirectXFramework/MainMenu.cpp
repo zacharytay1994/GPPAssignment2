@@ -77,6 +77,7 @@ MainMenu::MainMenu(std::shared_ptr<Graphics> gfx, std::shared_ptr<Input> input, 
 
 void MainMenu::Update(const float& dt)
 {
+	Scene::Update(dt);
 	if (input_->KeyWasPressed('B')) {
 		ChangeScene("level");
 	}
@@ -84,6 +85,7 @@ void MainMenu::Update(const float& dt)
 
 void MainMenu::Render(const float& dt)
 {
+	Scene::Render(dt);
 	Scene::Render(dt);
 }
 

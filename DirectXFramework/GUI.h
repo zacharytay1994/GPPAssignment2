@@ -45,5 +45,8 @@ public:
 	void SetMaximumX(const int& i);
 	void ProcessResourceQueue(const float& dt);
 	void AddResource(const ResourceQueue& rq);
+	void DrawSprite(const std::string& key, const Vecf3& position, const Vecf3& scale);
+	void DrawOverlay(const std::string& key);
+	int GetTrainX();
 	void Draw();
 };

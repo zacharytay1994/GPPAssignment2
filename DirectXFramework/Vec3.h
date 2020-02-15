@@ -3,6 +3,7 @@
 #include "Vec2.h"
 #include "MathStuff.h"
 #include <algorithm>
+#include <cmath>
 
 template <typename T>
 class Vec3 : public Vec2<T> {
@@ -131,8 +132,16 @@ public:
 	T z;
 };
 
-
-
 typedef Vec3<float> Vecf3;
 typedef Vec3<double> Vecd3;
 typedef Vec3<int> Veci3;
+
+static Vecf3 RotateVectorY(Vecf3 vector, float angle)
+{
+	return Vecf3((vector.x * std::cos(angle) + vector.z * -std::sin(angle)), 0.0f, (vector.x * std::sin(angle) + vector.z * std::cos(angle)));
+}
+
+static float AngleBetweenY(Vecf3 a, Vecf3 b)
+{
+	return std::atan2(a.z - b.z, a.x - b.x) * 57.2957795f + 90;
+}

@@ -53,7 +53,9 @@ private:
 
 	ID3D11Buffer*			p_cb_transform_ = nullptr;
 	ID3D11Buffer*			p_cb_color_ = nullptr;
+	ID3D11Buffer*			p_cb_lights_ = nullptr;
 	ID3D11DepthStencilView*	p_depth_stencil_view_ = nullptr;
+	ID3D11BlendState*		p_blend_state = nullptr;
 	bool initialized_;
 	bool has_depth_stencil_ = false;
 
@@ -69,6 +71,7 @@ private:
 	// to be used in the vertex shader stage as generic world, view, transform
 	struct ConstantBuffer { DirectX::XMMATRIX transform; DirectX::XMMATRIX model; };
 	struct Colour { float r; float g; float b; float a; };
+	struct Lights { DirectX::XMFLOAT4 point_1; DirectX::XMFLOAT4 point_2; DirectX::XMFLOAT4 directional_1; };
 	/*_______________________________________*/
 public:
 	static const int viewport_width_ = 800, viewport_height_ = 600;
@@ -103,9 +106,11 @@ public:
 	void UpdateCubeVBVertexSubresource(const CubeVertexBuffer& cvb);
 	void UpdateCBTransformSubresource(const ConstantBuffer& cb);		  // used to update buffer data, e.g. transformations per frame (see Sprite::GetTransform())
 	void UpdateCBColourSubresource(const Colour& color);
+	void UpdateCBLightSubresource(const Lights& lights);
 	void ClearBuffer();													  // fills back buffer with colour (e.g. white)
 	void Draw();														  // draw call for sprites
 	void DrawIndexed(int indexcount);
+	void EnableTransparency(const bool& b);
 
 	void BindCubeVertices(const CubeVertexBuffer v);
 	void BindCubeIndices(const unsigned short* i, int size);
