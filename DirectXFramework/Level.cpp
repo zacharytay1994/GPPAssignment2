@@ -40,6 +40,9 @@ void Level::Update(const float& dt)
 	ps_.SetCameraSuckPosition(input_->GetCameraPosition() + Vecf3(0.0f, 1.2f, 0.0f));
 	gui_.SetTrainX(std::dynamic_pointer_cast<ChooChoo>(mapGen_->train_)->GetPosition().x);
 
+	wl_.SetPoint1(player_->GetPosition() + RotateVectorY(Vecf3(0.0f, 0.0f, 1.0f), -player_->GetOrientation().y) * 2.0f + Vecf3(0.0f, 1.0f, 0.0f));
+	wl_.SetPoint2(mapGen_->train_->GetPosition() + RotateVectorY(Vecf3(0.0f, 0.0f, 1.0f), -(mapGen_->train_->GetCube().GetAngleY())) * 2.0f + Vecf3(0.0f, 1.0f, 0.0f));
+
 	if (input_->KeyWasPressed('P')) {
 		gui_.AddResource({ 1.0f, 0 });
 	}

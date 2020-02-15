@@ -12,7 +12,8 @@ Scene::Scene(std::shared_ptr<Graphics> gfx, std::shared_ptr<Input> input, std::s
 	rl_(rl),
 	sb_(rl, input),
 	ps_(gfx, input, rl),
-	gui_(rl)
+	gui_(rl),
+	wl_(gfx, rl, input)
 {
 }
 
@@ -43,6 +44,7 @@ void Scene::BaseUpdate(const float& dt)
 
 void Scene::Update(const float& dt)
 {
+	wl_.Update(dt);
 	//_____________________________________//
 	// PHYSICS AND COLLISION TESTS
 	//_____________________________________//
@@ -61,6 +63,7 @@ void Scene::Update(const float& dt)
 void Scene::Render(const float& dt)
 {
 	sb_.Render();
+	wl_.Draw();
 	std::vector<std::shared_ptr<Entity>>::iterator we;
 	for (we = world_entities_.begin(); we != world_entities_.end(); we++) {
 		(*we)->Render();

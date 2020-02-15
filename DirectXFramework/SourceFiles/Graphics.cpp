@@ -428,6 +428,23 @@ void Graphics::InitCubePipeline()
 	// choose which stage to bind buffer to, i.e. which stage is going to use the data
 	p_device_context_->PSSetConstantBuffers(0u, 1u, &p_cb_color_);
 
+	// set up light position constant buffer
+	const Lights light_buffer_ = { {0.0f, 0.0f, 0.0f, 0.0f}, {0.0f, 0.0f, 0.0f, 0.0f}, {0.0f, 0.0f, 0.0f, 0.0f} };
+
+	// shares similar setup process as vertex buffer
+	D3D11_BUFFER_DESC bd3;
+	bd3.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+	bd3.Usage = D3D11_USAGE_DYNAMIC;
+	bd3.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+	bd3.MiscFlags = 0u;
+	bd3.ByteWidth = sizeof(light_buffer_);
+	bd3.StructureByteStride = sizeof(DirectX::XMFLOAT4);
+	D3D11_SUBRESOURCE_DATA sd3;
+	sd3.pSysMem = &light_buffer_;
+	p_device_->CreateBuffer(&bd3, &sd3, &p_cb_lights_);
+	// choose which stage to bind buffer to, i.e. which stage is going to use the data
+	p_device_context_->PSSetConstantBuffers(1u, 1u, &p_cb_lights_);
+
 	/*_______________________________________*/
 	// SET PRIMITIVE TOPOLOGY OF INPUT ASSEMBLER
 	// How the vertices should be interpreted as
@@ -623,6 +640,14 @@ void Graphics::UpdateCBColourSubresource(const Colour& color)
 	p_device_context_->Map(p_cb_color_, 0u, D3D11_MAP_WRITE_DISCARD, 0u, &mapped_subresource);
 	memcpy(mapped_subresource.pData, &color, sizeof(color));
 	p_device_context_->Unmap(p_cb_color_, 0u);
+}
+
+void Graphics::UpdateCBLightSubresource(const Lights& lights)
+{
+	D3D11_MAPPED_SUBRESOURCE mapped_subresource;
+	p_device_context_->Map(p_cb_lights_, 0u, D3D11_MAP_WRITE_DISCARD, 0u, &mapped_subresource);
+	memcpy(mapped_subresource.pData, &lights, sizeof(lights));
+	p_device_context_->Unmap(p_cb_lights_, 0u);
 }
 
 void Graphics::ClearBuffer()

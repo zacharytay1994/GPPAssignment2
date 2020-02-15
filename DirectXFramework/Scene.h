@@ -8,6 +8,7 @@
 #include "Skybox.h"
 #include "ParticleSystem.h"
 #include "GUI.h"
+#include "WorldLights.h"
 #include <vector>
 #include <memory>
 #include <string>
@@ -23,6 +24,7 @@ protected:
 	ParticleSystem ps_;
 	Skybox sb_;
 	CollisionManager cm_;
+	WorldLights wl_;
 	std::vector<std::shared_ptr<Block>> gravity_blocks_;
 	GUI gui_;
 private:

@@ -136,6 +136,7 @@
     <ClCompile Include="SourceFiles\Sprite.cpp" />
     <ClCompile Include="SourceFiles\Surface.cpp" />
     <ClCompile Include="SourceFiles\WinMain.cpp" />
+    <ClCompile Include="WorldLights.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="assimp\include\assimp\config.h" />
@@ -181,6 +182,7 @@
     <ClInclude Include="Vec2.h" />
     <ClInclude Include="Vec3.h" />
     <ClInclude Include="Vec4.h" />
+    <ClInclude Include="WorldLights.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>

@@ -29,6 +29,7 @@ void BoxyGame::Initialize(HWND hwnd)
 	rl_->AddCubeTexture("alexarm", L"Images/alex-arm.png");
 	rl_->AddCubeTexture("alexleg", L"Images/alex-leg.png");
 	rl_->AddCubeTexture("spacebox", L"Images/spacebox2.png");
+	rl_->AddCubeTexture("sun", L"Images/sunyellow.png");
 	rl_->AddPosNormTexModel("nsur", "Models/nsur.obj", L"Images/nsur.png");
 
 	// For le map
