@@ -4,15 +4,20 @@
 #include "Cube.h"
 #include "Player.h"
 #include "CollisionComponent.h"
+#include "Base/Game.h"
+#include "BoxyGame.h"
 
-Scene::Scene(std::shared_ptr<Graphics> gfx, std::shared_ptr<Input> input, std::shared_ptr<ResourceLibrary> rl)
+
+Scene::Scene(std::shared_ptr<Graphics> gfx, std::shared_ptr<Input> input, std::shared_ptr<ResourceLibrary> rl, Game* game)
 	:
 	graphics_(gfx),
 	input_(input),
 	rl_(rl),
 	sb_(rl, input),
 	ps_(gfx, input, rl),
-	gui_(rl)
+	gui_(rl),
+	wl_(gfx, rl, input),
+	game_(game)
 {
 }
 
@@ -43,6 +48,7 @@ void Scene::BaseUpdate(const float& dt)
 
 void Scene::Update(const float& dt)
 {
+	wl_.Update(dt);
 	//_____________________________________//
 	// PHYSICS AND COLLISION TESTS
 	//_____________________________________//
@@ -61,6 +67,7 @@ void Scene::Update(const float& dt)
 void Scene::Render(const float& dt)
 {
 	sb_.Render();
+	wl_.Draw();
 	std::vector<std::shared_ptr<Entity>>::iterator we;
 	for (we = world_entities_.begin(); we != world_entities_.end(); we++) {
 		(*we)->Render();
@@ -132,6 +139,19 @@ std::shared_ptr<Player> Scene::AddPlayer(const Vecf3& position, const Vecf3& siz
 	player_->SetPosition(position);
 	AddEntity(std::dynamic_pointer_cast<Entity>(player_));
 	return player_;
+}
+
+void Scene::ChangeScene(std::string key)
+{
+	dynamic_cast<BoxyGame*>(game_)->ChangeScene(key);
+}
+
+void Scene::ChangeScene(std::shared_ptr<Scene> scene) {
+	dynamic_cast<BoxyGame*>(game_)->ChangeScene(scene);
+}
+
+void Scene::HandleActiveButton(std::string btnId)
+{
 }
 
 

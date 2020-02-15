@@ -107,15 +107,19 @@ bool ChooChoo::MoveTrain(const float& dt)
 			switch (current_direction_) {
 			case Direction::Left:
 				current_velocity = { -1.0f, 0.0f, 0.0f };
+				cube_.SetAngleYDeg(-90.0f);
 				break;
 			case Direction::Right:
 				current_velocity = { 1.0f, 0.0f, 0.0f };
+				cube_.SetAngleYDeg(90.0f);
 				break;
 			case Direction::Up:
 				current_velocity = { 0.0f, 0.0f, 1.0f };
+				cube_.SetAngleYDeg(0.0f);
 				break;
 			case Direction::Down:
 				current_velocity = { 0.0f, 0.0f, -1.0f };
+				cube_.SetAngleYDeg(180.0f);
 				break;
 			}
 			old_direction_ = current_direction_;
