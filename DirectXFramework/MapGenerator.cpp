@@ -121,7 +121,7 @@ void MapGenerator::GenerateMap()
 
 	// Spawn train in first chunk
 	if (total_map_size_ == 0) {
-		std::shared_ptr<ChooChoo> train = std::make_shared<ChooChoo>("minecart", graphics_, input_, rl_, this);
+		std::shared_ptr<ChooChoo> train = std::make_shared<ChooChoo>("enginecart", graphics_, input_, rl_, this, scene_->ps_);
 		train->SetDrawMode(3);
 		train->GetCube().SetScaleX(0.05f);
 		train->GetCube().SetScaleY(0.05f);
@@ -133,8 +133,8 @@ void MapGenerator::GenerateMap()
 		train_ = std::dynamic_pointer_cast<Entity>(train);
 
 		
-		train->SetChildChoo(std::make_shared<ChooChoo>("minecartcrafter", graphics_, input_, rl_, this));
-		train = train->GetChildChoo();
+		train->SetChildChoo(std::make_shared<ChooChoo>("craftingcart", graphics_, input_, rl_, this, scene_->ps_),"crafter");
+		train = train->GetChildChoo("crafter");
 		train->SetDrawMode(3);
 		train->GetCube().SetScaleX(0.05f);
 		train->GetCube().SetScaleY(0.05f);

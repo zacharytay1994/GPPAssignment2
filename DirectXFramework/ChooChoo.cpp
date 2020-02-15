@@ -32,7 +32,8 @@ bool ChooChoo::MoveTrain(const float& dt)
  	MapGenerator::ResourceTileData tile = mg_->GetCurrentTile(GetPosition());
 	// check if on tile
 	if (tile.block_type_ != ResourceBlockType::Rail && !game_over_) {
-		game_over_ = true;
+		//game_over_ = true;
+		SetGameOver(true);
 		ps_.EmitSphere(35, position_, 3.0f, Randf(2.0f, 3.0f), Randf(0.4f, 0.5f), 20.0f, { Randf(0.5f, 1.0f), 0.0f, 0.0f, 1.0f });
 		ps_.EmitSphere(65, position_, 5.0f, Randf(1.0f, 2.0f), Randf(0.01f, 0.2f), 10.0f, { Randf(0.5f, 1.0f), 0.0f, 0.0f, 1.0f });
 		return false;
@@ -114,19 +115,19 @@ bool ChooChoo::MoveTrain(const float& dt)
 			switch (current_direction_) {
 			case Direction::Left:
 				current_velocity = { -1.0f, 0.0f, 0.0f };
-				cube_.SetAngleYDeg(-90.0f);
+				cube_.SetAngleYDeg(-180.0f);
 				break;
 			case Direction::Right:
 				current_velocity = { 1.0f, 0.0f, 0.0f };
-				cube_.SetAngleYDeg(90.0f);
+				cube_.SetAngleYDeg(0.0f);
 				break;
 			case Direction::Up:
 				current_velocity = { 0.0f, 0.0f, 1.0f };
-				cube_.SetAngleYDeg(0.0f);
+				cube_.SetAngleYDeg(-90.0f);
 				break;
 			case Direction::Down:
 				current_velocity = { 0.0f, 0.0f, -1.0f };
-				cube_.SetAngleYDeg(180.0f);
+				cube_.SetAngleYDeg(90.0f);
 				break;
 			}
 			old_direction_ = current_direction_;
@@ -144,9 +145,10 @@ bool ChooChoo::MoveTrain(const float& dt)
 	return true;
 }
 
-void ChooChoo::SetChildChoo(std::shared_ptr<ChooChoo> mr_choo_jr)
+void ChooChoo::SetChildChoo(std::shared_ptr<ChooChoo> mr_choo_jr, std::string id)
 {
 	child_choo_ = mr_choo_jr;
+	child_choo_->id_ = id;
 }
 
 std::shared_ptr<ChooChoo> ChooChoo::GetChildChoo()
@@ -154,7 +156,28 @@ std::shared_ptr<ChooChoo> ChooChoo::GetChildChoo()
 	return child_choo_;
 }
 
+std::shared_ptr<ChooChoo> ChooChoo::GetChildChoo(std::string id)
+{
+	if (child_choo_) {
+		if (child_choo_->id_ == id) {
+			return child_choo_;
+		}
+		else {
+			return child_choo_->GetChildChoo(id);
+		}
+	}
+	return nullptr;
+}
+
 bool ChooChoo::GameOver()
 {
 	return game_over_;
+}
+
+void ChooChoo::SetGameOver(bool game_over)
+{
+	game_over_ = game_over;
+	if (child_choo_) {
+		child_choo_->SetGameOver(game_over);
+	}
 }
