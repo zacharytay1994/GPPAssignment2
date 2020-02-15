@@ -5,33 +5,17 @@
 #include "InputComponent.h"
 
 #include <cmath>
-#include <string>
 #include <sstream>
 
 Level::Level(std::shared_ptr<Graphics> gfx, std::shared_ptr<Input> input, std::shared_ptr<ResourceLibrary> rl, Game* game)
 	:
-	Scene(gfx, input, rl, game)
+	Scene(gfx, input, rl, game),
+	mapGen_(std::make_unique<MapGenerator>(graphics_, input_, rl_, this))
 {
-	std::mt19937 rng{ std::random_device{}() };
-	std::uniform_real_distribution<float> cdist{ 0.0f,1.0f };
-	const DirectX::XMFLOAT3 mat = { cdist(rng),cdist(rng),cdist(rng) };
-
-	// Initialize map generator
-	mapGen_ = std::make_unique<MapGenerator>(graphics_, input_, rl_, this);
-
-	// Generate map
+	// Generate initial chunk
 	mapGen_->GenerateMap();
 
-	//AddSolidBlock("grassblock", { 0.0f, -60.0f, 5.0f }, { 30.0f, 30.0f, 30.0f }, 500000.0f);
-	//std::shared_ptr<Block> giraffe = AddModel("nsur", { 1.0f, 0.0f, 10.0f }, { 0.10f, 0.10f, 0.10f }, true);
-
-	//giraffe->GetCube().SetAngleZDeg(180);
-	//giraffe->GetCube().SetAngleYDeg(180);
-	//giraffe->GetCube().SetAngleXDeg(-90);
-	//AddSolidBlock("grassblock", { 0.0f, -60.0f, 5.0f }, { 30.0f, 30.0f, 30.0f }, 500000.0f);
-	//gravity_blocks_.push_back(AddSolidBlock("grassblock", { 0.0f, 5.0f, 5.0f }, { 1.0f, 1.0f, 1.0f }, 5.0f));
-	//gravity_blocks_[0]->GetComponentOfType<CollisionComponent>("Collision")->SetAngularVelocity({ 1.0f, 1.0f, 1.0f }); // only solid blocks can be added to gravity blocks
-	//AddBlock("grassblock", { 0.0f, -10.0f, 5.0f }, { 5.0f, 1.0f, 5.0f });
+	// Create player
 	player_ = AddPlayer({ 0.0f, 1.0f, 1.0f }, { 0.5f, 0.5f, 0.5f });
 	player_->AddComponent(std::make_shared<InputComponent>(InputComponent(*player_, *input_)));
 }
@@ -69,70 +53,59 @@ void Level::Update(const float& dt)
 		}
 	}
 
+	// Get normalized player pos
+	Vecf3 norm_player_pos = player_->GetPosition();
+	norm_player_pos.x = (int)round(player_->GetPosition().x) - max(0, (mapGen_->GetTotalChunkNo() - 3) * mapGen_->GetChunkSize().x);
+	norm_player_pos.z = (int)round(player_->GetPosition().z) - max(0, (mapGen_->GetTotalChunkNo() - 3) * mapGen_->GetChunkSize().x);
+
 	// Generate new chunk
 	if (input_->KeyWasPressed('G')) mapGen_->GenerateMap();
 
 	// Collect resource if facing block & within 1 block
-	if (input_->KeyWasPressed('C')) {
-
-		// Get normalized player pos
-		Vecf3 norm_player_pos = player_->GetPosition();
-		norm_player_pos.x = (int)round(player_->GetPosition().x) - max(0, (mapGen_->GetTotalChunkNo() - 3) * mapGen_->GetChunkSize().x);
-		norm_player_pos.z = (int)round(player_->GetPosition().z) - max(0, (mapGen_->GetTotalChunkNo() - 3) * mapGen_->GetChunkSize().x);
+	if (input_->KeyWasPressed('C')) 
+	{
+		// Placeholder to ResourceTileData, to be used in rotation check
+		MapGenerator::ResourceTileData* tile;
 
 		// Get player heading & check if there is a block in front of the player
 		float y_rot = fmod(player_->GetOrientation().y > 0 ? player_->GetOrientation().y : player_->GetOrientation().y + 2*PI, 2*PI);
-		if ((y_rot >= 7*PI/4) || (y_rot <= PI/4)) {
-
+		if ((y_rot >= 7*PI/4) || (y_rot <= PI/4)) 
+		{
 			// Facing forward
-			if (mapGen_->GetResourceTileData()[(int)(round(norm_player_pos.z + 1) * mapGen_->GetMapSize().x + norm_player_pos.x)].breakable_) {
-				EmitDestructionParticles(mapGen_->GetResourceTileData()[(int)(round(norm_player_pos.z + 1) * mapGen_->GetMapSize().x + norm_player_pos.x)].block_type_,
-					mapGen_->GetResourceTileData()[(int)(round(norm_player_pos.z + 1) * mapGen_->GetMapSize().x + norm_player_pos.x)].ent_->GetPosition());
-				mapGen_->RemoveResource(&(mapGen_->GetResourceTileData()[(int)(round(norm_player_pos.z + 1) * mapGen_->GetMapSize().x + norm_player_pos.x)]));
-			}
-
-		} else if (y_rot <= 3*PI/4) {
-
+			tile = mapGen_->GetCurrentTilePtr(Vecf3(norm_player_pos.x, norm_player_pos.y, norm_player_pos.z + 1));
+		} 
+		else if (y_rot <= 3*PI/4) 
+		{
 			// Facing right
-			if (mapGen_->GetResourceTileData()[(int)(round(norm_player_pos.z) * mapGen_->GetMapSize().x + norm_player_pos.x + 1)].breakable_) {
-				EmitDestructionParticles(mapGen_->GetResourceTileData()[(int)(round(norm_player_pos.z) * mapGen_->GetMapSize().x + norm_player_pos.x + 1)].block_type_,
-					mapGen_->GetResourceTileData()[(int)(round(norm_player_pos.z) * mapGen_->GetMapSize().x + norm_player_pos.x + 1)].ent_->GetPosition());
-				mapGen_->RemoveResource(&(mapGen_->GetResourceTileData()[(int)(round(norm_player_pos.z) * mapGen_->GetMapSize().x + norm_player_pos.x + 1)]));
-			}
+			tile = mapGen_->GetCurrentTilePtr(Vecf3(norm_player_pos.x + 1, norm_player_pos.y, norm_player_pos.z));
 		}
-		else if (y_rot <= 5 * PI / 4) {
-
+		else if (y_rot <= 5 * PI / 4) 
+		{
 			// Facing downward
-			if (mapGen_->GetResourceTileData()[(int)(round(norm_player_pos.z - 1) * mapGen_->GetMapSize().x + norm_player_pos.x)].breakable_) {
-				EmitDestructionParticles(mapGen_->GetResourceTileData()[(int)(round(norm_player_pos.z - 1) * mapGen_->GetMapSize().x + norm_player_pos.x)].block_type_,
-					mapGen_->GetResourceTileData()[(int)(round(norm_player_pos.z - 1) * mapGen_->GetMapSize().x + norm_player_pos.x)].ent_->GetPosition());
-				mapGen_->RemoveResource(&(mapGen_->GetResourceTileData()[(int)(round(norm_player_pos.z - 1) * mapGen_->GetMapSize().x + norm_player_pos.x)]));
-			}
+			tile = mapGen_->GetCurrentTilePtr(Vecf3(norm_player_pos.x, norm_player_pos.y, norm_player_pos.z - 1));
 		}
-		else {
-
+		else
+		{
 			// Facing left
-			if (mapGen_->GetResourceTileData()[(int)(round(norm_player_pos.z) * mapGen_->GetMapSize().x + norm_player_pos.x - 1)].breakable_) {
-				EmitDestructionParticles(mapGen_->GetResourceTileData()[(int)(round(norm_player_pos.z) * mapGen_->GetMapSize().x + norm_player_pos.x - 1)].block_type_,
-					mapGen_->GetResourceTileData()[(int)(round(norm_player_pos.z) * mapGen_->GetMapSize().x + norm_player_pos.x - 1)].ent_->GetPosition());
-				mapGen_->RemoveResource(&(mapGen_->GetResourceTileData()[(int)(round(norm_player_pos.z) * mapGen_->GetMapSize().x + norm_player_pos.x - 1)]));
-			}
+			tile = mapGen_->GetCurrentTilePtr(Vecf3(norm_player_pos.x - 1, norm_player_pos.y, norm_player_pos.z));
 		}
+
+		if (tile->breakable_) 
+		{
+			EmitDestructionParticles(tile->block_type_, tile->ent_->GetPosition());
+			mapGen_->RemoveResource(tile);
+		}
+
 	}
 	// Place rail
-	if (input_->KeyWasPressed('R')) {
-		
-		// Get normalized player pos
-		Vecf3 norm_player_pos = player_->GetPosition();
-		norm_player_pos.x = (int)round(player_->GetPosition().x) - max(0, (mapGen_->GetTotalChunkNo() - 3) * mapGen_->GetChunkSize().x);
-		norm_player_pos.z = (int)round(player_->GetPosition().z) - max(0, (mapGen_->GetTotalChunkNo() - 3) * mapGen_->GetChunkSize().x);
-		
+	if (input_->KeyWasPressed('R')) 
+	{	
 		// Check if rail can be placed on player pos
-		if (mapGen_->GetResourceTileData()[(int)(round(norm_player_pos.z) * mapGen_->GetMapSize().x + norm_player_pos.x)].walkable_ &&
-			mapGen_->GetResourceTileData()[(int)(round(norm_player_pos.z) * mapGen_->GetMapSize().x + norm_player_pos.x)].block_type_ != ResourceBlockType::Rail) {
-
+		MapGenerator::ResourceTileData tile = mapGen_->GetCurrentTile(player_->GetPosition());
+		if (tile.walkable_ && tile.block_type_ != ResourceBlockType::Rail) 
+		{
 			// Spawn rail
-			std::shared_ptr<Block> r = std::make_shared<Rail>("rail", graphics_, input_, rl_);
+			std::shared_ptr<Rail> r = std::make_shared<Rail>("rail", graphics_, input_, rl_);
 			r->SetScale({ 0.5f, 0.03125f, 0.5f });
 			r->SetPosition(Vecf3((int)round(norm_player_pos.x), -0.5f, (int)round(norm_player_pos.z)));
 			mapGen_->AddResource({ ResourceBlockType::Rail, 0, 1, r });
