@@ -2,6 +2,7 @@
 #include "Block.h"
 #include "CollisionComponent.h"
 #include "ChooChoo.h"
+#include "InputComponent.h"
 
 #include <cmath>
 
@@ -30,6 +31,7 @@ Level::Level(std::shared_ptr<Graphics> gfx, std::shared_ptr<Input> input, std::s
 	//gravity_blocks_[0]->GetComponentOfType<CollisionComponent>("Collision")->SetAngularVelocity({ 1.0f, 1.0f, 1.0f }); // only solid blocks can be added to gravity blocks
 	//AddBlock("grassblock", { 0.0f, -10.0f, 5.0f }, { 5.0f, 1.0f, 5.0f });
 	player_ = AddPlayer({ 0.0f, 1.0f, 1.0f }, { 0.5f, 0.5f, 0.5f });
+	player_->AddComponent(std::make_shared<InputComponent>(InputComponent(*player_, *input_)));
 }
 
 void Level::Update(const float& dt)
@@ -157,14 +159,14 @@ void Level::EmitDestructionParticles(const ResourceBlockType& type, const Vecf3&
 	switch (type) {
 	case ResourceBlockType::Rock:
 		// params are : (no. of particles, position, radius, mass, scale, force, colour)
-		ps_.EmitSphere(5, pos + Vecf3(0.0f, 0.5f, 0.0f), 0.8f, 4.0f, 0.1f, 2.0f, { 0.0f, 1.0f, 0.0f, 1.0f }); // larger rock chunks
-		ps_.EmitSphere(10, pos + Vecf3(0.0f, 0.5f, 0.0f), 1.0f, 1.0f, 0.05f, 2.0f, { 0.0f, 0.5f, 0.0f, 1.0f }); // smaller rock chunks
+		ps_.EmitSphere(5, pos + Vecf3(0.0f, 0.5f, 0.0f), 0.8f, 4.0f, 0.1f, 2.0f, { 0.5f, 0.5f, 0.5f, 1.0f }); // larger rock chunks
+		ps_.EmitSphere(10, pos + Vecf3(0.0f, 0.5f, 0.0f), 1.0f, 1.0f, 0.05f, 2.0f, { 1.0f, 0.0f, 0.0f, 1.0f }); // smaller rock chunks
 		gui_.AddResource({ 1.0f, 0 });
 		break;
 	case ResourceBlockType::Tree:
-		ps_.EmitSphere(5, pos + Vecf3(0.0f, 0.5f, 0.0f), 0.8f, 0.8f, 0.1f, 1.0f, { 0.4f, 0.2f, 0.0f, 1.0f }); // trunk
-		ps_.EmitSphere(10, pos + Vecf3(0.0f, 0.5f, 0.0f), 0.1, Randf(0.8f, 1.2f), 0.05f, 1.0f, { 0.0f, Randf(0.8f, 1.0f), 1.0f, 1.0f }); // lower leaves
-		ps_.EmitSphere(15, pos + Vecf3(0.0f, 1.5f, 0.0f), 0.1, Randf(0.8f, 1.2f), 0.05f, 1.0f, { 0.0f, Randf(0.8f, 1.0f), 1.0f, 1.0f }); // upper leaves
+		ps_.EmitSphere(5, pos + Vecf3(0.0f, 0.5f, 0.0f), 0.8f, 0.8f, 0.1f, 1.0f, { 0.6f, 0.6f, 0.6f, 1.0f }); // trunk
+		ps_.EmitSphere(10, pos + Vecf3(0.0f, 0.5f, 0.0f), 0.1, Randf(0.8f, 1.2f), 0.05f, 1.0f, { 0.3f, Randf(0.8f, 1.0f), 0.3f, 1.0f }); // lower leaves
+		ps_.EmitSphere(15, pos + Vecf3(0.0f, 1.5f, 0.0f), 0.1, Randf(0.8f, 1.2f), 0.05f, 1.0f, { 0.3f, Randf(0.8f, 1.0f), 0.3f, 1.0f }); // upper leaves
 		gui_.AddResource({ 1.0f, 1 });
 
 		break;
