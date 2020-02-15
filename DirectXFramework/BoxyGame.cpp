@@ -38,6 +38,7 @@ void BoxyGame::Initialize(HWND hwnd)
 	rl_->AddCubeTexture("railcurved", L"Images/corner-rail.png");
 	rl_->AddPosNormTexModel("tree", "Models\\tree.obj", L"Images\\tree.png");
 	rl_->AddPosNormTexModel("rock", "Models\\rock.obj", L"Images\\rock.png");
+	rl_->AddPosNormTexModel("unbreakablerock", "Models\\rock.obj", L"Images\\unbreakable-rock.png");
 
 	// gui resources
 	rl_->AddCubeTexture("mariofont", L"Images/Fixedsys16x28.png");
