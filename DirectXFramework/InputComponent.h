@@ -7,7 +7,6 @@ class InputComponent :
 	public Component
 {
 private:
-	float movementSpeed = 3;
 	Input& input_;
 public:
 	InputComponent(Entity& owner, Input& input);

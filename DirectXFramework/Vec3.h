@@ -45,6 +45,19 @@ public:
 		norm.Normalize();
 		return norm;
 	}
+	Vec3	Max(const float max) {
+		this->x = this->x < max ? this->x : max;
+		this->y = this->y < max ? this->y : max;
+		this->z = this->z < max ? this->z : max;
+		return *this;
+	}
+	Vec3	Min(const float min) {
+		this->x = this->x > min ? this->x : min;
+		this->y = this->y > min ? this->y : min;
+		this->z = this->z > min ? this->z : min;
+		return *this;
+	}
+
 	Vec3	operator-() const
 	{
 		return Vec3(-this->x, -this->y, -z);
@@ -62,7 +75,7 @@ public:
 		this->y += rhs.y;
 		z += rhs.z;
 		return *this;
-	}
+	}	
 	Vec3& operator-=(const Vec3& rhs)
 	{
 		this->x -= rhs.x;

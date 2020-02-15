@@ -20,6 +20,8 @@ protected:
 	
 	std::vector<ComponentPtr> components_;
 
+	bool in_use_ = true;
+
 public:
 	Entity(const std::string& image, std::shared_ptr<Graphics> gfx, std::shared_ptr<Input> input, std::shared_ptr<ResourceLibrary> rl);
 	void AddComponent(ComponentPtr component);
@@ -34,9 +36,11 @@ public:
 	QuaternionUWU GetRotation();
 	Cube& GetCube();
 	void SetPosition(const Vecf3& v);
+	void SetScale(const Vecf3& v);
 	void SetRotation(const QuaternionUWU& q);
 	void SetQuatRotate(const bool& b);
 	void SetDrawMode(const int& drawmode);
+	void SetInUse(const bool& b);
 };
 
 template<typename T>

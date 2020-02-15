@@ -14,6 +14,7 @@ MapGenerator::MapGenerator(std::shared_ptr<Graphics> graphics, std::shared_ptr<I
 	rl_(rl),
 	scene_(scene)
 {
+	entity_pool = EntityPool::getInstance(graphics_, input_, rl_);
 }
 
 void MapGenerator::GenerateMap()
@@ -26,8 +27,8 @@ void MapGenerator::GenerateMap()
 		{
 			for (int x = 0; x < chunk_width_; x++)
 			{
-				if (resource_data_[3*chunk_width_ * z + x].ent_) { scene_->RemoveEntity(resource_data_[3*chunk_width_ * z + x].ent_); }
-				if (ground_data_[3*chunk_width_ * z + x].ent_) { scene_->RemoveEntity(ground_data_[3*chunk_width_ * z + x].ent_); }
+				if (resource_data_[3 * chunk_width_ * z + x].ent_) entity_pool->Release(resource_data_[3 * chunk_width_ * z + x].ent_);
+				if (ground_data_[3 * chunk_width_ * z + x].ent_) entity_pool->Release(ground_data_[3 * chunk_width_ * z + x].ent_);
 			}
 		}
 
@@ -47,6 +48,7 @@ void MapGenerator::GenerateMap()
 
 	Vecf3 dim;
 	std::shared_ptr<Block> b;
+	std::shared_ptr<Entity> e;
 
 	double n;
 	for (int z = 0; z < chunk_height_; z++)
@@ -57,15 +59,19 @@ void MapGenerator::GenerateMap()
 			if (abs(x - checkpoint.x) <= 1 && abs(z - checkpoint.z) <= 1) {
 
 				// Spawn block & set ground_data_
-				b = scene_->AddBlock("startblock", Vecf3(x, -1.0, z), Vecf3(0.5, 0.5, 0.5));
-				ground_data_[3*chunk_width_ * z + (total_map_size_ >= 3 ? 48 + (x - total_map_size_ * chunk_width_) : x)] = { GroundBlockType::Checkpoint, true, b };
+				e = entity_pool->Acquire("startblock");
+				e->SetPosition(Vecf3(x, -1.0, z));
+				scene_->AddEntity(e);
+				ground_data_[3*chunk_width_ * z + (total_map_size_ >= 3 ? 48 + (x - total_map_size_ * chunk_width_) : x)] = { GroundBlockType::Checkpoint, true, e };
 
 			}
 			else {
 
 				// Spawn block & set ground_data_
-				b = scene_->AddBlock("grassblock", Vecf3(x, -1.0, z), Vecf3(0.5, 0.5, 0.5));
-				ground_data_[3*chunk_width_ * z + (total_map_size_ >= 3 ? 48 + (x - total_map_size_ * chunk_width_) : x)] = { GroundBlockType::Grass, true, b };
+				e = entity_pool->Acquire("grassblock");
+				e->SetPosition(Vecf3(x, -1.0, z));
+				scene_->AddEntity(e);
+				ground_data_[3*chunk_width_ * z + (total_map_size_ >= 3 ? 48 + (x - total_map_size_ * chunk_width_) : x)] = { GroundBlockType::Grass, true, e };
 
 			}
 
@@ -75,10 +81,10 @@ void MapGenerator::GenerateMap()
 			if ((z - checkpoint.z) == 0 && abs(x - checkpoint.x) <= 1) {
 
 				// temp rails
-				std::shared_ptr<Rail> rail = std::make_shared<Rail>("rail", graphics_, input_, rl_);
-				rail->SetScale({ 0.5, 0.03125, 0.5 });
-				rail->SetPosition(Vecf3(x, -0.5f, z));
-				AddResource({ ResourceBlockType::Rail, 0, 1, rail });
+				std::shared_ptr<Rail> r = std::make_shared<Rail>("rail", graphics_, input_, rl_);
+				r->SetScale(Vecf3(0.5, 0.03125, 0.5));
+				r->SetPosition(Vecf3(x, -0.5f, z));
+				AddResource({ ResourceBlockType::Rail, 0, 1, r });
 
 			} else if (abs(z - checkpoint.z) <= 1 && abs(x - checkpoint.x) <= 1|| n > .4 && n < .6) {
 
@@ -90,16 +96,24 @@ void MapGenerator::GenerateMap()
 
 				// Spawn tree & set resource_data_
 				dim = rl_->GetDimensions("tree");
-				b = scene_->AddModel("tree", Vecf3(x, -0.5, z), Vecf3(1 / dim.x, 1.3 / dim.y, 1 / dim.z), 1);
-				resource_data_[3*chunk_width_ * z + (total_map_size_ >= 3 ? 48 + (x - total_map_size_ * chunk_width_) : x)] = { ResourceBlockType::Tree, 1, 0, b };
+				e = entity_pool->Acquire("tree");
+				e->SetDrawMode(3);
+				e->SetPosition(Vecf3(x, -0.5f, z));
+				e->SetScale(Vecf3(1 / dim.x, 1.3 / dim.y, 1 / dim.z));
+				scene_->AddEntity(e);
+				resource_data_[3*chunk_width_ * z + (total_map_size_ >= 3 ? 48 + (x - total_map_size_ * chunk_width_) : x)] = { ResourceBlockType::Tree, 1, 0, e };
 
 			}
 			else {
 
 				// Spawn rock & set resource_data_
 				dim = rl_->GetDimensions("rock");
-				b = scene_->AddModel("rock", Vecf3(x, -0.5, z), Vecf3(1 / dim.x, .8 / dim.y, 1 / dim.z), 1);
-				resource_data_[3*chunk_width_ * z + (total_map_size_ >= 3 ? 48 + (x - total_map_size_ * chunk_width_) : x)] = { ResourceBlockType::Rock, 1, 0, b };
+				e = entity_pool->Acquire("rock");
+				e->SetDrawMode(3);
+				e->SetPosition(Vecf3(x, -0.5f, z));
+				e->SetScale(Vecf3(1 / dim.x, .8 / dim.y, 1 / dim.z));
+				scene_->AddEntity(e);
+				resource_data_[3*chunk_width_ * z + (total_map_size_ >= 3 ? 48 + (x - total_map_size_ * chunk_width_) : x)] = { ResourceBlockType::Rock, 1, 0, e };
 
 			}
 		}
@@ -298,5 +312,6 @@ void MapGenerator::AddResource(ResourceTileData tile)
 
 void MapGenerator::RemoveResource(ResourceTileData* tile)
 {
+	entity_pool->Release(tile->ent_);
 	*(tile) = { ResourceBlockType::Air, 0, 1, nullptr };;
 }
