@@ -203,14 +203,46 @@ void Level::SpawnRandomBlocks(const int& val)
 
 void Level::collideWithPlayer()
 {
-		
-
+	// initialize player collision
 	player_->player_touch_left = false;
 	player_->player_touch_right = false;
 	player_->player_touch_front = false;
 	player_->player_touch_back = false;
 
+	// train collision
+	std::shared_ptr<Entity> train_ = mapGen_->train_;
 
+	Vecf3 trainDimension = rl_->GetDimensions("train");
+	float trainWidth = trainDimension.x * train_->GetCube().GetScaleX();
+	float trainLength = trainDimension.z * train_->GetCube().GetScaleZ();
+	
+	if (player_->AABB2dCollision(train_, trainLength, trainWidth))
+	{
+		OutputDebugString("colliding \n");
+		if (player_->GetPosition().x < (train_->GetPosition().x - trainLength / 2.0f))
+		{
+			player_->player_touch_right = true;
+		}
+		else if (player_->GetPosition().x > (train_->GetPosition().x + trainLength / 2.0f))
+		{
+			player_->player_touch_left = true;
+		}
+		else if (player_->GetPosition().z < (train_->GetPosition().z - trainWidth/ 2.0f))
+		{
+			player_->player_touch_front = true;
+		}
+		else if (player_->GetPosition().z > (train_->GetPosition().z + trainWidth / 2.0f))
+		{
+			player_->player_touch_back = true;
+		}
+	}
+	else
+	{
+		OutputDebugString("Not colliding \n");
+	}
+
+
+	// Resource collision
 	float player_x = player_->GetPosition().x;
 	float player_z = player_->GetPosition().z;
 		
@@ -222,23 +254,23 @@ void Level::collideWithPlayer()
 
 
 		
-	if (blockRight_.ent_ != nullptr &&  player_->AABB2dCollision(blockRight_.ent_))
+	if (blockRight_.ent_ != nullptr && blockRight_.walkable_ == false && player_->AABB2dCollision(blockRight_.ent_, 0.8f, 0.8f))
 	{
 		player_->player_touch_right = true;
 	}
 
-	if (blockLeft_.ent_ != nullptr && player_->AABB2dCollision(blockLeft_.ent_))
+	if (blockLeft_.ent_ != nullptr && blockLeft_.walkable_ == false && player_->AABB2dCollision(blockLeft_.ent_, 0.8f, 0.8f))
 	{
 		player_->player_touch_left = true;
 	}
 
-	if (blockFront_.ent_ != nullptr && player_->AABB2dCollision(blockFront_.ent_))
+	if (blockFront_.ent_ != nullptr && blockFront_.walkable_ == false && player_->AABB2dCollision(blockFront_.ent_, 0.8f, 0.8f))
 	{
 		player_->player_touch_front = true;
 	}
 
 
-	if (blockBack_.ent_ != nullptr && player_->AABB2dCollision(blockBack_.ent_))
+	if (blockBack_.ent_ != nullptr && blockBack_.walkable_ == false && player_->AABB2dCollision(blockBack_.ent_, 0.8f, 0.8f))
 	{
 		player_->player_touch_back = true;
 	}

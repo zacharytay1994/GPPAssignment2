@@ -114,7 +114,7 @@ void MapGenerator::GenerateMap()
 		train->GetCube().SetScaleZ(0.0005f);
 		train->GetCube().SetAngleXDeg(-90);
 		train->GetCube().SetAngleYDeg(90);
-		train->SetPosition({ checkpoint.x - 1.0f, -0.5, checkpoint.z });
+		train->SetPosition({ checkpoint.x, -0.5, checkpoint.z });
 		scene_->AddEntity(train);
 		train_ = train;
 	}
