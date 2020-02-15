@@ -35,7 +35,7 @@ Level::Level(std::shared_ptr<Graphics> gfx, std::shared_ptr<Input> input, std::s
 	player_ = AddPlayer({ 0.0f, 1.0f, 1.0f }, { 0.5f, 0.5f, 0.5f });
 	player_->AddComponent(std::make_shared<InputComponent>(InputComponent(*player_, *input_)));
 
-	highlight_block_ = AddBlock("highlight", player_->GetPosition(), { 0.5f,0.03125,0.5f });
+	target_block_ = AddBlock("highlight", player_->GetPosition(), { 0.5f,0.015625,0.5f });
 }
 
 void Level::Update(const float& dt)
@@ -46,9 +46,23 @@ void Level::Update(const float& dt)
 	ps_.SetCameraSuckPosition(!game_over_ ? (input_->GetCameraPosition() + Vecf3(0.0f, 1.2f, 0.0f)) : (mapGen_->train_->GetPosition() + Vecf3(0.0f, 10.0f, 0.0f)));
 	gui_.SetTrainX(std::dynamic_pointer_cast<ChooChoo>(mapGen_->train_)->GetPosition().x);
 
+
+	// <!-- crafting cooldown
 	if (crafting_cooldown_timer > 0) {
 		crafting_cooldown_timer -= dt;
-	}
+	} // -->
+
+	// <!-- highlight player target block
+	Vecf3 player_pos = player_->GetPosition();
+	Vecf3 player_orientation = player_->GetOrientation();
+	float y_rot = fmod(player_orientation.y > 0 ? player_orientation.y : player_orientation.y + 2 * PI, 2 * PI);
+	Vecf3 highlight_block_pos = { round(player_pos.x), round(player_pos.y - 2) + 0.5f, round(player_pos.z) };
+	if ((y_rot >= 7 * PI / 4) || (y_rot <= PI / 4)) { highlight_block_pos.z += 1; }
+	else if (y_rot <= 3 * PI / 4) { highlight_block_pos.x += 1; }
+	else if ( y_rot <= 5 * PI / 4 ) { highlight_block_pos.z -= 1; }
+	else { highlight_block_pos.x -= 1; }
+	target_block_->SetPosition(highlight_block_pos);
+	// -->
 
 	wl_.SetPoint1(player_->GetPosition() + RotateVectorY(Vecf3(0.0f, 0.0f, 1.0f), -player_->GetOrientation().y) * 2.0f + Vecf3(0.0f, 1.0f, 0.0f));
 	wl_.SetPoint2(mapGen_->train_->GetPosition() + RotateVectorY(Vecf3(0.0f, 0.0f, 1.0f), -(mapGen_->train_->GetCube().GetAngleY())) * 2.0f + Vecf3(0.0f, 1.0f, 0.0f));
@@ -129,7 +143,8 @@ void Level::Update(const float& dt)
 	if (input_->KeyWasPressed('R')) {
 		
 		// Get normalized player pos
-		Vecf3 norm_player_pos = player_->GetPosition();
+		//Vecf3 norm_player_pos = player_->GetPosition();
+		Vecf3 norm_player_pos = target_block_->GetPosition(); // replaced player with target_block to place rail in front of player.
 		norm_player_pos.x = (int)round(player_->GetPosition().x) - max(0, (mapGen_->GetTotalChunkNo() - 3) * mapGen_->GetChunkSize().x);
 		norm_player_pos.z = (int)round(player_->GetPosition().z) - max(0, (mapGen_->GetTotalChunkNo() - 3) * mapGen_->GetChunkSize().x);
 
@@ -149,9 +164,7 @@ void Level::Update(const float& dt)
 			else {
 				CraftRails();
 			}
-			
-
-		} // TODO: check crafter nearby
+		}
 		else {
 			CraftRails();
 		}
@@ -162,26 +175,7 @@ void Level::Update(const float& dt)
 
 
 
-	Vecf3 player_pos = player_->GetPosition();
-	Vecf3 player_orientation = player_->GetOrientation();
-	float y_rot = fmod(player_->GetOrientation().y > 0 ? player_->GetOrientation().y : player_->GetOrientation().y + 2 * PI, 2 * PI);
-	Vecf3 highlight_block_pos = {round(player_pos.x), round(player_pos.y-2)+0.5f, round(player_pos.z)};
-	if ((y_rot >= 7 * PI / 4) || (y_rot <= PI / 4)) {
-		highlight_block_pos.z += 1;
-	}
-	else if (y_rot <= 3 * PI / 4) {
-		highlight_block_pos.x += 1;
-	}
-	else if (y_rot <= 5 * PI / 4) {
-		highlight_block_pos.z -= 1;
-	}
-	else {
-		highlight_block_pos.x -= 1;
-	}
 
-
-
-	highlight_block_->SetPosition(highlight_block_pos);
 }
 
 void Level::Render(const float& dt)
@@ -253,7 +247,20 @@ void Level::EmitDestructionParticles(const ResourceBlockType& type, const Vecf3&
 void Level::CraftRails()
 {
 	// TODO: check crafter nearby
-	if (crafting_cooldown_timer <= 0 && wood_count_ >= wood_per_rail_ && rock_count_ >= rock_per_rail_) {
+
+	Vecf3 distance = player_->GetPosition() - mapGen_->crafter_->GetPosition();
+
+	distance.x = distance.x * distance.x;
+	distance.z = distance.z * distance.z;
+
+	// crafter in range
+	// cooldown
+	// wood & rock is enuf
+	if (distance.x + distance.z < crafting_radius_ * crafting_radius_ && 
+		crafting_cooldown_timer <= 0 && 
+		wood_count_ >= wood_per_rail_ && rock_count_ >= rock_per_rail_) {
+
+
 		rail_count_ += 1;
 		gui_.AddResource({ 0.1f, 2, 1 });
 		wood_count_ -= wood_per_rail_;

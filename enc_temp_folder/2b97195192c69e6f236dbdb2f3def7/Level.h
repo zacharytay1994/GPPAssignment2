@@ -31,7 +31,7 @@ private:
 
 	float crafting_cooldown = 1.0f;
 	float crafting_cooldown_timer = 0.0f;
-	float crafting_radius_ = 3.0f;
+	float crafting_radius_ = 2.0f;
 
 	bool game_over_ = false;
 

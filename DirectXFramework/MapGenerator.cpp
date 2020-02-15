@@ -129,8 +129,9 @@ void MapGenerator::GenerateMap()
 		//train->GetCube().SetAngleXDeg(-90);
 		//train->GetCube().SetAngleYDeg(90);
 		train->SetPosition({ checkpoint.x, -0.5 + 0.03125, checkpoint.z });
-		scene_->AddEntity(std::dynamic_pointer_cast<Entity>(train));
 		train_ = std::dynamic_pointer_cast<Entity>(train);
+		scene_->AddEntity(train_);
+		
 
 		
 		train->SetChildChoo(std::make_shared<ChooChoo>("craftingcart", graphics_, input_, rl_, this, scene_->ps_),"crafter");
@@ -140,7 +141,8 @@ void MapGenerator::GenerateMap()
 		train->GetCube().SetScaleY(0.05f);
 		train->GetCube().SetScaleZ(0.05f);
 		train->SetPosition({ checkpoint.x - 1.25f, -0.5 + 0.03125, checkpoint.z });
-		scene_->AddEntity(std::dynamic_pointer_cast<Entity>(train));
+		crafter_ = std::dynamic_pointer_cast<Entity>(train);
+		scene_->AddEntity(crafter_);
 		
 
 

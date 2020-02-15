@@ -47,6 +47,8 @@ public:
 	};
 	// Sorry I need the train reference lol
 	std::shared_ptr<Entity> train_;
+	// Haha same
+	std::shared_ptr<Entity> crafter_; 
 private:
 	std::shared_ptr<Graphics> graphics_;
 	std::shared_ptr<Input> input_;
