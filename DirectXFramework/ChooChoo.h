@@ -14,7 +14,7 @@ private:
 	Direction old_direction_ = Direction::Right;
 	Direction current_direction_ = Direction::Right;
 	Vecf3 current_velocity = { 1.0f, 0.0f, 0.0f };
-	float time_to_move_one_tile_ = 0.2f;
+	float time_to_move_one_tile_ = 1.0f;
 	float turn_amount_ = 0.0f;
 	float turn_amount_counter_ = 0.0f;
 	MapGenerator* mg_;

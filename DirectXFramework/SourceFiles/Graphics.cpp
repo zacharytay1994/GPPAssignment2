@@ -407,6 +407,28 @@ void Graphics::InitCubePipeline()
 	p_device_context_->VSSetConstantBuffers(0u, 1u, &p_cb_transform_);
 
 	/*_______________________________________*/
+	// CREATE AND BIND PIXEL CONSTANT BUFFER
+	// Additional data we might like to bind to various stages in the pipeline.
+	// Color Data
+	/*_______________________________________*/
+	// defined data struct that stores a transformation matrix
+	const dx::XMFLOAT4 color_buffer_ = { 1.0f, 1.0f, 1.0f, 1.0f };
+
+	// shares similar setup process as vertex buffer
+	D3D11_BUFFER_DESC bd2;
+	bd2.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+	bd2.Usage = D3D11_USAGE_DYNAMIC;
+	bd2.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+	bd2.MiscFlags = 0u;
+	bd2.ByteWidth = sizeof(color_buffer_);
+	bd2.StructureByteStride = sizeof(dx::XMFLOAT4);
+	D3D11_SUBRESOURCE_DATA sd2;
+	sd2.pSysMem = &color_buffer_;
+	p_device_->CreateBuffer(&bd2, &sd2, &p_cb_color_);
+	// choose which stage to bind buffer to, i.e. which stage is going to use the data
+	p_device_context_->PSSetConstantBuffers(0u, 1u, &p_cb_color_);
+
+	/*_______________________________________*/
 	// SET PRIMITIVE TOPOLOGY OF INPUT ASSEMBLER
 	// How the vertices should be interpreted as
 	// e.g. point list, line list, line strip, etc...
@@ -593,6 +615,14 @@ void Graphics::UpdateCBTransformSubresource(const ConstantBuffer & cb)
 	p_device_context_->Map(p_cb_transform_, 0u, D3D11_MAP_WRITE_DISCARD, 0u, &mapped_subresource);
 	memcpy(mapped_subresource.pData, &cb, sizeof(cb));
 	p_device_context_->Unmap(p_cb_transform_, 0u);
+}
+
+void Graphics::UpdateCBColourSubresource(const Colour& color)
+{
+	D3D11_MAPPED_SUBRESOURCE mapped_subresource;
+	p_device_context_->Map(p_cb_color_, 0u, D3D11_MAP_WRITE_DISCARD, 0u, &mapped_subresource);
+	memcpy(mapped_subresource.pData, &color, sizeof(color));
+	p_device_context_->Unmap(p_cb_color_, 0u);
 }
 
 void Graphics::ClearBuffer()

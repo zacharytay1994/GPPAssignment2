@@ -130,6 +130,7 @@ void MapGenerator::GenerateMap()
 		train->GetCube().SetAngleYDeg(90);
 		train->SetPosition({ checkpoint.x - 1.0f, -0.5, checkpoint.z });
 		scene_->AddEntity(train);
+		train_ = train;
 	}
 
 	// Increment total_map_size_

@@ -1,6 +1,7 @@
 #include "Level.h"
 #include "Block.h"
 #include "CollisionComponent.h"
+#include "ChooChoo.h"
 
 #include <cmath>
 
@@ -34,7 +35,14 @@ Level::Level(std::shared_ptr<Graphics> gfx, std::shared_ptr<Input> input, std::s
 void Level::Update(const float& dt)
 {
 	Scene::Update(dt);
+	ps_.Update(dt);
+	gui_.Update(dt);
+	ps_.SetCameraSuckPosition(input_->GetCameraPosition() + Vecf3(0.0f, 1.2f, 0.0f));
+	gui_.SetTrainX(std::dynamic_pointer_cast<ChooChoo>(mapGen_->train_)->GetPosition().x);
 
+	if (input_->KeyWasPressed('P')) {
+		gui_.AddResource({ 1.0f, 0 });
+	}
 	// <--- test code can remove if need be
 	if (input_->KeyWasPressed('B')) {
 		start_spawning_ = true;
@@ -71,6 +79,8 @@ void Level::Update(const float& dt)
 
 			// Facing forward
 			if (mapGen_->GetResourceTileData()[(int)(round(norm_player_pos.z + 1) * mapGen_->GetMapSize().x + norm_player_pos.x)].breakable_) {
+				EmitDestructionParticles(mapGen_->GetResourceTileData()[(int)(round(norm_player_pos.z + 1) * mapGen_->GetMapSize().x + norm_player_pos.x)].block_type_,
+					mapGen_->GetResourceTileData()[(int)(round(norm_player_pos.z + 1) * mapGen_->GetMapSize().x + norm_player_pos.x)].ent_->GetPosition());
 				mapGen_->RemoveResource(&(mapGen_->GetResourceTileData()[(int)(round(norm_player_pos.z + 1) * mapGen_->GetMapSize().x + norm_player_pos.x)]));
 			}
 
@@ -78,26 +88,30 @@ void Level::Update(const float& dt)
 
 			// Facing right
 			if (mapGen_->GetResourceTileData()[(int)(round(norm_player_pos.z) * mapGen_->GetMapSize().x + norm_player_pos.x + 1)].breakable_) {
+				EmitDestructionParticles(mapGen_->GetResourceTileData()[(int)(round(norm_player_pos.z) * mapGen_->GetMapSize().x + norm_player_pos.x + 1)].block_type_,
+					mapGen_->GetResourceTileData()[(int)(round(norm_player_pos.z) * mapGen_->GetMapSize().x + norm_player_pos.x + 1)].ent_->GetPosition());
 				mapGen_->RemoveResource(&(mapGen_->GetResourceTileData()[(int)(round(norm_player_pos.z) * mapGen_->GetMapSize().x + norm_player_pos.x + 1)]));
 			}
-
-		} else if (y_rot <= 5*PI/4) {
+		}
+		else if (y_rot <= 5 * PI / 4) {
 
 			// Facing downward
 			if (mapGen_->GetResourceTileData()[(int)(round(norm_player_pos.z - 1) * mapGen_->GetMapSize().x + norm_player_pos.x)].breakable_) {
+				EmitDestructionParticles(mapGen_->GetResourceTileData()[(int)(round(norm_player_pos.z - 1) * mapGen_->GetMapSize().x + norm_player_pos.x)].block_type_,
+					mapGen_->GetResourceTileData()[(int)(round(norm_player_pos.z - 1) * mapGen_->GetMapSize().x + norm_player_pos.x)].ent_->GetPosition());
 				mapGen_->RemoveResource(&(mapGen_->GetResourceTileData()[(int)(round(norm_player_pos.z - 1) * mapGen_->GetMapSize().x + norm_player_pos.x)]));
 			}
-
-		} else {
+		}
+		else {
 
 			// Facing left
 			if (mapGen_->GetResourceTileData()[(int)(round(norm_player_pos.z) * mapGen_->GetMapSize().x + norm_player_pos.x - 1)].breakable_) {
+				EmitDestructionParticles(mapGen_->GetResourceTileData()[(int)(round(norm_player_pos.z) * mapGen_->GetMapSize().x + norm_player_pos.x - 1)].block_type_,
+					mapGen_->GetResourceTileData()[(int)(round(norm_player_pos.z) * mapGen_->GetMapSize().x + norm_player_pos.x - 1)].ent_->GetPosition());
 				mapGen_->RemoveResource(&(mapGen_->GetResourceTileData()[(int)(round(norm_player_pos.z) * mapGen_->GetMapSize().x + norm_player_pos.x - 1)]));
 			}
-
 		}
 	}
-
 	// Place rail
 	if (input_->KeyWasPressed('R')) {
 		
@@ -114,16 +128,17 @@ void Level::Update(const float& dt)
 			std::shared_ptr<Block> r = std::make_shared<Rail>("rail", graphics_, input_, rl_);
 			r->SetScale({ 0.5f, 0.03125f, 0.5f });
 			r->SetPosition(Vecf3((int)round(norm_player_pos.x), -0.5f, (int)round(norm_player_pos.z)));
-
+			AddEntity(r);
 			mapGen_->AddResource({ ResourceBlockType::Rail, 0, 1, r });
 		}
-
 	}
 }
 
 void Level::Render(const float& dt)
 {
 	Scene::Render(dt);
+	ps_.Render();
+	gui_.DrawLevelHUD(dt);
 }
 
 void Level::SpawnRandomBlocks(const int& val)
@@ -133,4 +148,23 @@ void Level::SpawnRandomBlocks(const int& val)
 	float z_rand = float(-val + (rand() % val + 1));
 	float rand_size = float(rand() % 4 + 1);
 	gravity_blocks_.push_back(AddSolidBlock("grassblock", { x_rand, 8.0f, z_rand }, { rand_size, 1.0f, rand_size }, 5.0f * rand_size));
+}
+
+void Level::EmitDestructionParticles(const ResourceBlockType& type, const Vecf3& pos)
+{
+	switch (type) {
+	case ResourceBlockType::Rock:
+		// params are : (no. of particles, position, radius, mass, scale, force, colour)
+		ps_.EmitSphere(5, pos + Vecf3(0.0f, 0.5f, 0.0f), 0.8f, 4.0f, 0.1f, 2.0f, { 0.0f, 1.0f, 0.0f, 1.0f }); // larger rock chunks
+		ps_.EmitSphere(10, pos + Vecf3(0.0f, 0.5f, 0.0f), 1.0f, 1.0f, 0.05f, 2.0f, { 0.0f, 0.5f, 0.0f, 1.0f }); // smaller rock chunks
+		gui_.AddResource({ 1.0f, 0 });
+		break;
+	case ResourceBlockType::Tree:
+		ps_.EmitSphere(5, pos + Vecf3(0.0f, 0.5f, 0.0f), 0.8f, 0.8f, 0.1f, 1.0f, { 0.4f, 0.2f, 0.0f, 1.0f }); // trunk
+		ps_.EmitSphere(10, pos + Vecf3(0.0f, 0.5f, 0.0f), 0.1, Randf(0.8f, 1.2f), 0.05f, 1.0f, { 0.0f, Randf(0.8f, 1.0f), 1.0f, 1.0f }); // lower leaves
+		ps_.EmitSphere(15, pos + Vecf3(0.0f, 1.5f, 0.0f), 0.1, Randf(0.8f, 1.2f), 0.05f, 1.0f, { 0.0f, Randf(0.8f, 1.0f), 1.0f, 1.0f }); // upper leaves
+		gui_.AddResource({ 1.0f, 1 });
+
+		break;
+	}
 }
