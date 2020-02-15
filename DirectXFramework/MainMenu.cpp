@@ -77,6 +77,41 @@ void MainMenu::Update(const float& dt)
 	if (input_->KeyWasPressed('B')) {
 		ChangeScene("level");
 	}
+	// give player a light
+	wl_.SetPoint1(player_->GetPosition() + RotateVectorY(Vecf3(0.0f, 0.0f, 1.0f), -player_->GetOrientation().y) * 2.0f + Vecf3(0.0f, 1.0f, 0.0f));
+	/*__________________________________*/
+	// CAMERA TRACKING MODE
+	/*__________________________________*/
+	Vecf3 cam_to_target;
+	switch (camera_mode_) {
+	case 0: // free roam
+		break;
+	case 1: // third person
+		cam_to_target = ((player_->GetPosition() + Vecf3(0.0f, 3.0f, -4.0f)) - input_->GetCameraPosition());
+		if (!(cam_to_target.LenSq() < 0.1f)) {
+			input_->TranslateCamera({ cam_to_target.x, cam_to_target.y, cam_to_target.z }, dt);
+		}
+		if (abs(0.60f - input_->GetCamPitch()) > 0.05f) {
+			input_->SetCamPitch(input_->GetCamPitch() + (0.60f - input_->GetCamPitch()) * dt * 2.0f);
+		}
+		break;
+	case 2: // top down
+		cam_to_target = ((player_->GetPosition() + Vecf3(0.0f, 8.0f, -2.0f)) - input_->GetCameraPosition());
+		if (!(cam_to_target.LenSq() < 0.1f)) {
+			input_->TranslateCamera({ cam_to_target.x, cam_to_target.y, cam_to_target.z }, dt);
+		}
+		if (abs(1.20f - input_->GetCamPitch()) > 0.05f) {
+			input_->SetCamPitch(input_->GetCamPitch() + (1.20f - input_->GetCamPitch()) * dt * 2.0f);
+		}
+		break;
+	}
+	/*__________________________________*/
+	// CAMERA SWITCH MODE
+	/*__________________________________*/
+	if (input_->KeyWasPressed('P')) {
+		camera_mode_ = (camera_mode_ + 1) > 2 ? 0 : (camera_mode_ + 1);
+	}
+
 }
 
 void MainMenu::Render(const float& dt)

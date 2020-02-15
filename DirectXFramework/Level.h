@@ -19,6 +19,7 @@ private:
 	int spawn_iterations_ = 20;
 	// --->
 	bool game_over_ = false;
+	int camera_mode_ = 2;
 public:
 	Level(std::shared_ptr<Graphics> gfx, std::shared_ptr<Input> input, std::shared_ptr<ResourceLibrary> rl, Game* game);
 	void Update(const float& dt) override;

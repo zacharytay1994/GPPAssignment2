@@ -47,9 +47,50 @@ void Level::Update(const float& dt)
 	wl_.SetPoint1(player_->GetPosition() + RotateVectorY(Vecf3(0.0f, 0.0f, 1.0f), -player_->GetOrientation().y) * 2.0f + Vecf3(0.0f, 1.0f, 0.0f));
 	wl_.SetPoint2(mapGen_->train_->GetPosition() + RotateVectorY(Vecf3(0.0f, 0.0f, 1.0f), -(mapGen_->train_->GetCube().GetAngleY())) * 2.0f + Vecf3(0.0f, 1.0f, 0.0f));
 
-	if (input_->KeyWasPressed('P')) {
-		gui_.AddResource({ 1.0f, 0 });
+	/*__________________________________*/
+	// CAMERA TRACKING MODE
+	/*__________________________________*/
+	Vecf3 cam_to_target;
+	switch (camera_mode_) {
+	case 0: // free roam
+		break;
+	case 1: // third person
+		cam_to_target = ((player_->GetPosition() + Vecf3(0.0f, 3.0f, -4.0f)) - input_->GetCameraPosition());
+		if (!(cam_to_target.LenSq() < 0.1f)) {
+			input_->TranslateCamera({ cam_to_target.x, cam_to_target.y, cam_to_target.z }, dt);
+		}
+		if (abs(0.60f - input_->GetCamPitch()) > 0.05f) {
+			input_->SetCamPitch(input_->GetCamPitch() + (0.60f - input_->GetCamPitch()) * dt * 2.0f);
+		}
+		break;
+	case 2: // top down
+		cam_to_target = ((player_->GetPosition() + Vecf3(0.0f, 8.0f, -2.0f)) - input_->GetCameraPosition());
+		if (!(cam_to_target.LenSq() < 0.1f)) {
+			input_->TranslateCamera({ cam_to_target.x, cam_to_target.y, cam_to_target.z }, dt);
+		}
+		if (abs(1.20f - input_->GetCamPitch()) > 0.05f) {
+			input_->SetCamPitch(input_->GetCamPitch() + (1.20f - input_->GetCamPitch()) * dt * 2.0f);
+		}
+		break;
+	case 3: // follow train
+		Vecf3 tempvec = (mapGen_->train_->GetPosition() + Vecf3(0.0f, 10.0f, -5.0f));
+		tempvec.z = 4.0f;
+		cam_to_target = (tempvec - input_->GetCameraPosition());
+		if (!(cam_to_target.LenSq() < 0.1f)) {
+			input_->TranslateCamera({ cam_to_target.x, cam_to_target.y, cam_to_target.z }, dt);
+		}
+		if (abs(1.40f - input_->GetCamPitch()) > 0.05f) {
+			input_->SetCamPitch(input_->GetCamPitch() + (1.40f - input_->GetCamPitch()) * dt * 2.0f);
+		}
+		break;
 	}
+	/*__________________________________*/
+	// CAMERA SWITCH MODE
+	/*__________________________________*/
+	if (input_->KeyWasPressed('P')) {
+		camera_mode_ = (camera_mode_ + 1) > 3 ? 0 : (camera_mode_ + 1);
+	}
+
 	// <--- test code can remove if need be
 	if (input_->KeyWasPressed('B')) {
 		start_spawning_ = true;
@@ -161,7 +202,7 @@ void Level::Render(const float& dt)
 		std::stringstream ss;
 		ss << "Score:" << gui_.GetTrainX();
 		gui_.DrawString({ -0.55f, -0.2f, 0.0f }, 0.08f, ss.str());
-		gui_.DrawString({ -0.92f, -0.4f, 0.0f }, 0.035f, "- Press Enter To Main Menu -");
+		gui_.DrawString({ -0.94f, -0.4f, 0.0f }, 0.035f, "- Press Enter To Main Menu -");
 
 		if (input_->KeyWasPressed(VK_RETURN)) {
 			ChangeScene("mainmenu");

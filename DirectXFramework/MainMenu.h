@@ -12,6 +12,7 @@ private:
 	const Vecf3 title_pos = { -13.0f, 0.0f, -7.0f };
 	const Vecf3 button_pos = { -3.0f, 0.0f, 3.0f };
 	const Vecf3 button_size = { 3.0f, 0.25f, 1.0f };
+	int camera_mode_ = 1;
 
 
 public:
