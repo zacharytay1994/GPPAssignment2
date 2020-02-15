@@ -28,6 +28,8 @@ void BoxyGame::Initialize(HWND hwnd)
 	rl_->AddCubeTexture("alexbody", L"Images/alex_body.png");
 	rl_->AddCubeTexture("alexarm", L"Images/alex-arm.png");
 	rl_->AddCubeTexture("alexleg", L"Images/alex-leg.png");
+	rl_->AddPosNormTexModel("alexgun", "Models/alex-gun.obj", L"Images/alex-gun.png");
+
 	rl_->AddCubeTexture("spacebox", L"Images/spacebox2.png");
 	rl_->AddCubeTexture("sun", L"Images/sunyellow.png");
 	rl_->AddCubeTexture("blackoverlay", L"Images/translucentblack.png");

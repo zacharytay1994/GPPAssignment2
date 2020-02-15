@@ -37,19 +37,25 @@ void Player::Update(const float& dt)
 {
 	Entity::Update(dt);
 
+	// timers
+	if (dash_cooldown_timer_ > 0) {
+		dash_cooldown_timer_ -= dt;
+	}
+	if (punch_animation_timer_ > 0) {
+		punch_animation_timer_ -= dt;
+	}
+
+	// physics
 	velocity_ += acceleration_ * dt;
 	velocity_.Max(maxVelocity_);
 	position_ += velocity_ * dt;
 	friction_ = -velocity_ * frictionPower_;
-
 	velocity_ += friction_ * dt;
-
-	acceleration_ = { 0,0,0 };
-
+	acceleration_ = { 0.0f,0.0f,0.0f };
 	cubeModel_.SetPosition(position_);
 
+	// steer player to direction
 	desired_orientation_ = atan2(velocity_.x, velocity_.z);
-	
 	if (current_orientation_ != desired_orientation_) {
 		float rotation = desired_orientation_ - current_orientation_;
 		rotation += (rotation > PI) ? - TAU : (rotation < -PI) ? TAU : 0;
@@ -62,15 +68,14 @@ void Player::Update(const float& dt)
 		}
 	}
 	
-
+	// reset limbs when player is stationary
 	if (abs(velocity_.x) + abs(velocity_.z) < 1) {
 		cubeModel_.SetRotationXTo("larm",0);
 		cubeModel_.SetRotationXTo("rarm",0);
 		cubeModel_.SetRotationXTo("lleg", 0);
 		cubeModel_.SetRotationXTo("rleg", 0);
 		movement_time_ = 0;
-	}
-	else {
+	} else { // limb movement when player is moving
 		movement_time_ += dt;
 		float arm_rotation = sin(movement_time_* limb_rotation_speed_) * arm_max_rotation_;
 		float leg_rotation = sin(movement_time_ * limb_rotation_speed_) * leg_max_rotation_;
@@ -80,11 +85,57 @@ void Player::Update(const float& dt)
 		cubeModel_.SetRotationXTo("rleg", -leg_rotation);
 	}
 
+	//Punch();
+	// time to punch
+	if (punch_animation_timer_ > 0) {
+		punch_animation_timing_ += dt;
+		float punch_translation = sin(punch_animation_timing_ * punch_speed_) * punch_amount_;
+		std::shared_ptr<Cube> tempCube = cubeModel_.GetNode("rarm")->GetCube(0);
+
+		tempCube->SetTextureKey("alexgun");
+		tempCube->SetDrawMode(3);
+		tempCube->SetScaleX(-0.5);
+		tempCube->SetScaleY(-0.5);
+		tempCube->SetScaleZ(-0.5);
+
+		tempCube = cubeModel_.GetNode("larm")->GetCube(0);
+
+		tempCube->SetTextureKey("alexgun");
+		tempCube->SetDrawMode(3);
+		tempCube->SetScaleX(-0.5);
+		tempCube->SetScaleY(-0.5);
+		tempCube->SetScaleZ(-0.5);
+		
+
+		cubeModel_.SetRotationXTo("rarm", -PI/2);
+		cubeModel_.SetTranslateTo("rarm", { punch_translation,0.0f,-punch_translation });
+		cubeModel_.SetRotationXTo("larm", -PI / 2);
+		cubeModel_.SetTranslateTo("larm", { -punch_translation,0.0f,punch_translation });
+
+
+
+	}
+	else {
+		punch_animation_timing_ = 0.0f;
+		std::shared_ptr<Cube> tempCube = cubeModel_.GetNode("rarm")->GetCube(0);
+		tempCube->SetTextureKey("alexarm");
+		tempCube->SetDrawMode(1);
+		tempCube->SetScaleX(0.09375);
+		tempCube->SetScaleY(0.375);
+		tempCube->SetScaleZ(0.125);
+
+		tempCube = cubeModel_.GetNode("larm")->GetCube(0);
+		tempCube->SetTextureKey("alexarm");
+		tempCube->SetDrawMode(1);
+		tempCube->SetScaleX(0.09375);
+		tempCube->SetScaleY(0.375);
+		tempCube->SetScaleZ(0.125);
+	}
+
+	// tilt player to direction calculated above.
 	cubeModel_.SetRotationYTo("body", current_orientation_);
 
-	if (dash_cooldown_timer_ > 0) {
-		dash_cooldown_timer_ -= dt;
-	}
+
 	
 	//cubeModel_.SetRotationXTo("larm", current_orientation_);
 
@@ -124,4 +175,9 @@ void Player::Render()
 	//cube_.Draw(dt);
 	cubeModel_.Draw();
 	//scene_graph_->Draw();
+}
+
+void Player::Punch()
+{
+	punch_animation_timer_ = punch_animation_time_;
 }

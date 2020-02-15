@@ -29,6 +29,7 @@ private:
 public:
 	Vecf3 orientation_; // used for rotating cube
 	Vecf3 offset_; // used to position node
+	Vecf3 translation_ = {0.0f, 0.0f, 0.0f};
 	
 	std::string id_;
 	CubeModelNode();
@@ -40,6 +41,8 @@ public:
 	void AddCube(std::shared_ptr<Cube> cube, Vecf3 scale, Vecf3 position);
 	void Translate(Vecf3 v);
 	void TranslateTo(std::string id, Vecf3 v);
+
+	void SetTranslate(Vecf3 v);
 	void RotateX(float angle);
 	void SetRotationX(float angle);
 	void RotateY(float angle);
@@ -47,6 +50,8 @@ public:
 	void RotateZ(float angle);
 	void SetRotationZ(float angle);
 	void Draw(Vecf3 totalOffSet, Vecf3 absPos);
+
+	std::shared_ptr<Cube> GetCube(int n);
 };
 
 
@@ -59,6 +64,7 @@ public:
 
 	CubeModel(Vecf3 position);
 	void TranslateTo(std::string id, Vecf3 v); // Applies Vector v to target node
+	void SetTranslateTo(std::string id, Vecf3 v);
 	void RotateXTo(std::string id, float angle);
 	void SetRotationXTo(std::string id, float angle);
 	void RotateYTo(std::string id, float angle);
