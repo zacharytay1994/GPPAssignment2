@@ -18,8 +18,8 @@ private:
 	std::shared_ptr<Input> input_;
 	
 public:
-	float movementSpeed = 20;
-	float maxVelocity_ = 20;
+	float movementSpeed = 30;
+	float maxVelocity_ = 30;
 	float frictionPower_ = 5;
 	Vecf3 friction_ = { 0,0,0 };
 	Vecf3 acceleration_ = { 0,0,0 }; 

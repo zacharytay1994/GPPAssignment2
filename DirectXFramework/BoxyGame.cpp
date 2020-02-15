@@ -44,6 +44,7 @@ void BoxyGame::Initialize(HWND hwnd)
 	rl_->AddCubeTexture("rail", L"Images/rail.png");
 	rl_->AddPosNormTexModel("tree", "Models\\tree.obj", L"Images\\tree.png");
 	rl_->AddPosNormTexModel("rock", "Models\\rock.obj", L"Images\\rock.png");
+	rl_->AddPosNormTexModel("gndblk", "Models\\ground-block.obj", L"Images\\ground-block.png");
 }
 
 void BoxyGame::Update()
