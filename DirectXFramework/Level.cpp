@@ -44,6 +44,10 @@ void Level::Update(const float& dt)
 	ps_.SetCameraSuckPosition(input_->GetCameraPosition() + Vecf3(0.0f, 1.2f, 0.0f));
 	gui_.SetTrainX(std::dynamic_pointer_cast<ChooChoo>(mapGen_->train_)->GetPosition().x);
 
+	if (crafting_cooldown_timer > 0) {
+		crafting_cooldown_timer -= dt;
+	}
+
 	if (input_->KeyWasPressed('P')) {
 		gui_.AddResource({ 1.0f, 0 });
 	}
@@ -116,25 +120,40 @@ void Level::Update(const float& dt)
 			}
 		}
 	}
-	// Place rail
+	// Place or craft rail
 	if (input_->KeyWasPressed('R')) {
 		
 		// Get normalized player pos
 		Vecf3 norm_player_pos = player_->GetPosition();
 		norm_player_pos.x = (int)round(player_->GetPosition().x) - max(0, (mapGen_->GetTotalChunkNo() - 3) * mapGen_->GetChunkSize().x);
 		norm_player_pos.z = (int)round(player_->GetPosition().z) - max(0, (mapGen_->GetTotalChunkNo() - 3) * mapGen_->GetChunkSize().x);
-		
+
 		// Check if rail can be placed on player pos
-		if (mapGen_->GetResourceTileData()[(int)(round(norm_player_pos.z) * mapGen_->GetMapSize().x + norm_player_pos.x)].walkable_ &&
-			mapGen_->GetResourceTileData()[(int)(round(norm_player_pos.z) * mapGen_->GetMapSize().x + norm_player_pos.x)].block_type_ != ResourceBlockType::Rail) {
+		if ((mapGen_->GetResourceTileData()[(int)(round(norm_player_pos.z) * mapGen_->GetMapSize().x + norm_player_pos.x)].walkable_ &&
+			mapGen_->GetResourceTileData()[(int)(round(norm_player_pos.z) * mapGen_->GetMapSize().x + norm_player_pos.x)].block_type_ != ResourceBlockType::Rail) &&
+			rail_count_ > 0) {
 
 			// Spawn rail
 			std::shared_ptr<Block> r = std::make_shared<Rail>("rail", graphics_, input_, rl_);
 			r->SetScale({ 0.5f, 0.03125f, 0.5f });
 			r->SetPosition(Vecf3((int)round(norm_player_pos.x), -0.5f, (int)round(norm_player_pos.z)));
-			mapGen_->AddResource({ ResourceBlockType::Rail, 0, 1, r });
+			if (mapGen_->AddResource({ ResourceBlockType::Rail, 0, 1, r })) {
+				rail_count_ -= 1;
+				gui_.AddResource({ 1.0f, 2, -1 });
+			}
+			else {
+				CraftRails();
+			}
+			
+
+		} // TODO: check crafter nearby
+		else {
+			CraftRails();
 		}
+
+
 	}
+
 
 
 
@@ -183,14 +202,31 @@ void Level::EmitDestructionParticles(const ResourceBlockType& type, const Vecf3&
 		// params are : (no. of particles, position, radius, mass, scale, force, colour)
 		ps_.EmitSphere(5, pos + Vecf3(0.0f, 0.5f, 0.0f), 0.8f, 4.0f, 0.1f, 2.0f, { 0.5f, 0.5f, 0.5f, 1.0f }); // larger rock chunks
 		ps_.EmitSphere(10, pos + Vecf3(0.0f, 0.5f, 0.0f), 1.0f, 1.0f, 0.05f, 2.0f, { 1.0f, 0.0f, 0.0f, 1.0f }); // smaller rock chunks
-		gui_.AddResource({ 1.0f, 0 });
+		gui_.AddResource({ 1.0f, 0 , 1});
+		rock_count_ += 1;
 		break;
 	case ResourceBlockType::Tree:
 		ps_.EmitSphere(5, pos + Vecf3(0.0f, 0.5f, 0.0f), 0.8f, 0.8f, 0.1f, 1.0f, { 0.6f, 0.6f, 0.6f, 1.0f }); // trunk
 		ps_.EmitSphere(10, pos + Vecf3(0.0f, 0.5f, 0.0f), 0.1, Randf(0.8f, 1.2f), 0.05f, 1.0f, { 0.3f, Randf(0.8f, 1.0f), 0.3f, 1.0f }); // lower leaves
 		ps_.EmitSphere(15, pos + Vecf3(0.0f, 1.5f, 0.0f), 0.1, Randf(0.8f, 1.2f), 0.05f, 1.0f, { 0.3f, Randf(0.8f, 1.0f), 0.3f, 1.0f }); // upper leaves
-		gui_.AddResource({ 1.0f, 1 });
-
+		gui_.AddResource({ 1.0f, 1 , 1});
+		wood_count_ += 1;
 		break;
 	}
+}
+
+void Level::CraftRails()
+{
+	// TODO: check crafter nearby
+	if (crafting_cooldown_timer <= 0 && wood_count_ >= wood_per_rail_ && rock_count_ >= rock_per_rail_) {
+		rail_count_ += 1;
+		gui_.AddResource({ 0.1f, 2, 1 });
+		wood_count_ -= wood_per_rail_;
+		gui_.AddResource({ 0.1f, 1, -wood_per_rail_ });
+		rock_count_ -= rock_per_rail_;
+		gui_.AddResource({ 0.1f, 0, -rock_per_rail_ });
+
+		crafting_cooldown_timer = crafting_cooldown;
+	}
+
 }

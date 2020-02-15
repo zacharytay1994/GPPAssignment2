@@ -131,7 +131,8 @@ public:
 	ResourceTileData& GetCurrentTile(const Vecf3& pos);
 
 	// Add resource to resource_data_
-	void AddResource(ResourceTileData tile);
+	// return true if sucessfully added
+	bool AddResource(ResourceTileData tile);
 
 	// Remove resource from resource_data_
 	void RemoveResource(ResourceTileData* tile);

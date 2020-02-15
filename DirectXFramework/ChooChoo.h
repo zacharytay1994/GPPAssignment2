@@ -20,9 +20,12 @@ private:
 	MapGenerator* mg_;
 	bool game_over_ = false;
 	bool test_activate_ = false;
+	std::shared_ptr<ChooChoo> child_choo_ = nullptr;
 public:
 	ChooChoo(const std::string& image, std::shared_ptr<Graphics> gfx, std::shared_ptr<Input> input, std::shared_ptr<ResourceLibrary> rl, MapGenerator* mg);
 	void Update(const float& dt) override;
 	void Render() override;
 	bool MoveTrain(const float& dt);
+	void SetChildChoo(std::shared_ptr<ChooChoo> mr_choo_jr);
+	std::shared_ptr<ChooChoo> GetChildChoo();
 };

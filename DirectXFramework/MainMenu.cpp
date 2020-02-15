@@ -43,30 +43,34 @@ MainMenu::MainMenu(std::shared_ptr<Graphics> gfx, std::shared_ptr<Input> input, 
 	tempEntity->SetPosition({ button_pos.x,button_pos.y + button_size.y, button_pos.z - button_size.z * 2.5f * 2 });
 	AddEntity(tempEntity);
 
-	tempDimension = rl_->GetDimensions("gndblk");
-	tempScale = { 1 / tempDimension.x, 1 / tempDimension.y, 1 / tempDimension.z };
-	tempPosition = { 0,1,0};
-	
-	tempDimension = rl_->GetDimensions("tree");
-	Vecf3 tempSca2 = { 1 / tempDimension.x, 2 / tempDimension.y, 1 / tempDimension.z };
+	//tempDimension = rl_->GetDimensions("gndblk");
+	//tempScale = { 1 / tempDimension.x, 1 / tempDimension.y, 1 / tempDimension.z };
+	//tempPosition = { 0,1,0};
+	//
+	//tempDimension = rl_->GetDimensions("tree");
+	//Vecf3 tempSca2 = { 1 / tempDimension.x, 2 / tempDimension.y, 1 / tempDimension.z };
 
-	tempDimension = rl_->GetDimensions("rock");
-	Vecf3 tempSca3 = { 1 / tempDimension.x, 1 / tempDimension.y, 1 / tempDimension.z };
+	//tempDimension = rl_->GetDimensions("rock");
+	//Vecf3 tempSca3 = { 1 / tempDimension.x, 1 / tempDimension.y, 1 / tempDimension.z };
 
-	for (float i = 0; i < 10; i++)
-	{
-		for (float j = 0; j < 10; j++) {
-			AddModel("gndblk", { i,1,j }, tempScale, true);
+	//for (float i = 0; i < 10; i++)
+	//{
+	//	for (float j = 0; j < 10; j++) {
+	//		AddModel("gndblk", { i,1,j }, tempScale, true);
 
-			if (fmod(i,2) == 1) {
-				AddModel("tree", { i,2,j }, tempSca2, true);
-			}
-			else {
-				AddModel("rock", { i,2,j }, tempSca3, true);
-			}
-		}
-		
-	}
+	//		if (fmod(i,2) == 1) {
+	//			AddModel("tree", { i,2,j }, tempSca2, true);
+	//		}
+	//		else {
+	//			AddModel("rock", { i,2,j }, tempSca3, true);
+	//		}
+	//	}
+	//	
+	//}
+
+	//tempDimension = rl_->GetDimensions("minecart");
+	//tempScale = { 0.1, 1 / tempDimension.y, 1 / tempDimension.z };
+	//AddModel("minecart", { 0,1,0 }, {0.1f,0.1f,0.1f}, true);
 	
 	
 }

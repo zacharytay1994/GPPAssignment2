@@ -19,6 +19,17 @@ private:
 	float interval_tracker_ = 0.0f;
 	int spawn_iterations_ = 20;
 	// --->
+
+	int wood_count_ = 0;
+	int rock_count_ = 0;
+	int rail_count_ = 0;
+
+	int wood_per_rail_ = 1;
+	int rock_per_rail_ = 1;
+
+	float crafting_cooldown = 1.0f;
+	float crafting_cooldown_timer = 0.0f;
+
 public:
 	Level(std::shared_ptr<Graphics> gfx, std::shared_ptr<Input> input, std::shared_ptr<ResourceLibrary> rl, Game* game);
 	void Update(const float& dt) override;
@@ -28,4 +39,6 @@ public:
 	void SpawnRandomBlocks(const int& val);
 	// --->
 	void EmitDestructionParticles(const ResourceBlockType& type, const Vecf3& pos);
+
+	void CraftRails();
 };

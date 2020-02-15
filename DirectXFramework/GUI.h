@@ -12,6 +12,7 @@ private:
 	struct ResourceQueue {
 		float time_delay_;
 		int type_; // 0 for rock, 1 for tree
+		int amount_;
 	};
 	struct LevelData {
 		float time_passed_;

@@ -59,6 +59,8 @@ void BoxyGame::Initialize(HWND hwnd)
 	rl_->AddCubeTexture("bottombar", L"Images/bar.png");
 	// train
 	rl_->AddPosTexModel("train", "Models\\SteamTrain.obj", L"Images\\Train.png");
+	rl_->AddPosNormTexModel("minecart", "Models/minecart_w_block.obj", L"Images/minecart_w_furnace.png");
+	rl_->AddPosNormTexModel("minecartcrafter", "Models/minecart_w_block.obj", L"Images/minecart_w_crafter.png");
 }
 
 void BoxyGame::Update()
