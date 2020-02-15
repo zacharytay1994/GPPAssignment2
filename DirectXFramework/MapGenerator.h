@@ -1,13 +1,13 @@
 #pragma once
 
-#include "Entity.h"
 #include "Base/Graphics.h"
 #include "Base/Input.h"
+#include "Entity.h"
 #include "EntityPool.h"
 #include "FastNoise.h"
 #include "PerlinNoise.h"
-#include "ResourceLibrary.h"
 #include "Rail.h"
+#include "ResourceLibrary.h"
 #include "Scene.h"
 #include "Vec2.h"
 
@@ -31,7 +31,7 @@ public:
 	struct ResourceTileData {
 		ResourceBlockType block_type_;
 		bool breakable_;
-		bool walkable_;
+		bool walkable_ = true;
 		std::shared_ptr<Entity> ent_;
 	};
 	struct GroundTileData {
