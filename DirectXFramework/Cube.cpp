@@ -8,7 +8,7 @@ Cube::Cube(std::shared_ptr<Graphics> gfx, std::shared_ptr<Input> input, const st
 	texture_key_(filename),
 	rl_(rl)
 {
-	InitializeCube(0, 0, 0, 0.5f, 0.5f, 0.5f, 0.0f, 0.0f, 0.0f);
+	InitializeCube(-10, 0, 0, 0.5f, 0.5f, 0.5f, 0.0f, 0.0f, 0.0f);
 }
 
 Cube::~Cube()
@@ -137,9 +137,19 @@ void Cube::SetAngleYDeg(const float& angle)
 	cube_data_.angle_y = angle * (3.141592f / 180.0f);
 }
 
+void Cube::SetColour(const DirectX::XMFLOAT4& colour)
+{
+	cube_data_.colour_ = colour;
+}
+
 void Cube::SetQuatRotation(const QuaternionUWU& q)
 {
 	cube_data_.rotation_ = q;
+}
+
+void Cube::SetTextureKey(const std::string& image)
+{
+	texture_key_ = image;
 }
 
 float Cube::GetX()
@@ -288,6 +298,15 @@ void Cube::HandleDraw()
 		else {
 			rl_->DrawUnTexturedModelNorm(texture_key_, GetTransform(), GetModelTransform());
 		}
+		break;
+	case DrawMode::UntexturedCubeNormal:
+		if (physics_draw_) {
+			rl_->DrawUntexturedCubeNorm(GetQuaternionTransform(), GetQuaternionModelTransform(), cube_data_.colour_);
+		}
+		else {
+			rl_->DrawUntexturedCubeNorm(GetTransform(), GetModelTransform(), cube_data_.colour_);
+		}
+		break;
 	}
 }
 

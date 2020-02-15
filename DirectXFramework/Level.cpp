@@ -1,8 +1,12 @@
 #include "Level.h"
 #include "Block.h"
 #include "CollisionComponent.h"
+
 #include <sstream>
 #include <string>
+
+#include "ChooChoo.h"
+
 
 #include <cmath>
 
@@ -39,24 +43,38 @@ Level::Level(std::shared_ptr<Graphics> gfx, std::shared_ptr<Input> input, std::s
 void Level::Update(const float& dt)
 {
 	Scene::Update(dt);
+	ps_.Update(dt);
+	gui_.Update(dt);
+	ps_.SetCameraSuckPosition(input_->GetCameraPosition() + Vecf3(0.0f, 1.2f, 0.0f));
+	gui_.SetTrainX(std::dynamic_pointer_cast<ChooChoo>(mapGen_->train_)->GetPosition().x);
 
-	resourceTileData_ = mapGen_->GetResourceTileData();
 
-	// <--- test code can remove if need be
-	if (input_->KeyWasPressed('B')) {
-		start_spawning_ = true;
-	}
-	if (start_spawning_) {
-		if (spawn_iterations_ > 0) {
-			if (interval_tracker_ > spawn_interval_) {
-				SpawnRandomBlocks(5);
-				SpawnRandomBlocks(10);
-				SpawnRandomBlocks(15);
-				interval_tracker_ = 0.0f;
-				spawn_iterations_ -= 1;
-			}
-			else {
-				interval_tracker_ += dt;
+
+	if (input_->KeyWasPressed('P'))
+	{
+		gui_.AddResource({ 1.0f, 0 });
+
+		// <--- test code can remove if need be
+		if (input_->KeyWasPressed('B'))
+		{
+			start_spawning_ = true;
+		}
+		if (start_spawning_)
+		{
+			if (spawn_iterations_ > 0)
+			{
+				if (interval_tracker_ > spawn_interval_)
+				{
+					SpawnRandomBlocks(5);
+					SpawnRandomBlocks(10);
+					SpawnRandomBlocks(15);
+					interval_tracker_ = 0.0f;
+					spawn_iterations_ -= 1;
+				}
+				else
+				{
+					interval_tracker_ += dt;
+				}
 			}
 		}
 	}
@@ -65,99 +83,112 @@ void Level::Update(const float& dt)
 	if (input_->KeyWasPressed('G')) mapGen_->GenerateMap();
 
 	// Collect resource if facing block & within 1 block
-	if (input_->KeyWasPressed('C')) {
+	if (input_->KeyWasPressed('C'))
+	{
 
 		// Get normalized player pos
 		Vecf3 norm_player_pos = player_->GetPosition();
 		norm_player_pos.x = (int)round(player_->GetPosition().x) - max(0, (mapGen_->GetTotalChunkNo() - 3) * mapGen_->GetChunkSize().x);
 
 		// Get player heading & check if there is a block in front of the player
-		//float y_rot = fmod(player_->GetOrientation().y > 0 ? player_->GetOrientation().y : player_->GetOrientation().y + 2*PI, 2*PI);
-		//if ((y_rot >= 7*PI/4) || (y_rot <= PI/4)) {
-
-
-		//	// Facing forward
-		//	RemoveEntity(mapGen_->GetResourceTileData()[(int)(round(norm_player_pos.z + 1) * mapGen_->GetMapSize().x + norm_player_pos.x)].ent_);
+		float y_rot = fmod(player_->GetOrientation().y > 0 ? player_->GetOrientation().y : player_->GetOrientation().y + 2 * PI, 2 * PI);
+		if ((y_rot >= 7 * PI / 4) || (y_rot <= PI / 4))
+		{
 
 			// Facing forward
-			if (mapGen_->GetResourceTileData()[(int)(round(norm_player_pos.z + 1) * mapGen_->GetMapSize().x + norm_player_pos.x)].breakable_) {
+			if (mapGen_->GetResourceTileData()[(int)(round(norm_player_pos.z + 1) * mapGen_->GetMapSize().x + norm_player_pos.x)].breakable_)
+			{
+				EmitDestructionParticles(mapGen_->GetResourceTileData()[(int)(round(norm_player_pos.z + 1) * mapGen_->GetMapSize().x + norm_player_pos.x)].block_type_,
+					mapGen_->GetResourceTileData()[(int)(round(norm_player_pos.z + 1) * mapGen_->GetMapSize().x + norm_player_pos.x)].ent_->GetPosition());
 				RemoveEntity(mapGen_->GetResourceTileData()[(int)(round(norm_player_pos.z + 1) * mapGen_->GetMapSize().x + norm_player_pos.x)].ent_);
 				mapGen_->RemoveResource(&(mapGen_->GetResourceTileData()[(int)(round(norm_player_pos.z + 1) * mapGen_->GetMapSize().x + norm_player_pos.x)]));
 			}
 
+			
 
-		//} else if (y_rot <= 3*PI/4) {
-
-
-		//	// Facing right
-		//	RemoveEntity(mapGen_->GetResourceTileData()[(int)(round(norm_player_pos.z) * mapGen_->GetMapSize().x + norm_player_pos.x + 1)].ent_);
+		}
+		else if (y_rot <= 3 * PI / 4)
+		{
 
 			// Facing right
-			if (mapGen_->GetResourceTileData()[(int)(round(norm_player_pos.z + 1) * mapGen_->GetMapSize().x + norm_player_pos.x)].breakable_) {
+			if (mapGen_->GetResourceTileData()[(int)(round(norm_player_pos.z) * mapGen_->GetMapSize().x + norm_player_pos.x + 1)].breakable_)
+			{
+				EmitDestructionParticles(mapGen_->GetResourceTileData()[(int)(round(norm_player_pos.z) * mapGen_->GetMapSize().x + norm_player_pos.x + 1)].block_type_,
+					mapGen_->GetResourceTileData()[(int)(round(norm_player_pos.z) * mapGen_->GetMapSize().x + norm_player_pos.x + 1)].ent_->GetPosition());
 				RemoveEntity(mapGen_->GetResourceTileData()[(int)(round(norm_player_pos.z) * mapGen_->GetMapSize().x + norm_player_pos.x + 1)].ent_);
 				mapGen_->RemoveResource(&(mapGen_->GetResourceTileData()[(int)(round(norm_player_pos.z) * mapGen_->GetMapSize().x + norm_player_pos.x + 1)]));
+
 			}
 
+		}
+		else if (y_rot <= 5 * PI / 4)
+		{
 
-		//} else if (y_rot <= 5*PI/4) {
-
-
-		//	// Facing downward
-		//	RemoveEntity(mapGen_->GetResourceTileData()[(int)(round(norm_player_pos.z - 1) * mapGen_->GetMapSize().x + norm_player_pos.x)].ent_);
 
 			// Facing downward
-			if (mapGen_->GetResourceTileData()[(int)(round(norm_player_pos.z + 1) * mapGen_->GetMapSize().x + norm_player_pos.x)].breakable_) {
+			if (mapGen_->GetResourceTileData()[(int)(round(norm_player_pos.z - 1) * mapGen_->GetMapSize().x + norm_player_pos.x)].breakable_)
+			{
+				EmitDestructionParticles(mapGen_->GetResourceTileData()[(int)(round(norm_player_pos.z - 1) * mapGen_->GetMapSize().x + norm_player_pos.x)].block_type_,
+					mapGen_->GetResourceTileData()[(int)(round(norm_player_pos.z - 1) * mapGen_->GetMapSize().x + norm_player_pos.x)].ent_->GetPosition());
 				RemoveEntity(mapGen_->GetResourceTileData()[(int)(round(norm_player_pos.z - 1) * mapGen_->GetMapSize().x + norm_player_pos.x)].ent_);
 				mapGen_->RemoveResource(&(mapGen_->GetResourceTileData()[(int)(round(norm_player_pos.z - 1) * mapGen_->GetMapSize().x + norm_player_pos.x)]));
 			}
 
-		//} else {
+		}
+		else
+		{
 
-
-		//	// Facing left
-		//	RemoveEntity(mapGen_->GetResourceTileData()[(int)(round(norm_player_pos.z) * mapGen_->GetMapSize().x + norm_player_pos.x - 1)].ent_);
-
-		//}
 
 			// Facing left
-			if (mapGen_->GetResourceTileData()[(int)(round(norm_player_pos.z + 1) * mapGen_->GetMapSize().x + norm_player_pos.x)].breakable_) {
+			if (mapGen_->GetResourceTileData()[(int)(round(norm_player_pos.z) * mapGen_->GetMapSize().x + norm_player_pos.x - 1)].breakable_)
+			{
+				EmitDestructionParticles(mapGen_->GetResourceTileData()[(int)(round(norm_player_pos.z) * mapGen_->GetMapSize().x + norm_player_pos.x - 1)].block_type_,
+					mapGen_->GetResourceTileData()[(int)(round(norm_player_pos.z) * mapGen_->GetMapSize().x + norm_player_pos.x - 1)].ent_->GetPosition());
 				RemoveEntity(mapGen_->GetResourceTileData()[(int)(round(norm_player_pos.z) * mapGen_->GetMapSize().x + norm_player_pos.x - 1)].ent_);
 				mapGen_->RemoveResource(&(mapGen_->GetResourceTileData()[(int)(round(norm_player_pos.z) * mapGen_->GetMapSize().x + norm_player_pos.x - 1)]));
 			}
 
-		
-	}
 
-	// Place rail
-	if (input_->KeyWasPressed('R')) {
-		
-		// Get normalized player pos
-		Vecf3 norm_player_pos = player_->GetPosition();
-		norm_player_pos.x = (int)round(player_->GetPosition().x) - max(0, (mapGen_->GetTotalChunkNo() - 3) * mapGen_->GetChunkSize().x);
-		
-		// Check if rail can be placed on player pos
-		if (mapGen_->GetResourceTileData()[(int)(round(norm_player_pos.z) * mapGen_->GetMapSize().x + norm_player_pos.x)].walkable_ && 
-			mapGen_->GetResourceTileData()[(int)(round(norm_player_pos.z) * mapGen_->GetMapSize().x + norm_player_pos.x)].block_type_ != ResourceBlockType::Rail) {
-			
-			// Spawn rail
-			std::shared_ptr<Block> r = std::make_shared<Rail>("rail", graphics_, input_, rl_);
-			r->SetScale({ 0.5, 0.03125, 0.5 });
-			r->SetPosition(Vecf3((int)round(norm_player_pos.x), -0.5f, (int)round(norm_player_pos.z)));
-			
-			AddEntity(r);
-			mapGen_->AddResource({ ResourceBlockType::Rail, 0, 1, r });
+
 
 		}
 
-
 	}
+	// Place rail
+	if (input_->KeyWasPressed('R'))
+	{
 
-	isCollideWithPlayer();
+		// Get normalized player pos
+		Vecf3 norm_player_pos = player_->GetPosition();
+		norm_player_pos.x = (int)round(player_->GetPosition().x) - max(0, (mapGen_->GetTotalChunkNo() - 3) * mapGen_->GetChunkSize().x);
+		norm_player_pos.z = (int)round(player_->GetPosition().z) - max(0, (mapGen_->GetTotalChunkNo() - 3) * mapGen_->GetChunkSize().x);
+
+		// Check if rail can be placed on player pos
+		if (mapGen_->GetResourceTileData()[(int)(round(norm_player_pos.z) * mapGen_->GetMapSize().x + norm_player_pos.x)].walkable_ &&
+			mapGen_->GetResourceTileData()[(int)(round(norm_player_pos.z) * mapGen_->GetMapSize().x + norm_player_pos.x)].block_type_ != ResourceBlockType::Rail)
+		{
+
+			// Spawn rail
+			std::shared_ptr<Block> r = std::make_shared<Rail>("rail", graphics_, input_, rl_);
+			r->SetScale({ 0.5f, 0.03125f, 0.5f });
+			r->SetPosition(Vecf3((int)round(norm_player_pos.x), -0.5f, (int)round(norm_player_pos.z)));
+			AddEntity(r);
+			mapGen_->AddResource({ ResourceBlockType::Rail, 0, 1, r });
+		}
+
+				
+	}
+		
+	
+	collideWithPlayer();
 }
+
 
 void Level::Render(const float& dt)
 {
 	Scene::Render(dt);
+	ps_.Render();
+	gui_.DrawLevelHUD(dt);
 }
 
 void Level::SpawnRandomBlocks(const int& val)
@@ -169,133 +200,69 @@ void Level::SpawnRandomBlocks(const int& val)
 	gravity_blocks_.push_back(AddSolidBlock("grassblock", { x_rand, 8.0f, z_rand }, { rand_size, 1.0f, rand_size }, 5.0f * rand_size));
 }
 
-bool Level::isCollideWithPlayer()
+
+void Level::collideWithPlayer()
 {
-	//int chunkSize = mapGen_->GetChunkSize().x * mapGen_->GetChunkSize().y;
-	//for (int i = 1; i < chunkSize; i++)
-	//{
-	//	//switch (static_cast<int>((resourceTileData_ + i)->block_type_))
-	//	//{
-	//	//case 0:
-	//	//	OutputDebugString("Rock");
-	//	//case 1:
-	//	//	OutputDebugString("Tree");
-	//	//case 2:
-	//	//	OutputDebugString("Rail");
-	//	//case 3:
-	//	//	OutputDebugString("Air");
-	//	//}
+		
 
-	//			
-	//	if ((resourceTileData_ + i)->ent_ != nullptr)
-	//	{
-	//		if ((resourceTileData_ + i)->ent_->AABB2dCollision(std::dynamic_pointer_cast<Entity>(player_)))
-	//		{
-	//			//std::stringstream ss;
-	//			//ss << (resourceTileData_ + i)->ent_->GetPosition().x << ", " << (resourceTileData_ + i)->ent_->GetPosition().y << ", " << (resourceTileData_ + i)->ent_->GetPosition().z << "\n";
-	//			//OutputDebugString(ss.str().c_str());
-	//			//
-
-	//				
-	//			return(true);
-	//		}
-	//		else
-	//		{
-	//			//OutputDebugString("Not Colliding\n");
-	//		}
-	//	}
-	//}
-	//return (false);
-	
 	player_->player_touch_left = false;
 	player_->player_touch_right = false;
 	player_->player_touch_front = false;
 	player_->player_touch_back = false;
 
-	int chunkSize = mapGen_->GetChunkSize().x * mapGen_->GetChunkSize().y;
-	for (int i = 0; i < chunkSize; i++)
+
+	float player_x = player_->GetPosition().x;
+	float player_z = player_->GetPosition().z;
+		
+
+	MapGenerator::ResourceTileData& blockRight_ = mapGen_->GetCurrentTile(Vecf3(player_x + 1.0f, -0.5f, player_z));
+	MapGenerator::ResourceTileData& blockLeft_ = mapGen_->GetCurrentTile(Vecf3(player_x - 1.0f, -0.5f, player_z));
+	MapGenerator::ResourceTileData& blockFront_ = mapGen_->GetCurrentTile(Vecf3(player_x, -0.5f, player_z + 1.0f));
+	MapGenerator::ResourceTileData& blockBack_ = mapGen_->GetCurrentTile(Vecf3(player_x, -0.5f, player_z - 1.0f));
+
+
+		
+	if (blockRight_.ent_ != nullptr &&  player_->AABB2dCollision(blockRight_.ent_))
 	{
-		if ((resourceTileData_ + i)->ent_ != nullptr)
-		{
-
-			//bool blockRight = round((resourceTileData_ + i)->ent_->GetPosition().x) == round(player_->GetPosition().x) + 1 && round((resourceTileData_ + i)->ent_->GetPosition().z) == round(player_->GetPosition().z);
-			//bool blockLeft = round((resourceTileData_ + i)->ent_->GetPosition().x) == round(player_->GetPosition().x) - 1 && round((resourceTileData_ + i)->ent_->GetPosition().z) == round(player_->GetPosition().z);
-			//bool blockFront = round((resourceTileData_ + i)->ent_->GetPosition().x) == round(player_->GetPosition().x) && round((resourceTileData_ + i)->ent_->GetPosition().z) == round(player_->GetPosition().z) + 1;
-			//bool blockBack = round((resourceTileData_ + i)->ent_->GetPosition().x) == round(player_->GetPosition().x) && round((resourceTileData_ + i)->ent_->GetPosition().z) == round(player_->GetPosition().z) - 1;
-			//bool blockFrontLeft = blockFront & blockLeft;
-			//bool blockFrontRight = blockFront & blockRight;
-			//bool blockBackRight = blockBack & blockRight;
-			//bool blockBackLeft = blockBack & blockRight;
-
-			bool blockRight = (resourceTileData_ + i)->ent_->GetPosition().x <= player_->GetPosition().x + 1.5 && (resourceTileData_ + i)->ent_->GetPosition().x >= player_->GetPosition().x + 0.5 && (resourceTileData_ + i)->ent_->GetPosition().z <= player_->GetPosition().z +0.5  && (resourceTileData_ + i)->ent_->GetPosition().z >= player_->GetPosition().z - 0.5;
-			bool blockLeft = (resourceTileData_ + i)->ent_->GetPosition().x >= player_->GetPosition().x - 1.5 && (resourceTileData_ + i)->ent_->GetPosition().x <= player_->GetPosition().x - 0.5 && (resourceTileData_ + i)->ent_->GetPosition().z <= player_->GetPosition().z + 0.5 && (resourceTileData_ + i)->ent_->GetPosition().z >= player_->GetPosition().z - 0.5;
-			bool blockFront = (resourceTileData_ + i)->ent_->GetPosition().x >= player_->GetPosition().x - 0.5 && (resourceTileData_ + i)->ent_->GetPosition().x <= player_->GetPosition().x + 0.5 && (resourceTileData_ + i)->ent_->GetPosition().z >= player_->GetPosition().z + 0.5 && (resourceTileData_ + i)->ent_->GetPosition().z <= player_->GetPosition().z + 1.5;
-			bool blockBack = (resourceTileData_ + i)->ent_->GetPosition().x >= player_->GetPosition().x - 0.5 && (resourceTileData_ + i)->ent_->GetPosition().x <= player_->GetPosition().x + 0.5 && (resourceTileData_ + i)->ent_->GetPosition().z <= player_->GetPosition().z - 0.5 && (resourceTileData_ + i)->ent_->GetPosition().z >= player_->GetPosition().z - 1.5;
-			if (blockFront || blockBack || blockLeft || blockRight)
-			{
-				if ((player_->AABB2dCollision((resourceTileData_ + i)->ent_)))
-				{ 
-					
-					std::stringstream ss;
-					if (blockFront/* || blockFrontLeft || blockFrontRight*/)
-					{
-						
-						player_->player_touch_front = true;
-						ss << "Front\n";
-					}
-					if (blockBack /*|| blockBackRight || blockBackLeft*/)
-					{
-						player_->player_touch_back = true;
-						ss << "Back\n";
-					}
-					if (blockRight/* || blockFrontRight || blockBackRight*/)
-					{
-						player_->player_touch_right = true;
-						ss << "Right\n";
-					}
-					if (blockLeft /*|| blockFrontLeft || blockBackLeft*/)
-					{
-						player_->player_touch_left = true;
-						ss << "Left\n";
-					}
-					OutputDebugString(ss.str().c_str());
-					return true;
-				}
-			}
-		}
+		player_->player_touch_right = true;
 	}
-	return false;
 
-	//int chunkSize = mapGen_->GetChunkSize().x * mapGen_->GetChunkSize().y;
-	//for (int i = 0; i < chunkSize; i++)
-	//{
-	//	if ((resourceTileData_ + i)->ent_ != nullptr)
-	//	{
-	//		if ((round(player_->GetPosition().x)) == round((resourceTileData_ + i)->ent_->GetPosition().x) && (round(player_->GetPosition().z)) == round((resourceTileData_ + i)->ent_->GetPosition().z))
-	//		{
-	//			MapGenerator::ResourceTileData* current_rtd_ = (resourceTileData_ + i);
-	//			MapGenerator::ResourceTileData** rtd_around = mapGen_->GetTilesAround(current_rtd_);
-	//			//bool something = rtd_around[0]->ent_->AABB2dCollision(player_);
-	//			for (i = 0; i < 8; i++)
-	//			{
-	//				if (rtd_around[i]->ent_ != nullptr)
-	//				{
-	//					if (rtd_around[i]->ent_->AABB2dCollision(player_))
-	//					{
-	//						OutputDebugString("Colliding");
-	//						return true;
+	if (blockLeft_.ent_ != nullptr && player_->AABB2dCollision(blockLeft_.ent_))
+	{
+		player_->player_touch_left = true;
+	}
 
-	//					}
-	//				}
-	//				else
-	//				{
-	//					continue;
-	//				}
+	if (blockFront_.ent_ != nullptr && player_->AABB2dCollision(blockFront_.ent_))
+	{
+		player_->player_touch_front = true;
+	}
 
-	//			}
-	//		}
-	//	}
-	//}
-	//return false;
 
+	if (blockBack_.ent_ != nullptr && player_->AABB2dCollision(blockBack_.ent_))
+	{
+		player_->player_touch_back = true;
+	}
+
+		
+}
+
+
+void Level::EmitDestructionParticles(const ResourceBlockType& type, const Vecf3& pos)
+{
+	switch (type)
+	{
+	case ResourceBlockType::Rock:
+		// params are : (no. of particles, position, radius, mass, scale, force, colour)
+		ps_.EmitSphere(5, pos + Vecf3(0.0f, 0.5f, 0.0f), 0.8f, 4.0f, 0.1f, 2.0f, { 0.0f, 1.0f, 0.0f, 1.0f }); // larger rock chunks
+		ps_.EmitSphere(10, pos + Vecf3(0.0f, 0.5f, 0.0f), 1.0f, 1.0f, 0.05f, 2.0f, { 0.0f, 0.5f, 0.0f, 1.0f }); // smaller rock chunks
+		gui_.AddResource({ 1.0f, 0 });
+		break;
+	case ResourceBlockType::Tree:
+		ps_.EmitSphere(5, pos + Vecf3(0.0f, 0.5f, 0.0f), 0.8f, 0.8f, 0.1f, 1.0f, { 0.4f, 0.2f, 0.0f, 1.0f }); // trunk
+		ps_.EmitSphere(10, pos + Vecf3(0.0f, 0.5f, 0.0f), 0.1, Randf(0.8f, 1.2f), 0.05f, 1.0f, { 0.0f, Randf(0.8f, 1.0f), 1.0f, 1.0f }); // lower leaves
+		ps_.EmitSphere(15, pos + Vecf3(0.0f, 1.5f, 0.0f), 0.1, Randf(0.8f, 1.2f), 0.05f, 1.0f, { 0.0f, Randf(0.8f, 1.0f), 1.0f, 1.0f }); // upper leaves
+		gui_.AddResource({ 1.0f, 1 });
+
+		break;
+	}
 }

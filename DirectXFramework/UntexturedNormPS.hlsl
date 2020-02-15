@@ -1,3 +1,7 @@
+cbuffer CBuf {
+	float4 color;
+};
+
 static const float3 lightPos = { 20.0f, 0.0f, -50.0f };
 static const float3 dirPos = { -100.0f, 500.0f, -500.0f };
 static const float3 materialColor = { 0.7f, 0.7f, 0.9f };
@@ -11,7 +15,7 @@ static const float attQuad = 0.0075f;
 
 float4 main(float3 worldPos : Position, float3 normal : Normal) : SV_Target
 {
-	float4 colour = {0.0f,1.0f,0.0f,1.0f};
+	float4 colour = color;
 	// apply chroma filter, {255,0,255} Magenta
 	if (colour.x == 1.0f && colour.y == 0.0f && colour.z == 1.0f && colour.w == 1.0f) {
 		discard;

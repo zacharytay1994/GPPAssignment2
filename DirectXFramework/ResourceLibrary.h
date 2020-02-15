@@ -40,6 +40,9 @@ private:
 	std::unordered_map<std::string, VIBuffer> vi_buffer_map;
 	std::unordered_map<std::string, ID3D11ShaderResourceView*> srv_map;
 	std::unordered_map<std::string, Vecf3> dimensions;
+
+	// vertex buffer for sprite textures that require sprite frame sampling
+	ID3D11Buffer* p_v_sprite_buffer_;
 public:
 	ResourceLibrary(std::shared_ptr<Graphics> gfx);
 	void Initialize();
@@ -59,6 +62,8 @@ private:
 	void GenPosNormTexCube();
 	// loads a plane mesh with Positions and Texture Coordinates
 	void GenPosTexPlane();
+	// loads a cube with Position
+	void GenPosNormCube();
 public:
 	// loads a texture to wrap a cube
 	void AddCubeTexture(const std::string& mapkey, const std::wstring& texturefile);
@@ -69,8 +74,11 @@ public:
 	void DrawModelNorm(const std::string& key, const DirectX::XMMATRIX& transform, const DirectX::XMMATRIX& model);			// draws textured model with normals
 	void DrawTexturedCube(const std::string& key, const DirectX::XMMATRIX& transform);										// draws textured cube with no normals
 	void DrawTexturedCubeNorm(const std::string& key, const DirectX::XMMATRIX& transform, const DirectX::XMMATRIX& model);	// draws textured cube with normals
+	void DrawUntexturedCubeNorm(const DirectX::XMMATRIX& transform, const DirectX::XMMATRIX& model, const DirectX::XMFLOAT4& colour);
 	void DrawTexturedPlane(const std::string& key, const DirectX::XMMATRIX& transform);
+	void DrawTexturedPlaneSlice(const std::string& key, const DirectX::XMMATRIX& transform, const int& columns, const int& rows, const int& index);
 	void DrawUnTexturedModelNorm(const std::string& key, const DirectX::XMMATRIX& transform, const DirectX::XMMATRIX& model);
 private:
 	void CreateShaderResourceView(const std::wstring& texturefile, const std::string& mapkey);
+	void BindPosTexVBSubresource(PosTex* sr);;
 };

@@ -1,10 +1,7 @@
 #pragma once
 
 #include "MapGenerator.h"
-#include "Scene.h"
-#include "Drawable.h"
 #include "Player.h"
-#include "Rail.h"
 
 class Block;
 class Level : public Scene {
@@ -26,9 +23,10 @@ public:
 	Level(std::shared_ptr<Graphics> gfx, std::shared_ptr<Input> input, std::shared_ptr<ResourceLibrary> rl);
 	void Update(const float& dt) override;
 	void Render(const float& dt) override;
-	bool isCollideWithPlayer();
+	void collideWithPlayer();
 
 	// <--- test function can remove if need be
 	void SpawnRandomBlocks(const int& val);
 	// --->
+	void EmitDestructionParticles(const ResourceBlockType& type, const Vecf3& pos);
 };

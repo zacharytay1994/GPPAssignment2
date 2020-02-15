@@ -20,13 +20,12 @@ public:
 
 	void Update(const float& dt) override;
 	void Render() override;
-	bool AABBCollision();
 
 	bool player_touch_left = false;
 	bool player_touch_right = false;
 	bool player_touch_front = false;
 	bool player_touch_back = false;
 
-	//Vecf3 GetOrientation() { return cubeModel_.GetOrientation(); };
+	Vecf3 GetOrientation() { return cubeModel_.GetOrientation(); };
 };
 

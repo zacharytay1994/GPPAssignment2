@@ -109,16 +109,20 @@
   <ItemGroup>
     <ClCompile Include="Block.cpp" />
     <ClCompile Include="BoxyGame.cpp" />
+    <ClCompile Include="ChooChoo.cpp" />
     <ClCompile Include="CollisionComponent.cpp" />
     <ClCompile Include="CollisionManager.cpp" />
     <ClCompile Include="Component.cpp" />
     <ClCompile Include="Cube.cpp" />
     <ClCompile Include="CubeModel.cpp" />
     <ClCompile Include="Entity.cpp" />
+    <ClCompile Include="GUI.cpp" />
     <ClCompile Include="MapGenerator.cpp" />
     <ClCompile Include="InputComponent.cpp" />
     <ClCompile Include="Level.cpp" />
     <ClCompile Include="MainMenu.cpp" />
+    <ClCompile Include="Particle.cpp" />
+    <ClCompile Include="ParticleSystem.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="Rail.cpp" />
     <ClCompile Include="ResourceLibrary.cpp" />
@@ -147,6 +151,7 @@
     <ClInclude Include="Block.h" />
     <ClInclude Include="Box.h" />
     <ClInclude Include="BoxyGame.h" />
+    <ClInclude Include="ChooChoo.h" />
     <ClInclude Include="CollisionComponent.h" />
     <ClInclude Include="CollisionManager.h" />
     <ClInclude Include="CollisionSolver.h" />
@@ -155,6 +160,7 @@
     <ClInclude Include="Drawable.h" />
     <ClInclude Include="CubeModel.h" />
     <ClInclude Include="Entity.h" />
+    <ClInclude Include="GUI.h" />
     <ClInclude Include="InputComponent.h" />
     <ClInclude Include="Level.h" />
     <ClInclude Include="MapGenerator.h" />
@@ -162,6 +168,8 @@
     <ClInclude Include="MathStuff.h" />
     <ClInclude Include="MatTemplate.h" />
     <ClInclude Include="Model.h" />
+    <ClInclude Include="Particle.h" />
+    <ClInclude Include="ParticleSystem.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="Rail.h" />
     <ClInclude Include="ResourceLibrary.h" />
