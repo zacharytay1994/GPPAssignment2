@@ -43,6 +43,7 @@
     <ClCompile Include="Skybox.cpp" />
     <ClCompile Include="Rail.cpp" />
     <ClCompile Include="ChooChoo.cpp" />
+    <ClCompile Include="EntityPool.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="assimp\include\assimp\config.h" />
@@ -85,6 +86,7 @@
     <ClInclude Include="Skybox.h" />
     <ClInclude Include="Rail.h" />
     <ClInclude Include="ChooChoo.h" />
+    <ClInclude Include="EntityPool.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Images\alpha_donald.png" />

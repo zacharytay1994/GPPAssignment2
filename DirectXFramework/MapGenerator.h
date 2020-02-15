@@ -3,6 +3,7 @@
 #include "Entity.h"
 #include "Base/Graphics.h"
 #include "Base/Input.h"
+#include "EntityPool.h"
 #include "PerlinNoise.h"
 #include "ResourceLibrary.h"
 #include "Rail.h"
@@ -90,6 +91,8 @@ private:
 
 	// Checks if a rail can be placed
 	bool CanAddRail(std::shared_ptr<Rail> r);
+
+	std::shared_ptr<EntityPool> entity_pool;
 
 public:
 	// Constructor
