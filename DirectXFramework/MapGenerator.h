@@ -23,7 +23,7 @@ enum class ResourceBlockType {
 };
 enum class GroundBlockType {
 	Checkpoint,
-	Grass
+	Ground
 };
 class MapGenerator {
 public:
