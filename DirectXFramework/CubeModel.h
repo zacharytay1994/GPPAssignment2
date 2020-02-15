@@ -68,6 +68,7 @@ public:
 
 	void SetPosition(Vecf3 position);
 	Vecf3 GetPosition();
+	Vecf3 GetOrientation() { return GetNode("head")->orientation_; };
 	std::shared_ptr<CubeModelNode> GetNode(std::string id);
 	std::shared_ptr<CubeModelNode> AddNodeTo(std::string nodeId, std::string id, Vecf3 offset); // returns ptr to node created
 	std::shared_ptr<CubeModelNode> SetRootNode(std::string id, Vecf3 offset); // returns pointer to node created

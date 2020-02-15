@@ -2,6 +2,7 @@
 
 #include "Surface.h"
 #include "../Vec3.h"
+#include "../Vec4.h"
 #include <vector>
 #include <Windows.h>
 #include <d3d11.h>
@@ -50,7 +51,8 @@ private:
 	ID3D11VertexShader*		p_vertex_shader_ = nullptr;
 	ID3D11PixelShader*		p_pixel_shader_ = nullptr;
 
-	ID3D11Buffer*			p_cb_transform_ = nullptr;	
+	ID3D11Buffer*			p_cb_transform_ = nullptr;
+	ID3D11Buffer*			p_cb_color_ = nullptr;
 	ID3D11DepthStencilView*	p_depth_stencil_view_ = nullptr;
 	bool initialized_;
 	bool has_depth_stencil_ = false;
@@ -66,6 +68,7 @@ private:
 	// Defined buffer struct that represents a transformation matrix
 	// to be used in the vertex shader stage as generic world, view, transform
 	struct ConstantBuffer { DirectX::XMMATRIX transform; DirectX::XMMATRIX model; };
+	struct Colour { float r; float g; float b; float a; };
 	/*_______________________________________*/
 public:
 	static const int viewport_width_ = 800, viewport_height_ = 600;
@@ -99,6 +102,7 @@ public:
 	void UpdateVBVertexSubresource(const VertexBuffer& vb);				  // used to update buffer data, e.g. different texture coords for frame sampling (see Sprite::Update())
 	void UpdateCubeVBVertexSubresource(const CubeVertexBuffer& cvb);
 	void UpdateCBTransformSubresource(const ConstantBuffer& cb);		  // used to update buffer data, e.g. transformations per frame (see Sprite::GetTransform())
+	void UpdateCBColourSubresource(const Colour& color);
 	void ClearBuffer();													  // fills back buffer with colour (e.g. white)
 	void Draw();														  // draw call for sprites
 	void DrawIndexed(int indexcount);

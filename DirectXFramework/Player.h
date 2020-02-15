@@ -39,5 +39,7 @@ public:
 	void Update(const float& dt) override;
 	void Render() override;
 	bool AABBCollision();
+
+	Vecf3 GetOrientation() { return cubeModel_.GetOrientation(); };
 };
 

@@ -1,8 +1,6 @@
 #pragma once
 
 #include "MapGenerator.h"
-#include "Scene.h"
-#include "Drawable.h"
 #include "Player.h"
 
 class Block;
@@ -28,4 +26,5 @@ public:
 	// <--- test function can remove if need be
 	void SpawnRandomBlocks(const int& val);
 	// --->
+	void EmitDestructionParticles(const ResourceBlockType& type, const Vecf3& pos);
 };

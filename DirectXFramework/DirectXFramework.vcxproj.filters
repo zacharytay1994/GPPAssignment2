@@ -41,6 +41,11 @@
     <ClCompile Include="SourceFiles\Surface.cpp" />
     <ClCompile Include="SourceFiles\WinMain.cpp" />
     <ClCompile Include="Skybox.cpp" />
+    <ClCompile Include="ParticleSystem.cpp" />
+    <ClCompile Include="Particle.cpp" />
+    <ClCompile Include="Rail.cpp" />
+    <ClCompile Include="GUI.cpp" />
+    <ClCompile Include="ChooChoo.cpp" />
     <ClCompile Include="Button.cpp" />
     <ClCompile Include="SceneGraph.cpp" />
   </ItemGroup>
@@ -83,6 +88,11 @@
     <ClInclude Include="Vec3.h" />
     <ClInclude Include="Vec4.h" />
     <ClInclude Include="Skybox.h" />
+    <ClInclude Include="ParticleSystem.h" />
+    <ClInclude Include="Particle.h" />
+    <ClInclude Include="Rail.h" />
+    <ClInclude Include="GUI.h" />
+    <ClInclude Include="ChooChoo.h" />
     <ClInclude Include="Button.h" />
     <ClInclude Include="SceneGraph.h" />
   </ItemGroup>
