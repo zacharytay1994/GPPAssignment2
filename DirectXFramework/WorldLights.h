@@ -15,8 +15,8 @@ private:
 	Vecf3 point_light_1_ = { 0.0f, 0.0f, 0.0f }; // Light belonging to the train
 	Vecf3 point_light_2_ = { 0.0f, 0.0f, 0.0f }; // Light belonging to the player
 
-	float day_cycle_ = 5.0f;
-	float night_cycle_ = 2.0f;
+	float day_cycle_ = 30.0f;
+	float night_cycle_ = 30.0f;
 	bool is_day_ = true;
 
 	// Sun variables
@@ -25,6 +25,7 @@ private:
 	float sun_intensity_ = 1.0f;
 	float intensity_multiplier_ = 2.0f;
 	Vecf3 directional_light_ = { 0.0f, 0.0f, 0.0f }; // Sun light
+	float world_light_scalar_ = 1.0f;
 public:
 	WorldLights(const std::shared_ptr<Graphics> gfx, const std::shared_ptr<ResourceLibrary> rl, const std::shared_ptr<Input> input);
 	void Update(const float& dt);
@@ -34,6 +35,8 @@ public:
 	DirectX::XMVECTOR GetSunPosition();
 	void SetPoint1(const Vecf3& pos);
 	void SetPoint2(const Vecf3& pos);
+	void SetWorldLightScale(const float& f);
+	float GetWorldLightScale();
 	Vecf3 GetDirectionalLight();
 	DirectX::XMMATRIX GetSunTransform();
 	void ExecuteDayNightCycle(const float& dt);

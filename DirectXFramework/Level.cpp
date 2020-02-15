@@ -5,6 +5,8 @@
 #include "InputComponent.h"
 
 #include <cmath>
+#include <string>
+#include <sstream>
 
 Level::Level(std::shared_ptr<Graphics> gfx, std::shared_ptr<Input> input, std::shared_ptr<ResourceLibrary> rl, Game* game)
 	:
@@ -39,7 +41,7 @@ void Level::Update(const float& dt)
 	Scene::Update(dt);
 	ps_.Update(dt);
 	gui_.Update(dt);
-	ps_.SetCameraSuckPosition(input_->GetCameraPosition() + Vecf3(0.0f, 1.2f, 0.0f));
+	ps_.SetCameraSuckPosition(!game_over_ ? (input_->GetCameraPosition() + Vecf3(0.0f, 1.2f, 0.0f)) : (mapGen_->train_->GetPosition() + Vecf3(0.0f, 10.0f, 0.0f)));
 	gui_.SetTrainX(std::dynamic_pointer_cast<ChooChoo>(mapGen_->train_)->GetPosition().x);
 
 	wl_.SetPoint1(player_->GetPosition() + RotateVectorY(Vecf3(0.0f, 0.0f, 1.0f), -player_->GetOrientation().y) * 2.0f + Vecf3(0.0f, 1.0f, 0.0f));
@@ -143,6 +145,36 @@ void Level::Render(const float& dt)
 	Scene::Render(dt);
 	ps_.Render();
 	gui_.DrawLevelHUD(dt);
+	// is game over
+	if (std::dynamic_pointer_cast<ChooChoo>(mapGen_->train_)->GameOver()) {
+		graphics_->EnableTransparency(true);
+		gui_.DrawSprite("blackoverlay", { 0.0f, 0.0f, 0.0f }, { 1.0f, 1.0f, 1.0f });
+		graphics_->EnableTransparency(false);
+		game_over_ = true;
+		if (wl_.GetWorldLightScale() > 0.2f) {
+			wl_.SetWorldLightScale(wl_.GetWorldLightScale() - dt / 3.0f);
+		}
+		else {
+			wl_.SetWorldLightScale(0.1f);
+		}
+		gui_.DrawString({ -0.75f, 0.0f, 0.0f }, 0.1f, "GAME OVER");
+		std::stringstream ss;
+		ss << "Score:" << gui_.GetTrainX();
+		gui_.DrawString({ -0.55f, -0.2f, 0.0f }, 0.08f, ss.str());
+		gui_.DrawString({ -0.92f, -0.4f, 0.0f }, 0.035f, "- Press Enter To Main Menu -");
+
+		if (input_->KeyWasPressed(VK_RETURN)) {
+			ChangeScene("mainmenu");
+		}
+	}
+	/*_____________________________________*/
+	// RENDER ALL TRANSPARENT STUFF HERE
+	// Transparent objects have to be rendered over everything else
+	// in order to blend the transparent colour's object over the existing one
+	/*_____________________________________*/
+	graphics_->EnableTransparency(true);
+	rl_->DrawTexturedPlane("blueoverlay", rl_->GetTransform({0.0f, -0.5f, 0.0f}, {2000.0f, 2000.0f, 1.0f}, { 1.57079632f, 0.0f, 0.0f}, input_));
+	graphics_->EnableTransparency(false);
 }
 
 void Level::SpawnRandomBlocks(const int& val)

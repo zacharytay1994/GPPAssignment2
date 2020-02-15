@@ -11,6 +11,8 @@
 #include <vector>
 #include <unordered_map>
 
+class Input;
+
 struct PosTex {
 	DirectX::XMFLOAT3 position_;
 	DirectX::XMFLOAT2 texture_coords_;
@@ -47,6 +49,7 @@ public:
 	ResourceLibrary(std::shared_ptr<Graphics> gfx);
 	void Initialize();
 	Vecf3 GetDimensions(const std::string& key);
+	DirectX::XMMATRIX GetTransform(const Vecf3& pos, const Vecf3& scale, const Vecf3& rotation, std::shared_ptr<Input> input);
 	/*____________________________________*/
 	// MESH LOADING FUNCTIONS
 	/*____________________________________*/

@@ -12,7 +12,7 @@ BoxyGame::BoxyGame(HWND hwnd)
 	Initialize(hwnd);
 	EnableCursor();
 	// Go to main menu
-	current_scene_ = std::make_unique<MainMenu>(graphics_, input_, rl_, this);
+	current_scene_ = std::make_unique<Level>(graphics_, input_, rl_, this);
 
 	// Go to level
 	//current_scene_ = std::make_unique<Level>(graphics_, input_, rl_, this);
@@ -30,6 +30,8 @@ void BoxyGame::Initialize(HWND hwnd)
 	rl_->AddCubeTexture("alexleg", L"Images/alex-leg.png");
 	rl_->AddCubeTexture("spacebox", L"Images/spacebox2.png");
 	rl_->AddCubeTexture("sun", L"Images/sunyellow.png");
+	rl_->AddCubeTexture("blackoverlay", L"Images/translucentblack.png");
+	rl_->AddCubeTexture("blueoverlay", L"Images/translucentblue.png");
 
 	// main menu
 	rl_->AddPosNormTexModel("nsur", "Models/nsur.obj", L"Images/nsur.png");
@@ -97,6 +99,9 @@ void BoxyGame::Render()
 void BoxyGame::ChangeScene(std::string key) {
 	if (key == "level") {
 		new_scene_ = std::make_shared<Level>(graphics_, input_, rl_, this);
+	}
+	else if (key == "mainmenu") {
+		new_scene_ = std::make_shared<MainMenu>(graphics_, input_, rl_, this);
 	}
 }
 void BoxyGame::ChangeScene(std::shared_ptr<Scene> scene) {

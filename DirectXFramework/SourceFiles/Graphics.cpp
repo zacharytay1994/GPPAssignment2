@@ -82,6 +82,27 @@ void Graphics::Initialize(HWND hwnd)
 		&p_rtv_back_buffer_								// pointer to render target view, to be filled
 	);
 	p_back_buffer->Release();
+
+	/*_______________________________________*/
+	// CREATE AND BIND BLEND STATE
+	// For alpha blending
+	/*_______________________________________*/
+	D3D11_BLEND_DESC blend_desc;
+
+	ZeroMemory(&blend_desc, sizeof(D3D11_BLEND_DESC));
+	blend_desc.RenderTarget[0].BlendEnable = true;
+	blend_desc.RenderTarget[0].SrcBlend = D3D11_BLEND_SRC_ALPHA;
+	blend_desc.RenderTarget[0].DestBlend = D3D11_BLEND_INV_SRC_ALPHA;
+	blend_desc.RenderTarget[0].BlendOp = D3D11_BLEND_OP_ADD;
+	blend_desc.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND_ONE;
+	blend_desc.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_ZERO;
+	blend_desc.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD;
+	blend_desc.RenderTarget[0].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
+
+	p_device_->CreateBlendState(&blend_desc, &p_blend_state);
+	p_device_context_->OMSetBlendState(p_blend_state, 0, 0xffffffff);
+	EnableTransparency(false);
+
 	initialized_ = true;
 }
 
@@ -667,6 +688,16 @@ void Graphics::Draw()
 void Graphics::DrawIndexed(int indexcount)
 {
 	p_device_context_->DrawIndexed((UINT)indexcount, 0u, 0);
+}
+
+void Graphics::EnableTransparency(const bool& b)
+{
+	if (b) {
+		p_device_context_->OMSetBlendState(p_blend_state, 0, 0xffffffff);
+	}
+	else {
+		p_device_context_->OMSetBlendState(nullptr, 0, 0xffffffff);
+	}
 }
 
 void Graphics::BindCubeVertices(const CubeVertexBuffer v)
