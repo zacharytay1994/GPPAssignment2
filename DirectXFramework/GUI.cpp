@@ -144,10 +144,13 @@ void GUI::ProcessResourceQueue(const float& dt)
 				// increment type resource by 1
 				switch (rq.type_) {
 				case 0: // rock
-					level_data_.stone_collected_++;
+					level_data_.stone_collected_+= rq.amount_;
 					break;
 				case 1: // tree
-					level_data_.wood_collected_++;
+					level_data_.wood_collected_ += rq.amount_;
+					break;
+				case 2: // rail
+					level_data_.rails_collected_ += rq.amount_;
 					break;
 				}
 			}
@@ -160,6 +163,21 @@ void GUI::ProcessResourceQueue(const float& dt)
 void GUI::AddResource(const ResourceQueue& rq)
 {
 	resource_queue_.push(rq);
+}
+
+void GUI::DrawSprite(const std::string& key, const Vecf3& position, const Vecf3& scale)
+{
+	rl_->DrawTexturedPlane(key, GetTransform(position, scale));
+	//rl_->DrawTexturedCube("blackoverlay", GetTransform(position, scale));
+}
+
+void GUI::DrawOverlay(const std::string& key)
+{
+}
+
+int GUI::GetTrainX()
+{
+	return train_x;
 }
 
 void GUI::Draw()

@@ -4,9 +4,12 @@
 #include "Rail.h"
 #include "ChooChoo.h"
 
+#include <time.h>
+
 MapGenerator::MapGenerator(std::shared_ptr<Graphics> graphics, std::shared_ptr<Input> input, std::shared_ptr<ResourceLibrary> rl, Scene* scene)
 	:
-	pn_(new PerlinNoise()),
+	pn_(new PerlinNoise(rand()%100)),
+	fn_(new FastNoise(rand() % 100)),
 	graphics_(graphics),
 	input_(input),
 	rng_(rd_()),
@@ -14,6 +17,11 @@ MapGenerator::MapGenerator(std::shared_ptr<Graphics> graphics, std::shared_ptr<I
 	rl_(rl),
 	scene_(scene)
 {
+	fn_->SetFrequency(.3);
+	fn_->SetCellularDistanceFunction(FastNoise::CellularDistanceFunction::Natural);
+
+	block_pool_ = ObjectPool<Block, 1152>::getInstance(graphics_, input_, rl_);
+	rail_pool_ = ObjectPool<Rail, 1152>::getInstance(graphics_, input_, rl_);
 }
 
 void MapGenerator::GenerateMap()
@@ -26,8 +34,22 @@ void MapGenerator::GenerateMap()
 		{
 			for (int x = 0; x < chunk_width_; x++)
 			{
-				if (resource_data_[3*chunk_width_ * z + x].ent_) { scene_->RemoveEntity(resource_data_[3*chunk_width_ * z + x].ent_); }
-				if (ground_data_[3*chunk_width_ * z + x].ent_) { scene_->RemoveEntity(ground_data_[3*chunk_width_ * z + x].ent_); }
+				ResourceTileData tile = resource_data_[3 * chunk_width_ * z + x];
+				if (tile.ent_) 
+				{
+					switch (tile.block_type_)
+					{
+						case ResourceBlockType::Rail:
+							rail_pool_->Release(std::dynamic_pointer_cast<Rail>(tile.ent_));
+						default:
+							block_pool_->Release(std::dynamic_pointer_cast<Block>(tile.ent_));
+					}
+				}
+				if (ground_data_[3 * chunk_width_ * z + x].ent_)
+				{
+					std::shared_ptr<Block> b = std::dynamic_pointer_cast<Block>(ground_data_[3 * chunk_width_ * z + x].ent_);
+					if (b != nullptr) block_pool_->Release(b);
+				}
 			}
 		}
 
@@ -48,7 +70,8 @@ void MapGenerator::GenerateMap()
 	Vecf3 dim;
 	std::shared_ptr<Block> b;
 
-	double n;
+	float n;
+	float vn;
 	for (int z = 0; z < chunk_height_; z++)
 	{
 		for (int x = total_map_size_ * chunk_width_; x < (total_map_size_ * chunk_width_) + chunk_width_; x++)
@@ -57,49 +80,106 @@ void MapGenerator::GenerateMap()
 			if (abs(x - checkpoint.x) <= 1 && abs(z - checkpoint.z) <= 1) {
 
 				// Spawn block & set ground_data_
-				b = scene_->AddBlock("startblock", Vecf3(x, -1.0, z), Vecf3(0.5, 0.5, 0.5));
-				ground_data_[3*chunk_width_ * z + (total_map_size_ >= 3 ? 48 + (x - total_map_size_ * chunk_width_) : x)] = { GroundBlockType::Checkpoint, true, b };
+				b = block_pool_->Acquire("startblock");
+				if (total_map_size_ == 0) { b->SetPosition(Vecf3(x, -1.0, z)); }
+				else
+				{
+					b->SetPosition(Vecf3(x, -(x % chunk_width_), z));
+					b->MoveTo(Vecf3(x, -1.0, z));
+				}
+				scene_->AddEntity(b);
+				ground_data_[3*chunk_width_ * z + (total_map_size_ >= 3 ? 48 + (x - total_map_size_ * chunk_width_) : x)] = { GroundBlockType::Checkpoint, true, std::dynamic_pointer_cast<Entity>(b) };
 
 			}
 			else {
 
 				// Spawn block & set ground_data_
-				b = scene_->AddBlock("grassblock", Vecf3(x, -1.0, z), Vecf3(0.5, 0.5, 0.5));
-				ground_data_[3*chunk_width_ * z + (total_map_size_ >= 3 ? 48 + (x - total_map_size_ * chunk_width_) : x)] = { GroundBlockType::Grass, true, b };
+				dim = rl_->GetDimensions("gndblk");
+				b = block_pool_->Acquire("gndblk");
+				b->SetDrawMode(3);
+				if (total_map_size_ == 0) { b->SetPosition(Vecf3(x, -1.5f, z)); }
+				else
+				{
+					b->SetPosition(Vecf3(x, -(x % chunk_width_), z));
+					b->MoveTo(Vecf3(x, -1.5f, z));
+				}
+				b->SetScale(Vecf3(1 / dim.x, 1 / dim.y, 1 / dim.z));
+				scene_->AddEntity(b);
+				ground_data_[3 * chunk_width_ * z + (total_map_size_ >= 3 ? 48 + (x - total_map_size_ * chunk_width_) : x)] = { GroundBlockType::Ground, true, std::dynamic_pointer_cast<Entity>(b) };
 
 			}
 
-			// Generate noise value for current block
+			// Generate perlin noise value for current block
 			n = pn_->octaveNoise0_1(x / fx_, z / fz_, octaves_);
 
 			if ((z - checkpoint.z) == 0 && abs(x - checkpoint.x) <= 1) {
 
 				// temp rails
-				std::shared_ptr<Rail> rail = std::make_shared<Rail>("rail", graphics_, input_, rl_);
-				rail->SetScale({ 0.5, 0.03125, 0.5 });
-				rail->SetPosition(Vecf3(x, -0.5f, z));
-				AddResource({ ResourceBlockType::Rail, 0, 1, rail });
-
-			} else if (abs(z - checkpoint.z) <= 1 && abs(x - checkpoint.x) <= 1|| n > .4 && n < .6) {
-
-				// Set resource_data_
-				resource_data_[3*chunk_width_ * z + (total_map_size_ >= 3 ? 48 + (x - total_map_size_ * chunk_width_) : x)] = { ResourceBlockType::Air, 0, 1, nullptr };
+				std::shared_ptr<Rail> r = rail_pool_->Acquire("rail");
+				r->SetScale(Vecf3(0.5, 0.03125, 0.5));
+				r->SetPosition(Vecf3(x, -0.5f, z));
+				AddResource({ ResourceBlockType::Rail, 0, 1, r });
 
 			}
-			else if (n < .4) {
+			else if (abs(z - checkpoint.z) <= 1 && abs(x - checkpoint.x) <= 1 || n > .4 && n < .6) {
 
-				// Spawn tree & set resource_data_
-				dim = rl_->GetDimensions("tree");
-				b = scene_->AddModel("tree", Vecf3(x, -0.5, z), Vecf3(1 / dim.x, 1.3 / dim.y, 1 / dim.z), 1);
-				resource_data_[3*chunk_width_ * z + (total_map_size_ >= 3 ? 48 + (x - total_map_size_ * chunk_width_) : x)] = { ResourceBlockType::Tree, 1, 0, b };
+				// Set resource_data_
+				resource_data_[3 * chunk_width_ * z + (total_map_size_ >= 3 ? 48 + (x - total_map_size_ * chunk_width_) : x)] = { ResourceBlockType::Air, 0, 1, nullptr };
 
 			}
 			else {
 
-				// Spawn rock & set resource_data_
-				dim = rl_->GetDimensions("rock");
-				b = scene_->AddModel("rock", Vecf3(x, -0.5, z), Vecf3(1 / dim.x, .8 / dim.y, 1 / dim.z), 1);
-				resource_data_[3*chunk_width_ * z + (total_map_size_ >= 3 ? 48 + (x - total_map_size_ * chunk_width_) : x)] = { ResourceBlockType::Rock, 1, 0, b };
+				// Generate voronoi noise value for current block
+				vn = fn_->GetCellular(x, z);
+
+				if (vn < -.3) 
+				{
+					// Spawn tree & set resource_data_
+					dim = rl_->GetDimensions("tree");
+					b = block_pool_->Acquire("tree");
+					b->SetDrawMode(3);
+					if (total_map_size_ == 0) { b->SetPosition(Vecf3(x, -0.5f, z)); }
+					else
+					{
+						b->SetPosition(Vecf3(x, (x % chunk_width_), z));
+						b->MoveTo(Vecf3(x, -0.5f, z));
+					}
+					b->SetScale(Vecf3(1 / dim.x, .9 / dim.y, 1 / dim.z));
+					scene_->AddEntity(b);
+					resource_data_[3 * chunk_width_ * z + (total_map_size_ >= 3 ? 48 + (x - total_map_size_ * chunk_width_) : x)] = { ResourceBlockType::Tree, 1, 0, b };
+				}
+				else if (vn < .1) 
+				{
+					// Spawn unbreakable rock & set resource_data_
+					dim = rl_->GetDimensions("unbreakablerock");
+					b = block_pool_->Acquire("unbreakablerock");
+					b->SetDrawMode(3);
+					if (total_map_size_ == 0) { b->SetPosition(Vecf3(x, -0.5f, z)); }
+					else
+					{
+						b->SetPosition(Vecf3(x, (x % chunk_width_), z));
+						b->MoveTo(Vecf3(x, -0.5f, z));
+					}
+					b->SetScale(Vecf3(1 / dim.x, .9 / dim.y, 1 / dim.z));
+					scene_->AddEntity(b);
+					resource_data_[3 * chunk_width_ * z + (total_map_size_ >= 3 ? 48 + (x - total_map_size_ * chunk_width_) : x)] = { ResourceBlockType::Unbreakable, 0, 0, b };
+				}
+				else 
+				{
+					// Spawn rock & set resource_data_
+					dim = rl_->GetDimensions("rock");
+					b = block_pool_->Acquire("rock");
+					b->SetDrawMode(3);
+					if (total_map_size_ == 0) { b->SetPosition(Vecf3(x, -0.5f, z)); }
+					else 
+					{
+						b->SetPosition(Vecf3(x, (x % chunk_width_), z));
+						b->MoveTo(Vecf3(x, -0.5f, z));
+					}
+					b->SetScale(Vecf3(1 / dim.x, .8 / dim.y, 1 / dim.z));
+					scene_->AddEntity(b);
+					resource_data_[3 * chunk_width_ * z + (total_map_size_ >= 3 ? 48 + (x - total_map_size_ * chunk_width_) : x)] = { ResourceBlockType::Rock, 1, 0, b };
+				}
 
 			}
 		}
@@ -107,7 +187,7 @@ void MapGenerator::GenerateMap()
 
 	// Spawn train in first chunk
 	if (total_map_size_ == 0) {
-		std::shared_ptr<Entity> train = std::dynamic_pointer_cast<Entity>(std::make_shared<ChooChoo>("train", graphics_, input_, rl_, this));
+		/*std::shared_ptr<Entity> train = std::dynamic_pointer_cast<Entity>(std::make_shared<ChooChoo>("train", graphics_, input_, rl_, this));
 		train->SetDrawMode(2);
 		train->GetCube().SetScaleX(0.0005f);
 		train->GetCube().SetScaleY(0.0005f);
@@ -116,7 +196,29 @@ void MapGenerator::GenerateMap()
 		train->GetCube().SetAngleYDeg(90);
 		train->SetPosition({ checkpoint.x, -0.5, checkpoint.z });
 		scene_->AddEntity(train);
-		train_ = train;
+		train_ = train;*/
+		std::shared_ptr<ChooChoo> train = std::make_shared<ChooChoo>("enginecart", graphics_, input_, rl_, this, scene_->ps_);
+		train->SetDrawMode(3);
+		train->GetCube().SetScaleX(0.05f);
+		train->GetCube().SetScaleY(0.05f);
+		train->GetCube().SetScaleZ(0.05f);
+		//train->GetCube().SetAngleXDeg(-90);
+		//train->GetCube().SetAngleYDeg(90);
+		train->SetPosition({ checkpoint.x, -0.5 + 0.03125, checkpoint.z });
+		train_ = std::dynamic_pointer_cast<Entity>(train);
+		scene_->AddEntity(train_);
+		
+
+		
+		train->SetChildChoo(std::make_shared<ChooChoo>("craftingcart", graphics_, input_, rl_, this, scene_->ps_),"crafter");
+		train = train->GetChildChoo("crafter");
+		train->SetDrawMode(3);
+		train->GetCube().SetScaleX(0.05f);
+		train->GetCube().SetScaleY(0.05f);
+		train->GetCube().SetScaleZ(0.05f);
+		train->SetPosition({ checkpoint.x - 1.25f, -0.5 + 0.03125, checkpoint.z });
+		crafter_ = std::dynamic_pointer_cast<Entity>(train);
+		scene_->AddEntity(crafter_);
 	}
 
 	// Increment total_map_size_
@@ -215,13 +317,18 @@ bool MapGenerator::CanAddRail(std::shared_ptr<Rail> r)
 					}
 				}
 			}
-			else { return false; }
+			else 
+			{ 
+				rail_pool_->Release(r);
+				return false; 
+			}
 
  			rails_.push_back(r);
 			return true;
 
 		}
 	}
+	rail_pool_->Release(r);
 	return false;
 }
 
@@ -279,24 +386,33 @@ MapGenerator::ResourceTileData** MapGenerator::GetTilesAround(ResourceTileData* 
 	return retval;
 }
 
+MapGenerator::ResourceTileData* MapGenerator::GetCurrentTilePtr(const Vecf3& pos)
+{
+	int index = (int)(round(pos.z) * chunk_width_ * 3 + round(pos.x));
+	return &(resource_data_[index]);
+}
+
 MapGenerator::ResourceTileData& MapGenerator::GetCurrentTile(const Vecf3& pos)
 {
 	int index = (int)(round(pos.z) * chunk_width_ * 3 + round(pos.x));
 	return resource_data_[index];
 }
 
-void MapGenerator::AddResource(ResourceTileData tile)
+bool MapGenerator::AddResource(ResourceTileData tile)
 {
-	if (tile.block_type_ == ResourceBlockType::Rail && !CanAddRail(std::dynamic_pointer_cast<Rail>(tile.ent_))) { return; }
+	if (tile.block_type_ == ResourceBlockType::Rail && !CanAddRail(std::dynamic_pointer_cast<Rail>(tile.ent_))) { return false; }
 
 	Vecf3 tile_pos = tile.ent_->GetPosition();
 	int index = (int)(round(tile_pos.z) * chunk_width_ * 3 + round(tile_pos.x));
 	resource_data_[index] = tile;
-
+	
 	scene_->AddEntity(tile.ent_);
+
+	return true;
 }
 
 void MapGenerator::RemoveResource(ResourceTileData* tile)
 {
+	block_pool_->Release(std::dynamic_pointer_cast<Block>(tile->ent_));
 	*(tile) = { ResourceBlockType::Air, 0, 1, nullptr };;
 }

@@ -12,6 +12,7 @@ private:
 	struct ResourceQueue {
 		float time_delay_;
 		int type_; // 0 for rock, 1 for tree
+		int amount_;
 	};
 	struct LevelData {
 		float time_passed_;
@@ -44,5 +45,8 @@ public:
 	void SetMaximumX(const int& i);
 	void ProcessResourceQueue(const float& dt);
 	void AddResource(const ResourceQueue& rq);
+	void DrawSprite(const std::string& key, const Vecf3& position, const Vecf3& scale);
+	void DrawOverlay(const std::string& key);
+	int GetTrainX();
 	void Draw();
 };

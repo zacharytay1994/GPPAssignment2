@@ -1,7 +1,7 @@
 #include "Rail.h"
 
 Rail::Rail(const std::string& image, std::shared_ptr<Graphics> gfx, std::shared_ptr<Input> input, std::shared_ptr<ResourceLibrary> rl):
-	Block::Block(image, gfx, input, rl)
+	Entity::Entity(image, gfx, input, rl)
 {
 	SetQuatRotate(1);
 	SetRotation(ToQuaternion(Vecf3(0.f, PI/2, 0.f)));
@@ -9,12 +9,12 @@ Rail::Rail(const std::string& image, std::shared_ptr<Graphics> gfx, std::shared_
 
 void Rail::Update(const float& dt)
 {
-	Block::Update(dt);
+	Entity::Update(dt);
 }
 
 void Rail::Render()
 {
-	Block::Render();
+	Entity::Render();
 	//cube_.HandleDraw();
 }
 
@@ -26,7 +26,7 @@ void Rail::SetDirection(Direction direction) {
 	// Update image
 	if (direction_ == Direction::Vertical) {
 		
-		cube_.SetTextureKey("rail");
+		cube_.SetTextureKey(is_ghost_ ? "grail" : "rail");
 		SetRotation(ToQuaternion(Vecf3(0.f, 0.f, 0.f)));
 
 	} else if (direction_ == Direction::RTopCurved) {
@@ -52,8 +52,14 @@ void Rail::SetDirection(Direction direction) {
 
 	} else {
 
-		cube_.SetTextureKey("rail");
+		cube_.SetTextureKey(is_ghost_?"grail":"rail");
 		SetRotation(ToQuaternion(Vecf3(0.f, PI/2, 0.f)));
 
 	}
+
+}
+
+void Rail::MakeGhost()
+{
+	is_ghost_ = true;
 }

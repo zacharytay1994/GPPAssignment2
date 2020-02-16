@@ -12,23 +12,27 @@ Entity::Entity(const std::string& image, std::shared_ptr<Graphics> gfx, std::sha
 
 void Entity::Update(const float& dt)
 {
-	std::vector<std::shared_ptr<Component>>::iterator i;
-	for (i = components_.begin(); i != components_.end(); i++) {
-		(*i)->Update(dt);
+	if (in_use_) {
+		std::vector<std::shared_ptr<Component>>::iterator i;
+		for (i = components_.begin(); i != components_.end(); i++) {
+			(*i)->Update(dt);
+		}
+		cube_.SetX(position_.x);
+		cube_.SetY(position_.y);
+		cube_.SetZ(position_.z);
+		cube_.SetQuatRotation(rotation_);
 	}
-	cube_.SetX(position_.x);
-	cube_.SetY(position_.y);
-	cube_.SetZ(position_.z);
-	cube_.SetQuatRotation(rotation_);
 }
 
 void Entity::Render()
 {
-	std::vector<std::shared_ptr<Component>>::iterator i;
-	for (i = components_.begin(); i != components_.end(); i++) {
-		(*i)->Render();
+	if (in_use_) {
+		std::vector<std::shared_ptr<Component>>::iterator i;
+		for (i = components_.begin(); i != components_.end(); i++) {
+			(*i)->Render();
+		}
+		cube_.HandleDraw();
 	}
-	cube_.HandleDraw();
 }
 
 Vecf3 Entity::GetPosition()
@@ -51,6 +55,13 @@ void Entity::SetPosition(const Vecf3& v)
 	position_ = v;
 }
 
+void Entity::SetScale(const Vecf3& v)
+{
+	cube_.SetScaleX(v.x);
+	cube_.SetScaleY(v.y);
+	cube_.SetScaleZ(v.z);
+}
+
 void Entity::SetRotation(const QuaternionUWU& q)
 {
 	rotation_ = q;
@@ -64,6 +75,11 @@ void Entity::SetQuatRotate(const bool& b)
 void Entity::SetDrawMode(const int& drawmode)
 {
 	cube_.SetDrawMode(drawmode);
+}
+
+void Entity::SetInUse(const bool& b) 
+{ 
+	if (this != nullptr) in_use_ = b;
 }
 
 void Entity::AddComponent(ComponentPtr component)

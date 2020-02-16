@@ -87,7 +87,7 @@ void CubeModelNode::AddCube(std::shared_ptr<Cube> cube, Vecf3 scale, Vecf3 posit
 
 void CubeModelNode::Translate(Vecf3 v)
 {
-	offset_ += v;
+	translation_ += v;
 }
 
 void CubeModelNode::TranslateTo(std::string id, Vecf3 v)
@@ -99,24 +99,30 @@ void CubeModelNode::TranslateTo(std::string id, Vecf3 v)
 
 void CubeModelNode::Draw(Vecf3 totalOffSet, Vecf3 absPos)
 {
-	totalOffSet.x += offset_.x * rotationMatrix_[0][0] + offset_.y * rotationMatrix_[0][1] + offset_.z * rotationMatrix_[0][2];
-	totalOffSet.y += offset_.x * rotationMatrix_[1][0] + offset_.y * rotationMatrix_[1][1] + offset_.z * rotationMatrix_[1][2];
-	totalOffSet.z += offset_.x * rotationMatrix_[2][0] + offset_.y * rotationMatrix_[2][1] + offset_.z * rotationMatrix_[2][2];
+	totalOffSet.x += offset_.x * rotationMatrix_[0][0] + offset_.y * rotationMatrix_[0][1] + offset_.z * rotationMatrix_[0][2] + translation_.x;
+	totalOffSet.y += offset_.x * rotationMatrix_[1][0] + offset_.y * rotationMatrix_[1][1] + offset_.z * rotationMatrix_[1][2] + translation_.y;
+	totalOffSet.z += offset_.x * rotationMatrix_[2][0] + offset_.y * rotationMatrix_[2][1] + offset_.z * rotationMatrix_[2][2] + translation_.z;
+
 	for (std::shared_ptr<CubeModelNode> ptr : childNodes_) {
 		ptr->Draw(totalOffSet, absPos);
 	}
 	for (std::shared_ptr<CubeModelData> cmd : cubes_) {
 		cmd->cube->SetX(totalOffSet.x + cmd->position.x + absPos.x);
-		cmd->cube->SetY(totalOffSet.y + cmd->position.y + absPos.y);
+		cmd->cube->SetY(totalOffSet.y + cmd->position.y + absPos.y - cmd->cube->GetScaleY() * cos(orientation_.x));
 		cmd->cube->SetZ(totalOffSet.z + cmd->position.z + absPos.z);
 
 		cmd->cube->SetAngleX(orientation_.x);
 		cmd->cube->SetAngleY(orientation_.y);
 		cmd->cube->SetAngleZ(orientation_.z);
 
-		cmd->cube->Draw();
+		cmd->cube->HandleDraw();
 	}
 
+}
+
+std::shared_ptr<Cube> CubeModelNode::GetCube(int n)
+{
+	return cubes_[n]->cube;
 }
 
 CubeModel::CubeModel(Vecf3 position):
@@ -127,6 +133,16 @@ CubeModel::CubeModel(Vecf3 position):
 void CubeModel::TranslateTo(std::string id, Vecf3 v)
 {
 	rootNode_->TranslateTo(id, v);
+}
+
+void CubeModelNode::SetTranslate(Vecf3 v)
+{
+	translation_ = v;
+}
+
+void CubeModel::SetTranslateTo(std::string id, Vecf3 v)
+{
+	GetNode(id)->SetTranslate(v);
 }
 
 void CubeModel::SetPosition(Vecf3 position)
@@ -177,10 +193,16 @@ void CubeModel::Draw()
 
 
 // ROTATION X
-
 void CubeModel::RotateXTo(std::string id, float angle){
 	rootNode_->GetNode(id)->RotateX(angle);
 }
+
+void CubeModel::SetRotationXTo(std::string id, float angle)
+{
+	rootNode_->GetNode(id)->SetRotationX(angle);
+}
+
+
 
 void CubeModelNode::RotateX(float angle){
 	for (std::shared_ptr<CubeModelNode> ptr : childNodes_) {
@@ -193,14 +215,32 @@ void CubeModelNode::RotateX(float angle){
 		{0,(float)sin(angle),(float)cos(angle)}
 	};
 
-	rotationMatrix_ = MultiplyMatrix(rotationMatrix_, rotationMatrix);
+	rotationMatrix_ = MultiplyMatrix(rotationMatrix, rotationMatrix_);
 	orientation_.x += angle;
 }
 
-// ROTATION Y
+void CubeModelNode::SetRotationX(float angle)
+{
+	for (std::shared_ptr<CubeModelNode> ptr : childNodes_) {
+		ptr->SetRotationX(angle);
+	}
+	rotationMatrix_ = {
+		{1,0,0},
+		{0,(float)cos(angle),(float)-sin(angle)},
+		{0,(float)sin(angle),(float)cos(angle)}
+	};
 
+	orientation_.x = angle;
+}
+
+// ROTATION Y
 void CubeModel::RotateYTo(std::string id, float angle){
 	rootNode_->GetNode(id)->RotateY(angle);;
+}
+
+void CubeModel::SetRotationYTo(std::string id, float angle)
+{
+	rootNode_->GetNode(id)->SetRotationY(angle);
 }
 
 void CubeModelNode::RotateY(float angle){
@@ -208,23 +248,30 @@ void CubeModelNode::RotateY(float angle){
 	for (std::shared_ptr<CubeModelNode> ptr : childNodes_) {
 		ptr->RotateY(angle);
 	}
-	//Vecf3 temp = Vecf3();
-	//temp.x = cos(angle) * offset_.x + sin(angle) * offset_.z;
-	//temp.y = offset_.y;
-	//temp.z = -sin(angle) * offset_.x + cos(angle) * offset_.z;
-	//offset_ = temp;
-
-
 	std::vector<std::vector<float>> rotationMatrix = {
 		{(float)cos(angle),0,(float)sin(angle)},
 		{0,1,0},
 		{(float)-sin(angle),0,(float)cos(angle)}
 	};
-
-
-	rotationMatrix_ = MultiplyMatrix(rotationMatrix_, rotationMatrix);
+	rotationMatrix_ = MultiplyMatrix(rotationMatrix, rotationMatrix_);
 	orientation_.y += angle;
 }
+
+void CubeModelNode::SetRotationY(float angle)
+{
+	for (std::shared_ptr<CubeModelNode> ptr : childNodes_) {
+		ptr->SetRotationY(angle);
+	}
+	rotationMatrix_ = {
+	{(float)cos(angle),0,(float)sin(angle)},
+	{0,1,0},
+	{(float)-sin(angle),0,(float)cos(angle)}
+	};
+
+	orientation_.y = angle;
+}
+
+
 
 
 
@@ -232,6 +279,11 @@ void CubeModelNode::RotateY(float angle){
 
 void CubeModel::RotateZTo(std::string id, float angle){
 	rootNode_->GetNode(id)->RotateZ(angle);;
+}
+
+void CubeModel::SetRotationZTo(std::string id, float angle)
+{
+	rootNode_->GetNode(id)->SetRotationZ(angle);
 }
 
 void CubeModelNode::RotateZ(float angle){
@@ -252,6 +304,19 @@ void CubeModelNode::RotateZ(float angle){
 	};
 
 
-	rotationMatrix_ = MultiplyMatrix(rotationMatrix_, rotationMatrix);
+	rotationMatrix_ = MultiplyMatrix(rotationMatrix, rotationMatrix_);
 	orientation_.z += angle;
+}
+
+void CubeModelNode::SetRotationZ(float angle)
+{
+	for (std::shared_ptr<CubeModelNode> ptr : childNodes_) {
+		ptr->RotateZ(angle);
+	}
+	rotationMatrix_ = {
+		{(float)cos(angle),(float)-sin(angle),0},
+		{(float)sin(angle),(float)cos(angle),0},
+		{0,0,1}
+	};
+	orientation_.z = angle;
 }

@@ -1,4 +1,5 @@
 #include "ResourceLibrary.h"
+#include "Base/Input.h"
 #include <assert.h>
 #include <limits>
 
@@ -19,6 +20,17 @@ void ResourceLibrary::Initialize()
 Vecf3 ResourceLibrary::GetDimensions(const std::string& key)
 {
 	return dimensions[key];
+}
+
+DirectX::XMMATRIX ResourceLibrary::GetTransform(const Vecf3& pos, const Vecf3& scale, const Vecf3& rotation, std::shared_ptr<Input> input)
+{
+	// no scaling by 0
+	return	DirectX::XMMatrixTranspose(
+		DirectX::XMMatrixScaling(scale.x, scale.y, scale.z) *
+		DirectX::XMMatrixRotationRollPitchYaw(rotation.x, rotation.y, rotation.z) *
+		DirectX::XMMatrixTranslation(pos.x, pos.y, pos.z) *
+		input->GetCameraMatrix() *
+		DirectX::XMMatrixPerspectiveLH(1.0f, (float)Graphics::viewport_height_ / (float)Graphics::viewport_width_, 0.5f, 1000.0f));
 }
 
 void ResourceLibrary::AddPosTexModel(const std::string& mapkey, const std::string& objfile, const std::wstring& texturefile)

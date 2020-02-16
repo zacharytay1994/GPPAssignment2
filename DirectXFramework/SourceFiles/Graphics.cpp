@@ -82,6 +82,27 @@ void Graphics::Initialize(HWND hwnd)
 		&p_rtv_back_buffer_								// pointer to render target view, to be filled
 	);
 	p_back_buffer->Release();
+
+	/*_______________________________________*/
+	// CREATE AND BIND BLEND STATE
+	// For alpha blending
+	/*_______________________________________*/
+	D3D11_BLEND_DESC blend_desc;
+
+	ZeroMemory(&blend_desc, sizeof(D3D11_BLEND_DESC));
+	blend_desc.RenderTarget[0].BlendEnable = true;
+	blend_desc.RenderTarget[0].SrcBlend = D3D11_BLEND_SRC_ALPHA;
+	blend_desc.RenderTarget[0].DestBlend = D3D11_BLEND_INV_SRC_ALPHA;
+	blend_desc.RenderTarget[0].BlendOp = D3D11_BLEND_OP_ADD;
+	blend_desc.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND_ONE;
+	blend_desc.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_ZERO;
+	blend_desc.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD;
+	blend_desc.RenderTarget[0].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
+
+	p_device_->CreateBlendState(&blend_desc, &p_blend_state);
+	p_device_context_->OMSetBlendState(p_blend_state, 0, 0xffffffff);
+	EnableTransparency(false);
+
 	initialized_ = true;
 }
 
@@ -428,6 +449,23 @@ void Graphics::InitCubePipeline()
 	// choose which stage to bind buffer to, i.e. which stage is going to use the data
 	p_device_context_->PSSetConstantBuffers(0u, 1u, &p_cb_color_);
 
+	// set up light position constant buffer
+	const Lights light_buffer_ = { {0.0f, 0.0f, 0.0f, 0.0f}, {0.0f, 0.0f, 0.0f, 0.0f}, {0.0f, 0.0f, 0.0f, 0.0f} };
+
+	// shares similar setup process as vertex buffer
+	D3D11_BUFFER_DESC bd3;
+	bd3.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+	bd3.Usage = D3D11_USAGE_DYNAMIC;
+	bd3.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+	bd3.MiscFlags = 0u;
+	bd3.ByteWidth = sizeof(light_buffer_);
+	bd3.StructureByteStride = sizeof(DirectX::XMFLOAT4);
+	D3D11_SUBRESOURCE_DATA sd3;
+	sd3.pSysMem = &light_buffer_;
+	p_device_->CreateBuffer(&bd3, &sd3, &p_cb_lights_);
+	// choose which stage to bind buffer to, i.e. which stage is going to use the data
+	p_device_context_->PSSetConstantBuffers(1u, 1u, &p_cb_lights_);
+
 	/*_______________________________________*/
 	// SET PRIMITIVE TOPOLOGY OF INPUT ASSEMBLER
 	// How the vertices should be interpreted as
@@ -625,6 +663,14 @@ void Graphics::UpdateCBColourSubresource(const Colour& color)
 	p_device_context_->Unmap(p_cb_color_, 0u);
 }
 
+void Graphics::UpdateCBLightSubresource(const Lights& lights)
+{
+	D3D11_MAPPED_SUBRESOURCE mapped_subresource;
+	p_device_context_->Map(p_cb_lights_, 0u, D3D11_MAP_WRITE_DISCARD, 0u, &mapped_subresource);
+	memcpy(mapped_subresource.pData, &lights, sizeof(lights));
+	p_device_context_->Unmap(p_cb_lights_, 0u);
+}
+
 void Graphics::ClearBuffer()
 {
 	const float color[] = { 0.0f, 0.0f, 0.0f, 0.0f };
@@ -642,6 +688,16 @@ void Graphics::Draw()
 void Graphics::DrawIndexed(int indexcount)
 {
 	p_device_context_->DrawIndexed((UINT)indexcount, 0u, 0);
+}
+
+void Graphics::EnableTransparency(const bool& b)
+{
+	if (b) {
+		p_device_context_->OMSetBlendState(p_blend_state, 0, 0xffffffff);
+	}
+	else {
+		p_device_context_->OMSetBlendState(nullptr, 0, 0xffffffff);
+	}
 }
 
 void Graphics::BindCubeVertices(const CubeVertexBuffer v)
