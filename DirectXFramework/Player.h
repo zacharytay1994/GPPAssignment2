@@ -44,8 +44,8 @@ public:
 	float punch_speed_ = 50.0f;
 	float punch_amount_ = 0.05;
 
-
-	
+	std::shared_ptr<Cube> target_;
+	bool draw_target_ = false;
 
 	bool active_ = true;
 	
@@ -54,6 +54,7 @@ public:
 	void Update(const float& dt) override;
 	void Render() override;
 	bool AABBCollision();
+	void SetDrawTarget(bool draw_target);
 
 	Vecf3 GetOrientation() { return cubeModel_.GetOrientation(); };
 	void Punch();

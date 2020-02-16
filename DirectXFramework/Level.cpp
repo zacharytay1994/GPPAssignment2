@@ -17,13 +17,15 @@ Level::Level(std::shared_ptr<Graphics> gfx, std::shared_ptr<Input> input, std::s
 
 	// Create player
 	player_ = AddPlayer({ 0.0f, 1.0f, 1.0f }, { 0.5f, 0.5f, 0.5f });
-	player_->AddComponent(std::make_shared<InputComponent>(InputComponent(*player_, *input_, 'W', 'S', 'A', 'D')));
+	player_->AddComponent(std::make_shared<InputComponent>(InputComponent(*player_, *input_, 'W', 'S', 'A', 'D', VK_LSHIFT)));
+	player_->SetDrawTarget(true);
 	player2_ = AddPlayer({ 0.0f, 1.0f, 1.0f }, { 0.5f, 0.5f, 0.5f });
-	player2_->AddComponent(std::make_shared<InputComponent>(InputComponent(*player2_, *input_, VK_UP, VK_DOWN, VK_LEFT, VK_RIGHT)));
+	player2_->AddComponent(std::make_shared<InputComponent>(InputComponent(*player2_, *input_, VK_UP, VK_DOWN, VK_LEFT, VK_RIGHT, VK_RSHIFT)));
 	player2_->active_ = false;
+	player2_->SetDrawTarget(true);
 	//player_->AddComponent(std::make_shared<InputComponent>(InputComponent(*player_, *input_)));
 
-	target_block_ = AddBlock("highlight", player_->GetPosition(), { 0.5f,0.015625,0.5f });
+	//target_block_ = AddBlock("highlight", player_->GetPosition(), {  });
 	//TODO: add player2 target_block
 }
 
@@ -42,15 +44,7 @@ void Level::Update(const float& dt)
 	} // -->
 
 	// <!-- highlight player target block
-	Vecf3 player_pos = player_->GetPosition();
-	Vecf3 player_orientation = player_->GetOrientation();
-	float y_rot = fmod(player_orientation.y > 0 ? player_orientation.y : player_orientation.y + 2 * PI, 2 * PI);
-	Vecf3 highlight_block_pos = { round(player_pos.x), round(player_pos.y - 2) + 0.5f, round(player_pos.z) };
-	if ((y_rot >= 7 * PI / 4) || (y_rot <= PI / 4)) { highlight_block_pos.z += 1; }
-	else if (y_rot <= 3 * PI / 4) { highlight_block_pos.x += 1; }
-	else if ( y_rot <= 5 * PI / 4 ) { highlight_block_pos.z -= 1; }
-	else { highlight_block_pos.x -= 1; }
-	target_block_->SetPosition(highlight_block_pos);
+
 	// -->
 
 	wl_.SetPoint1(player_->GetPosition() + RotateVectorY(Vecf3(0.0f, 0.0f, 1.0f), -player_->GetOrientation().y) * 2.0f + Vecf3(0.0f, 1.0f, 0.0f));
@@ -147,6 +141,9 @@ void Level::Update(const float& dt)
 
 	// Generate new chunk
 	if (input_->KeyWasPressed('G')) mapGen_->GenerateMap();
+
+	PlayerLogic('C', 'R', player_);
+	if (multiplayer_) { PlayerLogic('K', 'L', player2_); }
 
 	//TODO: compare with playerlogic()
 	//// Collect resource if facing block & within 1 block
@@ -305,11 +302,11 @@ void Level::EmitDestructionParticles(const ResourceBlockType& type, const Vecf3&
 	}
 }
 
-void Level::CraftRails()
+void Level::CraftRails(std::shared_ptr<Player> player)
 {
 	// TODO: check crafter nearby
 
-	Vecf3 distance = player_->GetPosition() - mapGen_->crafter_->GetPosition();
+	Vecf3 distance = player->GetPosition() - mapGen_->crafter_->GetPosition();
 
 	distance.x = distance.x * distance.x;
 	distance.z = distance.z * distance.z;
@@ -353,6 +350,7 @@ void Level::PlayerLogic(const char& k1, const char& k2, std::shared_ptr<Player> 
 		{
 			// Facing forward
 			tile = mapGen_->GetCurrentTilePtr(Vecf3(norm_player_pos.x, norm_player_pos.y, norm_player_pos.z + 1));
+			
 		}
 		else if (y_rot <= 3 * PI / 4)
 		{
@@ -374,6 +372,7 @@ void Level::PlayerLogic(const char& k1, const char& k2, std::shared_ptr<Player> 
 		{
 			EmitDestructionParticles(tile->block_type_, tile->ent_->GetPosition());
 			mapGen_->RemoveResource(tile);
+			player->Punch();
 		}
 
 	}
@@ -382,14 +381,25 @@ void Level::PlayerLogic(const char& k1, const char& k2, std::shared_ptr<Player> 
 	if (input_->KeyWasPressed(k2))
 	{
 		// Check if rail can be placed on player pos
-		MapGenerator::ResourceTileData tile = mapGen_->GetCurrentTile(player->GetPosition());
-		if (tile.walkable_ && tile.block_type_ != ResourceBlockType::Rail)
+		Vecf3 targetTile = { player->target_->GetX(), player->target_->GetY() ,player->target_->GetZ() };
+		MapGenerator::ResourceTileData tile = mapGen_->GetCurrentTile(targetTile);
+		if (tile.walkable_ && tile.block_type_ != ResourceBlockType::Rail && rail_count_ > 0)
 		{
 			// Spawn rail
 			std::shared_ptr<Rail> r = std::make_shared<Rail>("rail", graphics_, input_, rl_);
 			r->SetScale(Vecf3(0.5f, 0.03125f, 0.5f));
-			r->SetPosition(Vecf3((int)round(norm_player_pos.x), -0.5f, (int)round(norm_player_pos.z)));
-			mapGen_->AddResource({ ResourceBlockType::Rail, 0, 1, r });
+			r->SetPosition(Vecf3((int)round(targetTile.x), -0.5f, (int)round(targetTile.z)));
+			if (mapGen_->AddResource({ ResourceBlockType::Rail, 0, 1, r })) {
+				rail_count_ -= 1;
+				gui_.AddResource({ 1.0f, 2, -1 });
+			}
+			else {
+				CraftRails(player);
+			}
+			
+		}
+		else {
+			CraftRails(player);
 		}
 	}
 }

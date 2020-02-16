@@ -11,7 +11,7 @@ private:
 	std::shared_ptr<Block> giraffe_ = nullptr;
 	std::shared_ptr<Player> player_;
 	std::shared_ptr<Player> player2_;
-	std::shared_ptr<Block> target_block_;
+
 	/*std::shared_ptr<TestObject> test_object_;
 	std::shared_ptr<TestObject> test_object_2_;*/
 	// <--- test variables can remove if need be
@@ -31,7 +31,7 @@ private:
 	int wood_per_rail_ = 1;
 	int rock_per_rail_ = 1;
 
-	float crafting_cooldown = 1.0f;
+	float crafting_cooldown = 0.5f;
 	float crafting_cooldown_timer = 0.0f;
 	float crafting_radius_ = 3.0f;
 
@@ -47,6 +47,6 @@ public:
 	// --->
 	void EmitDestructionParticles(const ResourceBlockType& type, const Vecf3& pos);
 
-	void CraftRails();
+	void CraftRails(std::shared_ptr<Player> player);
 	void PlayerLogic(const char& k1, const char& k2, std::shared_ptr<Player> player);
 };
