@@ -17,6 +17,11 @@ void ChooChoo::Update(const float& dt)
 	if (input_->KeyIsDown('T')) {
 		test_activate_ = true;
 	}
+
+	// Generate new chunk if train is > 60% of the way across the chunk
+	if (((mg_->GetChunkSize().x * mg_->GetTotalChunkNo()) - position_.x) < (mg_->GetChunkSize().x * .6)) {
+		mg_->GenerateMap();
+	}
 }
 
 void ChooChoo::Render()

@@ -4,9 +4,12 @@
 #include "Rail.h"
 #include "ChooChoo.h"
 
+#include <time.h>
+
 MapGenerator::MapGenerator(std::shared_ptr<Graphics> graphics, std::shared_ptr<Input> input, std::shared_ptr<ResourceLibrary> rl, Scene* scene)
 	:
-	pn_(new PerlinNoise()),
+	pn_(new PerlinNoise(rand()%100)),
+	fn_(new FastNoise(rand() % 100)),
 	graphics_(graphics),
 	input_(input),
 	rng_(rd_()),
@@ -14,6 +17,9 @@ MapGenerator::MapGenerator(std::shared_ptr<Graphics> graphics, std::shared_ptr<I
 	rl_(rl),
 	scene_(scene)
 {
+	fn_->SetFrequency(.3);
+	fn_->SetCellularDistanceFunction(FastNoise::CellularDistanceFunction::Natural);
+
 	entity_pool = EntityPool::getInstance(graphics_, input_, rl_);
 }
 
@@ -50,7 +56,8 @@ void MapGenerator::GenerateMap()
 	std::shared_ptr<Block> b;
 	std::shared_ptr<Entity> e;
 
-	double n;
+	float n;
+	float vn;
 	for (int z = 0; z < chunk_height_; z++)
 	{
 		for (int x = total_map_size_ * chunk_width_; x < (total_map_size_ * chunk_width_) + chunk_width_; x++)
@@ -68,14 +75,17 @@ void MapGenerator::GenerateMap()
 			else {
 
 				// Spawn block & set ground_data_
-				e = entity_pool->Acquire("grassblock");
-				e->SetPosition(Vecf3(x, -1.0, z));
+				dim = rl_->GetDimensions("gndblk");
+				e = entity_pool->Acquire("gndblk");
+				e->SetDrawMode(3);
+				e->SetPosition(Vecf3(x, -1.5f, z));
+				e->SetScale(Vecf3(1 / dim.x, 1 / dim.y, 1 / dim.z));
 				scene_->AddEntity(e);
-				ground_data_[3*chunk_width_ * z + (total_map_size_ >= 3 ? 48 + (x - total_map_size_ * chunk_width_) : x)] = { GroundBlockType::Grass, true, e };
+				ground_data_[3 * chunk_width_ * z + (total_map_size_ >= 3 ? 48 + (x - total_map_size_ * chunk_width_) : x)] = { GroundBlockType::Ground, true, e };
 
 			}
 
-			// Generate noise value for current block
+			// Generate perlin noise value for current block
 			n = pn_->octaveNoise0_1(x / fx_, z / fz_, octaves_);
 
 			if ((z - checkpoint.z) == 0 && abs(x - checkpoint.x) <= 1) {
@@ -86,34 +96,55 @@ void MapGenerator::GenerateMap()
 				r->SetPosition(Vecf3(x, -0.5f, z));
 				AddResource({ ResourceBlockType::Rail, 0, 1, r });
 
-			} else if (abs(z - checkpoint.z) <= 1 && abs(x - checkpoint.x) <= 1|| n > .4 && n < .6) {
+			}
+			else if (abs(z - checkpoint.z) <= 1 && abs(x - checkpoint.x) <= 1 || n > .4 && n < .6) {
 
 				// Set resource_data_
-				resource_data_[3*chunk_width_ * z + (total_map_size_ >= 3 ? 48 + (x - total_map_size_ * chunk_width_) : x)] = { ResourceBlockType::Air, 0, 1, nullptr };
-
-			}
-			else if (n < .4) {
-
-				// Spawn tree & set resource_data_
-				dim = rl_->GetDimensions("tree");
-				e = entity_pool->Acquire("tree");
-				e->SetDrawMode(3);
-				e->SetPosition(Vecf3(x, -0.5f, z));
-				e->SetScale(Vecf3(1 / dim.x, 1.3 / dim.y, 1 / dim.z));
-				scene_->AddEntity(e);
-				resource_data_[3*chunk_width_ * z + (total_map_size_ >= 3 ? 48 + (x - total_map_size_ * chunk_width_) : x)] = { ResourceBlockType::Tree, 1, 0, e };
+				resource_data_[3 * chunk_width_ * z + (total_map_size_ >= 3 ? 48 + (x - total_map_size_ * chunk_width_) : x)] = { ResourceBlockType::Air, 0, 1, nullptr };
 
 			}
 			else {
 
-				// Spawn rock & set resource_data_
-				dim = rl_->GetDimensions("rock");
-				e = entity_pool->Acquire("rock");
-				e->SetDrawMode(3);
-				e->SetPosition(Vecf3(x, -0.5f, z));
-				e->SetScale(Vecf3(1 / dim.x, .8 / dim.y, 1 / dim.z));
-				scene_->AddEntity(e);
-				resource_data_[3*chunk_width_ * z + (total_map_size_ >= 3 ? 48 + (x - total_map_size_ * chunk_width_) : x)] = { ResourceBlockType::Rock, 1, 0, e };
+				// Generate voronoi noise value for current block
+				vn = fn_->GetCellular(x, z);
+
+				if (vn < -.3) {
+					// Spawn tree & set resource_data_
+					dim = rl_->GetDimensions("tree");
+					e = entity_pool->Acquire("tree");
+					e->SetDrawMode(3);
+					e->SetPosition(Vecf3(x, -0.5f, z));
+					e->SetScale(Vecf3(1 / dim.x, 1.5 / dim.y, 1 / dim.z));
+					scene_->AddEntity(e);
+					resource_data_[3 * chunk_width_ * z + (total_map_size_ >= 3 ? 48 + (x - total_map_size_ * chunk_width_) : x)] = { ResourceBlockType::Tree, 1, 0, e };
+				}
+				else if (vn < .1) {
+
+					// Spawn unbreakable rock & set resource_data_
+					dim = rl_->GetDimensions("unbreakablerock");
+					e = entity_pool->Acquire("unbreakablerock");
+					e->SetDrawMode(3);
+					e->SetPosition(Vecf3(x, -0.5f, z));
+					e->SetScale(Vecf3(1 / dim.x, .9 / dim.y, 1 / dim.z));
+					scene_->AddEntity(e);
+					resource_data_[3 * chunk_width_ * z + (total_map_size_ >= 3 ? 48 + (x - total_map_size_ * chunk_width_) : x)] = { ResourceBlockType::Unbreakable, 0, 0, e };
+				}
+				//else if (vn < .5) {
+
+				//	// Set resource_data_
+				//	resource_data_[3 * chunk_width_ * z + (total_map_size_ >= 3 ? 48 + (x - total_map_size_ * chunk_width_) : x)] = { ResourceBlockType::Air, 0, 1, nullptr };
+
+				//}
+				else {
+					// Spawn rock & set resource_data_
+					dim = rl_->GetDimensions("rock");
+					e = entity_pool->Acquire("rock");
+					e->SetDrawMode(3);
+					e->SetPosition(Vecf3(x, -0.5f, z));
+					e->SetScale(Vecf3(1 / dim.x, .8 / dim.y, 1 / dim.z));
+					scene_->AddEntity(e);
+					resource_data_[3 * chunk_width_ * z + (total_map_size_ >= 3 ? 48 + (x - total_map_size_ * chunk_width_) : x)] = { ResourceBlockType::Rock, 1, 0, e };
+				}
 
 			}
 		}
@@ -291,6 +322,12 @@ MapGenerator::ResourceTileData** MapGenerator::GetTilesAround(ResourceTileData* 
 	}
 
 	return retval;
+}
+
+MapGenerator::ResourceTileData* MapGenerator::GetCurrentTilePtr(const Vecf3& pos)
+{
+	int index = (int)(round(pos.z) * chunk_width_ * 3 + round(pos.x));
+	return &(resource_data_[index]);
 }
 
 MapGenerator::ResourceTileData& MapGenerator::GetCurrentTile(const Vecf3& pos)

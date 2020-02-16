@@ -1,35 +1,29 @@
 #pragma once
 
-#include "Entity.h"
 #include "Base/Graphics.h"
 #include "Base/Input.h"
+#include "Entity.h"
 #include "EntityPool.h"
+#include "FastNoise.h"
 #include "PerlinNoise.h"
-#include "ResourceLibrary.h"
 #include "Rail.h"
-#include <random>
+#include "ResourceLibrary.h"
 #include "Scene.h"
-#include <vector>
 #include "Vec2.h"
 
-/*
- * TODO: Spawn Start & Checkpoint (should have variable (a) distance between them & (b) z values)
- * Thought: Perhaps Perlin Noise isn't the best algorithm for this. 
- *          The smoothing found across regions leads to the empty spaces to be outlined by the same block. 
- *          Perhaps Voronoi (Noise? Algorithm?) will fare better.
- * TODO: Figure out how the continual generation will work. 
- *       A possible solution is to store the size of the map in the map generator & then each time a checkpoint is reached
- */
+#include <random>
+#include <vector>
 
 enum class ResourceBlockType {
 	Air,
 	Rock,
 	Tree,
-	Rail
+	Rail,
+	Unbreakable
 };
 enum class GroundBlockType {
 	Checkpoint,
-	Grass
+	Ground
 };
 class MapGenerator {
 public:
@@ -37,7 +31,7 @@ public:
 	struct ResourceTileData {
 		ResourceBlockType block_type_;
 		bool breakable_;
-		bool walkable_;
+		bool walkable_ = true;
 		std::shared_ptr<Entity> ent_;
 	};
 	struct GroundTileData {
@@ -58,14 +52,15 @@ private:
 
 	// To be used to generate the noise values
 	PerlinNoise* pn_;
+	FastNoise* fn_;
 
 	// Dimensions of chunks that get generated
 	const static int chunk_width_ = 24;
 	const static int chunk_height_ = 16;
 
 	// Factors affecting the granity of the generated maps
-	double frequency_ = 3.0;
-	double octaves_ = 3.0;
+	float frequency_ = 2.0;
+	float octaves_ = 3.0;
 
 	double fx_ = chunk_width_ / frequency_;
 	double fz_ = chunk_height_ / frequency_;
@@ -128,6 +123,7 @@ public:
 	// Returns an array of length 8 of pointers to the blocks surrounding the given block, starting from the block in front & going clockwise
 	// If there is no block (i.e. player is at the edge of the map), array element will be nullptr
 	ResourceTileData** GetTilesAround(ResourceTileData* starting_tile);
+	ResourceTileData* GetCurrentTilePtr(const Vecf3& pos);
 	ResourceTileData& GetCurrentTile(const Vecf3& pos);
 
 	// Add resource to resource_data_
