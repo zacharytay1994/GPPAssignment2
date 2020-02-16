@@ -94,17 +94,13 @@ void Player::Update(const float& dt)
 		punch_animation_timing_ += dt;
 		float punch_translation = sin(punch_animation_timing_ * punch_speed_) * punch_amount_;
 		std::shared_ptr<Cube> tempCube = cubeModel_.GetNode("rarm")->GetCube(0);
-		tempCube->SetTextureKey("alexgun");
+		tempCube->SetTextureKey(player_2_?"stevegun":"alexgun");
 		tempCube->SetDrawMode(3);
-		tempCube->SetScaleX(-0.5);
-		tempCube->SetScaleY(-0.5);
-		tempCube->SetScaleZ(-0.5);
+		tempCube->SetScaleX(-0.5); tempCube->SetScaleY(-0.5); tempCube->SetScaleZ(-0.5);
 		tempCube = cubeModel_.GetNode("larm")->GetCube(0);
-		tempCube->SetTextureKey("alexgun");
+		tempCube->SetTextureKey(player_2_ ? "stevegun" : "alexgun");
 		tempCube->SetDrawMode(3);
-		tempCube->SetScaleX(-0.5);
-		tempCube->SetScaleY(-0.5);
-		tempCube->SetScaleZ(-0.5);
+		tempCube->SetScaleX(-0.5); tempCube->SetScaleY(-0.5); tempCube->SetScaleZ(-0.5);
 		cubeModel_.SetRotationXTo("rarm", -PI/2);
 		cubeModel_.SetTranslateTo("rarm", { punch_translation,0.0f,-punch_translation });
 		cubeModel_.SetRotationXTo("larm", -PI / 2);
@@ -113,17 +109,13 @@ void Player::Update(const float& dt)
 	else {
 		punch_animation_timing_ = 0.0f;
 		std::shared_ptr<Cube> tempCube = cubeModel_.GetNode("rarm")->GetCube(0);
-		tempCube->SetTextureKey("alexarm");
+		tempCube->SetTextureKey(player_2_ ? "stevearm" : "alexarm");
 		tempCube->SetDrawMode(1);
-		tempCube->SetScaleX(0.09375);
-		tempCube->SetScaleY(0.375);
-		tempCube->SetScaleZ(0.125);
+		tempCube->SetScaleX(0.09375); tempCube->SetScaleY(0.375); tempCube->SetScaleZ(0.125);
 		tempCube = cubeModel_.GetNode("larm")->GetCube(0);
-		tempCube->SetTextureKey("alexarm");
-		tempCube->SetDrawMode(1);
-		tempCube->SetScaleX(0.09375);
-		tempCube->SetScaleY(0.375);
-		tempCube->SetScaleZ(0.125);
+		tempCube->SetTextureKey(player_2_ ? "stevearm" : "alexarm");
+		tempCube->SetDrawMode(1); 
+		tempCube->SetScaleX(0.09375); tempCube->SetScaleY(0.375); tempCube->SetScaleZ(0.125);
 	}
 
 	// tilt player to direction calculated above.
@@ -198,4 +190,14 @@ void Player::SetDrawTarget(bool draw_target)
 void Player::Punch()
 {
 	punch_animation_timer_ = punch_animation_time_;
+}
+
+void Player::SetPlayer2() {
+	player_2_ = true;
+	cubeModel_.GetNode("body")->GetCube(0)->SetTextureKey("stevebody");
+	cubeModel_.GetNode("head")->GetCube(0)->SetTextureKey("steve");
+	cubeModel_.GetNode("rarm")->GetCube(0)->SetTextureKey("stevearm");
+	cubeModel_.GetNode("larm")->GetCube(0)->SetTextureKey("stevearm");
+	cubeModel_.GetNode("rleg")->GetCube(0)->SetTextureKey("steveleg");
+	cubeModel_.GetNode("lleg")->GetCube(0)->SetTextureKey("steveleg");
 }

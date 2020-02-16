@@ -24,11 +24,17 @@ BoxyGame::~BoxyGame()
 
 void BoxyGame::Initialize(HWND hwnd)
 {
-	rl_->AddCubeTexture("alex", L"Images/alex.png");
-	rl_->AddCubeTexture("alexbody", L"Images/alex_body.png");
-	rl_->AddCubeTexture("alexarm", L"Images/alex-arm.png");
-	rl_->AddCubeTexture("alexleg", L"Images/alex-leg.png");
-	rl_->AddPosNormTexModel("alexgun", "Models/alex-gun.obj", L"Images/alex-gun.png");
+	rl_->AddCubeTexture("alex", L"Images/player/alex.png");
+	rl_->AddCubeTexture("alexbody", L"Images/player/alex_body.png");
+	rl_->AddCubeTexture("alexarm", L"Images/player/alex-arm.png");
+	rl_->AddCubeTexture("alexleg", L"Images/player/alex-leg.png");
+	rl_->AddPosNormTexModel("alexgun", "Models/alex-gun.obj", L"Images/player/alex-gun.png");
+
+	rl_->AddCubeTexture("steve", L"Images/player/steve.png");
+	rl_->AddCubeTexture("stevebody", L"Images/player/steve_body.png");
+	rl_->AddCubeTexture("stevearm", L"Images/player/steve-arm.png");
+	rl_->AddCubeTexture("steveleg", L"Images/player/steve-leg.png");
+	rl_->AddPosNormTexModel("stevegun", "Models/alex-gun.obj", L"Images/player/steve-gun.png");
 
 	rl_->AddCubeTexture("spacebox", L"Images/spacebox2.png");
 	rl_->AddCubeTexture("sun", L"Images/sunyellow.png");
