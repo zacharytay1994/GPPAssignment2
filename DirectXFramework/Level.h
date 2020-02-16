@@ -10,6 +10,7 @@ private:
 	std::unique_ptr<MapGenerator> mapGen_ = nullptr;
 	std::shared_ptr<Block> giraffe_ = nullptr;
 	std::shared_ptr<Player> player_;
+	std::shared_ptr<Player> player2_;
 	std::shared_ptr<Block> target_block_;
 	/*std::shared_ptr<TestObject> test_object_;
 	std::shared_ptr<TestObject> test_object_2_;*/
@@ -19,6 +20,7 @@ private:
 	float interval_tracker_ = 0.0f;
 	int spawn_iterations_ = 20;
 	// --->
+	bool multiplayer_ = false;
 
 
 
@@ -34,7 +36,7 @@ private:
 	float crafting_radius_ = 3.0f;
 
 	bool game_over_ = false;
-
+	int camera_mode_ = 2;
 public:
 	Level(std::shared_ptr<Graphics> gfx, std::shared_ptr<Input> input, std::shared_ptr<ResourceLibrary> rl, Game* game);
 	void Update(const float& dt) override;
@@ -46,4 +48,5 @@ public:
 	void EmitDestructionParticles(const ResourceBlockType& type, const Vecf3& pos);
 
 	void CraftRails();
+	void PlayerLogic(const char& k1, const char& k2, std::shared_ptr<Player> player);
 };

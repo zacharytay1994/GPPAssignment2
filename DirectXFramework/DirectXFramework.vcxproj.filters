@@ -48,6 +48,7 @@
     <ClCompile Include="ChooChoo.cpp" />
     <ClCompile Include="WorldLights.cpp" />
     <ClCompile Include="EntityPool.cpp" />
+    <ClCompile Include="FastNoise.cpp" />
     <ClCompile Include="Button.cpp" />
     <ClCompile Include="SceneGraph.cpp" />
   </ItemGroup>
@@ -99,6 +100,7 @@
     <ClInclude Include="Button.h" />
     <ClInclude Include="SceneGraph.h" />
     <ClInclude Include="EntityPool.h" />
+    <ClInclude Include="FastNoise.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Images\alpha_donald.png" />

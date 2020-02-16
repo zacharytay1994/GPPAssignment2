@@ -17,6 +17,11 @@ void ChooChoo::Update(const float& dt)
 	if (input_->KeyIsDown('T')) {
 		test_activate_ = true;
 	}
+
+	// Generate new chunk if train is > 60% of the way across the chunk
+	if (((mg_->GetChunkSize().x * mg_->GetTotalChunkNo()) - position_.x) < (mg_->GetChunkSize().x * .6)) {
+		mg_->GenerateMap();
+	}
 }
 
 void ChooChoo::Render()
@@ -105,7 +110,7 @@ bool ChooChoo::MoveTrain(const float& dt)
 	}
 
 	// execute remaining turn amount
-	float threshold = 2.0f / time_to_move_one_tile_;
+	float threshold = 5.0f / time_to_move_one_tile_;
 	if (turn_amount_counter_ > -threshold && turn_amount_counter_ < threshold) {
 		// done turning
 		turn_amount_ = 0.0f;

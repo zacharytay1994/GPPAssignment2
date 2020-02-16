@@ -1,8 +1,8 @@
 #pragma once
 
-#include "Block.h"
+#include "Entity.h"
 
-class Rail : public Block
+class Rail : public Entity
 {
 public:
 	enum class Direction {

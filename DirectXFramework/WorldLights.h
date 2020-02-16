@@ -14,6 +14,7 @@ private:
 	std::shared_ptr<ResourceLibrary> rl;
 	Vecf3 point_light_1_ = { 0.0f, 0.0f, 0.0f }; // Light belonging to the train
 	Vecf3 point_light_2_ = { 0.0f, 0.0f, 0.0f }; // Light belonging to the player
+	Vecf3 point_light_3_ = { 0.0f, 0.0f, 0.0f }; // Light belonging to the player2
 
 	float day_cycle_ = 30.0f;
 	float night_cycle_ = 30.0f;
@@ -35,6 +36,7 @@ public:
 	DirectX::XMVECTOR GetSunPosition();
 	void SetPoint1(const Vecf3& pos);
 	void SetPoint2(const Vecf3& pos);
+	void SetPoint3(const Vecf3& pos);
 	void SetWorldLightScale(const float& f);
 	float GetWorldLightScale();
 	Vecf3 GetDirectionalLight();

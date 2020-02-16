@@ -26,6 +26,7 @@ void WorldLights::BindLight()
 {
 	gfx->UpdateCBLightSubresource({ { point_light_1_.x, point_light_1_.y, point_light_1_.z, 0.5f * world_light_scalar_ },
 		{ point_light_2_.x, point_light_2_.y, point_light_2_.z, 0.5f * world_light_scalar_},
+		{ point_light_3_.x, point_light_3_.y, point_light_3_.z, 0.5f * world_light_scalar_},
 		{ directional_light_.x, directional_light_.y, directional_light_.z, sun_intensity_ * world_light_scalar_} });
 }
 
@@ -50,6 +51,11 @@ void WorldLights::SetPoint1(const Vecf3& pos)
 void WorldLights::SetPoint2(const Vecf3& pos)
 {
 	point_light_2_ = pos;
+}
+
+void WorldLights::SetPoint3(const Vecf3& pos)
+{
+	point_light_3_ = pos;
 }
 
 void WorldLights::SetWorldLightScale(const float& f)

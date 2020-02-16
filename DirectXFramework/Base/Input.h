@@ -85,6 +85,9 @@ public:
 	void TestKeys(HDC hdc, RECT rect);				// visible interface to test virtual key message processing
 	void EndFrame();								// handles all end of frame operations for input
 	Vecf3 GetCameraPosition();
+	void SetCameraPosition(DirectX::XMFLOAT3 pos);
+	float GetCamPitch();
+	void SetCamPitch(const float& cp);
 
 	// Camera Functions
 	void ResetCamera();
