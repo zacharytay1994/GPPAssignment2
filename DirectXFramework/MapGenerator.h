@@ -5,6 +5,7 @@
 #include "Entity.h"
 #include "EntityPool.h"
 #include "FastNoise.h"
+#include "ObjectPool.h"
 #include "PerlinNoise.h"
 #include "Rail.h"
 #include "ResourceLibrary.h"
@@ -91,7 +92,9 @@ private:
 	// Checks if a rail can be placed
 	bool CanAddRail(std::shared_ptr<Rail> r);
 
-	std::shared_ptr<EntityPool> entity_pool;
+	// Resource pools
+	std::shared_ptr<EntityPool> entity_pool_;
+	std::shared_ptr<ObjectPool<Rail, 1152>> rail_pool_;
 
 public:
 	// Constructor

@@ -382,7 +382,7 @@ void Level::PlayerLogic(const char& k1, const char& k2, std::shared_ptr<Player> 
 		}
 		else if (tile->walkable_ && tile->block_type_ != ResourceBlockType::Rail && rail_count_ > 0) {
 			// Spawn rail
-			std::shared_ptr<Rail> r = std::make_shared<Rail>("rail", graphics_, input_, rl_);
+			std::shared_ptr<Rail> r = ObjectPool<Rail, 1152>::getInstance(graphics_, input_, rl_)->Acquire("rail");
 			r->SetScale(Vecf3(0.5f, 0.03125f, 0.5f));
 			r->SetPosition(Vecf3((int)round(player_target.x), -0.5f, (int)round(player_target.z)));
 			// attempt to place rail
