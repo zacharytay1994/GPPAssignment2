@@ -140,7 +140,8 @@ void MapGenerator::GenerateMap()
 					dim = rl_->GetDimensions("rock");
 					e = entity_pool->Acquire("rock");
 					e->SetDrawMode(3);
-					e->SetPosition(Vecf3(x, -0.5f, z));
+					e->SetPosition(Vecf3(x, 20.f, z));
+					std::dynamic_pointer_cast<Block>(e)->MoveTo(Vecf3(x, -0.5f, z));
 					e->SetScale(Vecf3(1 / dim.x, .8 / dim.y, 1 / dim.z));
 					scene_->AddEntity(e);
 					resource_data_[3 * chunk_width_ * z + (total_map_size_ >= 3 ? 48 + (x - total_map_size_ * chunk_width_) : x)] = { ResourceBlockType::Rock, 1, 0, e };
