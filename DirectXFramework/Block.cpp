@@ -61,5 +61,5 @@ void Block::MoveTo(Vecf3 pos)
 	moving_ = true;
 	target_pos_ = pos;
 
-	velocity_.y = (pos.y - position_.y) > 0 ? -2 : 2;
+	velocity_.y = (pos.y - position_.y) < 0 ? -7 : 7;
 }

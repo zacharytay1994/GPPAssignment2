@@ -77,7 +77,7 @@ void Entity::SetDrawMode(const int& drawmode)
 
 void Entity::SetInUse(const bool& b) 
 { 
-	in_use_ = b;
+	if (this != nullptr) in_use_ = b;
 }
 
 void Entity::AddComponent(ComponentPtr component)

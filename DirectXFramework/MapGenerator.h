@@ -91,7 +91,7 @@ private:
 	bool CanAddRail(std::shared_ptr<Rail> r);
 
 	// Resource pools
-	std::shared_ptr<EntityPool> entity_pool_;
+	std::shared_ptr<ObjectPool<Block, 1152>> block_pool_;
 	std::shared_ptr<ObjectPool<Rail, 1152>> rail_pool_;
 
 public:

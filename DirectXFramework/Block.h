@@ -11,12 +11,9 @@ class CollisionManager;
 class Block : public Entity {
 private:
 	bool quaternion_rotate_ = false;
-
 	Vecf3 velocity_ = { 0.0f, 0.0f, 0.0f };
-
 	bool moving_ = false;
 	Vecf3 target_pos_;
-	int time_to_move_ = 3;
 public:
 	Block(const std::string& image, std::shared_ptr<Graphics> gfx, std::shared_ptr<Input> input, std::shared_ptr<ResourceLibrary> rl);
 	void SetScale(const Vecf3& scale);
