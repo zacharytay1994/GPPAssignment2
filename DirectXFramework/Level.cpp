@@ -209,7 +209,7 @@ void Level::PlayerLogic(const char& k1, const char& k2, std::shared_ptr<Player> 
 		MapGenerator::ResourceTileData* tile;
 
 		// Get player heading & check if there is a block in front of the player
-		float y_rot = fmod(player_->GetOrientation().y > 0 ? player_->GetOrientation().y : player_->GetOrientation().y + 2 * PI, 2 * PI);
+		float y_rot = fmod(player->GetOrientation().y > 0 ? player->GetOrientation().y : player->GetOrientation().y + 2 * PI, 2 * PI);
 		if ((y_rot >= 7 * PI / 4) || (y_rot <= PI / 4))
 		{
 			// Facing forward
@@ -243,7 +243,7 @@ void Level::PlayerLogic(const char& k1, const char& k2, std::shared_ptr<Player> 
 	if (input_->KeyWasPressed(k2))
 	{
 		// Check if rail can be placed on player pos
-		MapGenerator::ResourceTileData tile = mapGen_->GetCurrentTile(player_->GetPosition());
+		MapGenerator::ResourceTileData tile = mapGen_->GetCurrentTile(player->GetPosition());
 		if (tile.walkable_ && tile.block_type_ != ResourceBlockType::Rail)
 		{
 			// Spawn rail
