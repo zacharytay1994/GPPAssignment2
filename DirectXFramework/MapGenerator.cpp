@@ -326,13 +326,13 @@ MapGenerator::ResourceTileData** MapGenerator::GetTilesAround(ResourceTileData* 
 
 MapGenerator::ResourceTileData* MapGenerator::GetCurrentTilePtr(const Vecf3& pos)
 {
-	int index = (int)(round(pos.z) * chunk_width_ * 3 + round(pos.x));
+	int index = (pos.z * chunk_width_ * 3) + pos.x;
 	return &(resource_data_[index]);
 }
 
 MapGenerator::ResourceTileData& MapGenerator::GetCurrentTile(const Vecf3& pos)
 {
-	int index = (int)(round(pos.z) * chunk_width_ * 3 + round(pos.x));
+	int index = (pos.z * chunk_width_ * 3) + pos.x;
 	return resource_data_[index];
 }
 
@@ -343,7 +343,7 @@ void MapGenerator::AddResource(ResourceTileData tile)
 	Vecf3 tile_pos = tile.ent_->GetPosition();
 	int index = (int)(round(tile_pos.z) * chunk_width_ * 3 + round(tile_pos.x));
 	resource_data_[index] = tile;
-
+	
 	scene_->AddEntity(tile.ent_);
 }
 

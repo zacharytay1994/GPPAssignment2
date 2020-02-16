@@ -200,7 +200,7 @@ void Level::PlayerLogic(const char& k1, const char& k2, std::shared_ptr<Player> 
 	// Get normalized player pos
 	Vecf3 norm_player_pos = player->GetPosition();
 	norm_player_pos.x = (int)round(player->GetPosition().x) - max(0, (mapGen_->GetTotalChunkNo() - 3) * mapGen_->GetChunkSize().x);
-	norm_player_pos.z = (int)round(player->GetPosition().z) - max(0, (mapGen_->GetTotalChunkNo() - 3) * mapGen_->GetChunkSize().x);
+	norm_player_pos.z = (int)round(player->GetPosition().z);
 
 	// Collect resource if facing block & within 1 block
 	if (input_->KeyWasPressed(k1))
@@ -243,7 +243,7 @@ void Level::PlayerLogic(const char& k1, const char& k2, std::shared_ptr<Player> 
 	if (input_->KeyWasPressed(k2))
 	{
 		// Check if rail can be placed on player pos
-		MapGenerator::ResourceTileData tile = mapGen_->GetCurrentTile(player->GetPosition());
+		MapGenerator::ResourceTileData tile = mapGen_->GetCurrentTile(norm_player_pos);
 		if (tile.walkable_ && tile.block_type_ != ResourceBlockType::Rail)
 		{
 			// Spawn rail
