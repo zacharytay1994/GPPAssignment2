@@ -51,7 +51,7 @@ void BoxyGame::Initialize(HWND hwnd)
 
 	// For le map
 	rl_->AddCubeTexture("grassblock", L"Images/grassblock.png");
-	rl_->AddCubeTexture("startblock", L"Images/startblock.png");
+	rl_->AddPosNormTexModel("startblock", "Models\\ground-block.obj", L"Images/start-block.png");
 	rl_->AddCubeTexture("rail", L"Images/rail.png");
 	rl_->AddCubeTexture("grail", L"Images/ghost-rail.png");
 	rl_->AddCubeTexture("highlight", L"Images/highlight.png");

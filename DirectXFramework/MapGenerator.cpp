@@ -80,13 +80,16 @@ void MapGenerator::GenerateMap()
 			if (abs(x - checkpoint.x) <= 1 && abs(z - checkpoint.z) <= 1) {
 
 				// Spawn block & set ground_data_
+				dim = rl_->GetDimensions("startblock");
 				b = block_pool_->Acquire("startblock");
-				if (total_map_size_ == 0) { b->SetPosition(Vecf3(x, -1.0, z)); }
+				b->SetDrawMode(3);
+				if (total_map_size_ == 0) { b->SetPosition(Vecf3(x, -1.5f, z)); }
 				else
 				{
 					b->SetPosition(Vecf3(x, -(x % chunk_width_), z));
-					b->MoveTo(Vecf3(x, -1.0, z));
+					b->MoveTo(Vecf3(x, -1.5f, z));
 				}
+				b->SetScale(Vecf3(1 / dim.x, 1 / dim.y, 1 / dim.z));
 				scene_->AddEntity(b);
 				ground_data_[3*chunk_width_ * z + (total_map_size_ >= 3 ? 48 + (x - total_map_size_ * chunk_width_) : x)] = { GroundBlockType::Checkpoint, true, std::dynamic_pointer_cast<Entity>(b) };
 
