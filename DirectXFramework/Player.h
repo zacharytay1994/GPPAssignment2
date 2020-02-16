@@ -18,21 +18,34 @@ private:
 	std::shared_ptr<Input> input_;
 	
 public:
-	float movementSpeed = 30;
-	float maxVelocity_ = 30;
-	float frictionPower_ = 5;
-	Vecf3 friction_ = { 0,0,0 };
-	Vecf3 acceleration_ = { 0,0,0 }; 
-	Vecf3 velocity_ = { 0,0,0 };
+	float movementSpeed = 30.0f;
+	float dashSpeed = 40.0f;
+	float maxVelocity_ = 30.0f;
+	float frictionPower_ = 5.0f;
+	Vecf3 friction_ = { 0.0f,0.0f,0.0f };
+	Vecf3 acceleration_ = { 0.0f,0.0f,0.0f };
+	Vecf3 velocity_ = { 0.1f,0.0f,0.0f };
 
-	float current_orientation_ = 0;
-	float desired_orientation_ = 0;
-	float rotation_speed_ = 10;
+	float current_orientation_ = 0.0f;
+	float desired_orientation_ = 0.0f;
+	float rotation_speed_ = 10.0f;
 
-	float movement_time_ = 0;
-	float limb_rotation_speed_ = 10;
+	float movement_time_ = 0.0f;
+	float limb_rotation_speed_ = 10.0f;
 	float arm_max_rotation_ = PI * 30 / 180;
 	float leg_max_rotation_ = PI * 15 / 180;
+
+	float dash_cooldown_ = 1.0f;
+	float dash_cooldown_timer_ = 0.0f;
+
+	float punch_animation_time_ = 0.5f;
+	float punch_animation_timer_ = 0.0f;
+	float punch_animation_timing_ = 0.0f;
+	float punch_speed_ = 50.0f;
+	float punch_amount_ = 0.05;
+
+	std::shared_ptr<Cube> target_;
+	bool draw_target_ = false;
 
 	bool active_ = true;
 	
@@ -41,7 +54,9 @@ public:
 	void Update(const float& dt) override;
 	void Render() override;
 	bool AABBCollision();
+	void SetDrawTarget(bool draw_target);
 
 	Vecf3 GetOrientation() { return cubeModel_.GetOrientation(); };
+	void Punch();
 };
 

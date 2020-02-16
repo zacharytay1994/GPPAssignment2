@@ -41,6 +41,8 @@ public:
 	};
 	// Sorry I need the train reference lol
 	std::shared_ptr<Entity> train_;
+	// Haha same
+	std::shared_ptr<Entity> crafter_; 
 private:
 	std::shared_ptr<Graphics> graphics_;
 	std::shared_ptr<Input> input_;
@@ -127,7 +129,8 @@ public:
 	ResourceTileData& GetCurrentTile(const Vecf3& pos);
 
 	// Add resource to resource_data_
-	void AddResource(ResourceTileData tile);
+	// return true if sucessfully added
+	bool AddResource(ResourceTileData tile);
 
 	// Remove resource from resource_data_
 	void RemoveResource(ResourceTileData* tile);

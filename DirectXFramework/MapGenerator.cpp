@@ -152,16 +152,31 @@ void MapGenerator::GenerateMap()
 
 	// Spawn train in first chunk
 	if (total_map_size_ == 0) {
-		std::shared_ptr<Entity> train = std::dynamic_pointer_cast<Entity>(std::make_shared<ChooChoo>("train", graphics_, input_, rl_, this, scene_->ps_));
-		train->SetDrawMode(2);
-		train->GetCube().SetScaleX(0.0005f);
-		train->GetCube().SetScaleY(0.0005f);
-		train->GetCube().SetScaleZ(0.0005f);
-		train->GetCube().SetAngleXDeg(-90);
-		train->GetCube().SetAngleYDeg(90);
-		train->SetPosition({ checkpoint.x - 1.0f, -0.5, checkpoint.z });
-		scene_->AddEntity(train);
-		train_ = train;
+		std::shared_ptr<ChooChoo> train = std::make_shared<ChooChoo>("enginecart", graphics_, input_, rl_, this, scene_->ps_);
+		train->SetDrawMode(3);
+		train->GetCube().SetScaleX(0.05f);
+		train->GetCube().SetScaleY(0.05f);
+		train->GetCube().SetScaleZ(0.05f);
+		//train->GetCube().SetAngleXDeg(-90);
+		//train->GetCube().SetAngleYDeg(90);
+		train->SetPosition({ checkpoint.x, -0.5 + 0.03125, checkpoint.z });
+		train_ = std::dynamic_pointer_cast<Entity>(train);
+		scene_->AddEntity(train_);
+		
+
+		
+		train->SetChildChoo(std::make_shared<ChooChoo>("craftingcart", graphics_, input_, rl_, this, scene_->ps_),"crafter");
+		train = train->GetChildChoo("crafter");
+		train->SetDrawMode(3);
+		train->GetCube().SetScaleX(0.05f);
+		train->GetCube().SetScaleY(0.05f);
+		train->GetCube().SetScaleZ(0.05f);
+		train->SetPosition({ checkpoint.x - 1.25f, -0.5 + 0.03125, checkpoint.z });
+		crafter_ = std::dynamic_pointer_cast<Entity>(train);
+		scene_->AddEntity(crafter_);
+		
+
+
 	}
 
 	// Increment total_map_size_
@@ -336,15 +351,17 @@ MapGenerator::ResourceTileData& MapGenerator::GetCurrentTile(const Vecf3& pos)
 	return resource_data_[index];
 }
 
-void MapGenerator::AddResource(ResourceTileData tile)
+bool MapGenerator::AddResource(ResourceTileData tile)
 {
-	if (tile.block_type_ == ResourceBlockType::Rail && !CanAddRail(std::dynamic_pointer_cast<Rail>(tile.ent_))) { return; }
+	if (tile.block_type_ == ResourceBlockType::Rail && !CanAddRail(std::dynamic_pointer_cast<Rail>(tile.ent_))) { return false; }
 
 	Vecf3 tile_pos = tile.ent_->GetPosition();
 	int index = (int)(round(tile_pos.z) * chunk_width_ * 3 + round(tile_pos.x));
 	resource_data_[index] = tile;
 
 	scene_->AddEntity(tile.ent_);
+
+	return true;
 }
 
 void MapGenerator::RemoveResource(ResourceTileData* tile)
