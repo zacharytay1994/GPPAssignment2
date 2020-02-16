@@ -5,6 +5,7 @@
 #include "ChooChoo.h"
 
 #include <time.h>
+#include <cmath>
 
 MapGenerator::MapGenerator(std::shared_ptr<Graphics> graphics, std::shared_ptr<Input> input, std::shared_ptr<ResourceLibrary> rl, Scene* scene)
 	:
@@ -326,13 +327,23 @@ MapGenerator::ResourceTileData** MapGenerator::GetTilesAround(ResourceTileData* 
 
 MapGenerator::ResourceTileData* MapGenerator::GetCurrentTilePtr(const Vecf3& pos)
 {
-	int index = (int)(round(pos.z) * chunk_width_ * 3 + round(pos.x));
+	// normalize pos
+	Vecf3 norm_pos = pos;
+	norm_pos.x = (int)round(pos.x) - (std::max)(0, (total_map_size_ - 3) * chunk_width_);
+	norm_pos.z = (int)round(pos.z);
+
+	int index = (int)(round(norm_pos.z) * chunk_width_ * 3 + round(norm_pos.x));
 	return &(resource_data_[index]);
 }
 
 MapGenerator::ResourceTileData& MapGenerator::GetCurrentTile(const Vecf3& pos)
 {
-	int index = (int)(round(pos.z) * chunk_width_ * 3 + round(pos.x));
+	// normalize pos
+	Vecf3 norm_pos = pos;
+	norm_pos.x = (int)round(pos.x) - (std::max)(0, (total_map_size_ - 3) * chunk_width_);
+	norm_pos.z = (int)round(pos.z);
+
+	int index = (int)(round(norm_pos.z) * chunk_width_ * 3 + round(norm_pos.x));
 	return resource_data_[index];
 }
 

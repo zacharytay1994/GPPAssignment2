@@ -51,6 +51,7 @@
     <ClCompile Include="FastNoise.cpp" />
     <ClCompile Include="Button.cpp" />
     <ClCompile Include="SceneGraph.cpp" />
+    <ClCompile Include="Pathfinding.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="assimp\include\assimp\config.h" />
@@ -101,6 +102,7 @@
     <ClInclude Include="SceneGraph.h" />
     <ClInclude Include="EntityPool.h" />
     <ClInclude Include="FastNoise.h" />
+    <ClInclude Include="Pathfinding.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Images\alpha_donald.png" />

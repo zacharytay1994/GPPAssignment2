@@ -10,10 +10,13 @@
 Level::Level(std::shared_ptr<Graphics> gfx, std::shared_ptr<Input> input, std::shared_ptr<ResourceLibrary> rl, Game* game)
 	:
 	Scene(gfx, input, rl, game),
-	mapGen_(std::make_unique<MapGenerator>(graphics_, input_, rl_, this))
+	mapGen_(std::make_shared<MapGenerator>(graphics_, input_, rl_, this)),
+	pathfinder_(std::make_unique<AStarPathfinding>(mapGen_))
 {
 	// Generate initial chunk
 	mapGen_->GenerateMap();
+	pathfinder_->GetGrid().SetGrid();
+	pathfinder_->GetGrid();
 
 	// Create player
 	player_ = AddPlayer({ 0.0f, 1.0f, 1.0f }, { 0.5f, 0.5f, 0.5f });
@@ -37,9 +40,11 @@ void Level::Update(const float& dt)
 		wl_.SetPoint3(player2_->GetPosition() + RotateVectorY(Vecf3(0.0f, 0.0f, 1.0f), -player2_->GetOrientation().y) * 2.0f + Vecf3(0.0f, 1.0f, 0.0f));
 	}
 	else {
-		wl_.SetPoint3({0.0f, -1000.0f, 0.0f});
+		wl_.SetPoint3({ 0.0f, -1000.0f, 0.0f });
 	}
-
+	if (input_->KeyWasPressed('N')) {
+		MapGenerator::ResourceTileData rt = mapGen_->GetCurrentTile({ 1170.0f, 0.0f, 13.0f });
+	}
 	// SET MULTIPLAYER MODE
 	if (input_->KeyWasPressed('M')) {
 		multiplayer_ = !multiplayer_;
@@ -124,7 +129,15 @@ void Level::Update(const float& dt)
 	}
 
 	// Generate new chunk
-	if (input_->KeyWasPressed('G')) mapGen_->GenerateMap();
+	if (input_->KeyWasPressed('G'))
+	{
+		mapGen_->GenerateMap();
+		pathfinder_->GetGrid().SetGrid();
+	}
+	if (input_->KeyWasPressed('L')) {
+		std::vector<Node*> path;
+		pathfinder_->FindPath({ 0,0 }, { 3,0 }, path);
+	}
 
 	PlayerLogic('C', 'R', player_);
 	if (multiplayer_) { PlayerLogic('K', 'L', player2_); }

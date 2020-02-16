@@ -1,13 +1,15 @@
 #pragma once
 
 #include "MapGenerator.h"
+#include "Pathfinding.h"
 #include "Player.h"
 
 class Block;
 class Level : public Scene {
 private:
 	std::shared_ptr<Block> test_block_;
-	std::unique_ptr<MapGenerator> mapGen_ = nullptr;
+	std::shared_ptr<MapGenerator> mapGen_ = nullptr;
+	std::unique_ptr<AStarPathfinding> pathfinder_ = nullptr;
 	std::shared_ptr<Block> giraffe_ = nullptr;
 	std::shared_ptr<Player> player_;
 	std::shared_ptr<Player> player2_;
