@@ -142,8 +142,8 @@ void Level::Update(const float& dt)
 	// Generate new chunk
 	if (input_->KeyWasPressed('G')) mapGen_->GenerateMap();
 
-	PlayerLogic('C', 'R', player_);
-	if (multiplayer_) { PlayerLogic('K', 'L', player2_); }
+	PlayerLogic(VK_SPACE, 'R', player_);
+	if (multiplayer_) { PlayerLogic(VK_LCONTROL, 'L', player2_); }
 
 	//TODO: compare with playerlogic()
 	//// Collect resource if facing block & within 1 block
@@ -342,64 +342,85 @@ void Level::PlayerLogic(const char& k1, const char& k2, std::shared_ptr<Player> 
 	if (input_->KeyWasPressed(k1))
 	{
 		// Placeholder to ResourceTileData, to be used in rotation check
-		MapGenerator::ResourceTileData* tile;
+		//MapGenerator::ResourceTileData* tile;
 
 		// Get player heading & check if there is a block in front of the player
-		float y_rot = fmod(player->GetOrientation().y > 0 ? player->GetOrientation().y : player->GetOrientation().y + 2 * PI, 2 * PI);
-		if ((y_rot >= 7 * PI / 4) || (y_rot <= PI / 4))
-		{
-			// Facing forward
-			tile = mapGen_->GetCurrentTilePtr(Vecf3(norm_player_pos.x, norm_player_pos.y, norm_player_pos.z + 1));
-			
-		}
-		else if (y_rot <= 3 * PI / 4)
-		{
-			// Facing right
-			tile = mapGen_->GetCurrentTilePtr(Vecf3(norm_player_pos.x + 1, norm_player_pos.y, norm_player_pos.z));
-		}
-		else if (y_rot <= 5 * PI / 4)
-		{
-			// Facing downward
-			tile = mapGen_->GetCurrentTilePtr(Vecf3(norm_player_pos.x, norm_player_pos.y, norm_player_pos.z - 1));
-		}
-		else
-		{
-			// Facing left
-			tile = mapGen_->GetCurrentTilePtr(Vecf3(norm_player_pos.x - 1, norm_player_pos.y, norm_player_pos.z));
-		}
+		//float y_rot = fmod(player->GetOrientation().y > 0 ? player->GetOrientation().y : player->GetOrientation().y + 2 * PI, 2 * PI);
+		//if ((y_rot >= 7 * PI / 4) || (y_rot <= PI / 4))
+		//{
+		//	// Facing forward
+		//	tile = mapGen_->GetCurrentTilePtr(Vecf3(norm_player_pos.x, norm_player_pos.y, norm_player_pos.z + 1));
+		//	
+		//}
+		//else if (y_rot <= 3 * PI / 4)
+		//{
+		//	// Facing right
+		//	tile = mapGen_->GetCurrentTilePtr(Vecf3(norm_player_pos.x + 1, norm_player_pos.y, norm_player_pos.z));
+		//}
+		//else if (y_rot <= 5 * PI / 4)
+		//{
+		//	// Facing downward
+		//	tile = mapGen_->GetCurrentTilePtr(Vecf3(norm_player_pos.x, norm_player_pos.y, norm_player_pos.z - 1));
+		//}
+		//else
+		//{
+		//	// Facing left
+		//	tile = mapGen_->GetCurrentTilePtr(Vecf3(norm_player_pos.x - 1, norm_player_pos.y, norm_player_pos.z));
+		//}
 
+		Vecf3 player_target = { player->target_->GetX() , player->target_->GetY() ,player->target_->GetZ() };
+		MapGenerator::ResourceTileData* tile= mapGen_->GetCurrentTilePtr(player_target);
+
+		// break block
 		if (tile->breakable_)
 		{
 			EmitDestructionParticles(tile->block_type_, tile->ent_->GetPosition());
 			mapGen_->RemoveResource(tile);
 			player->Punch();
 		}
-
-	}
-
-	// Place rail
-	if (input_->KeyWasPressed(k2))
-	{
-		// Check if rail can be placed on player pos
-		Vecf3 targetTile = { player->target_->GetX(), player->target_->GetY() ,player->target_->GetZ() };
-		MapGenerator::ResourceTileData tile = mapGen_->GetCurrentTile(targetTile);
-		if (tile.walkable_ && tile.block_type_ != ResourceBlockType::Rail && rail_count_ > 0)
-		{
+		else if (tile->walkable_ && tile->block_type_ != ResourceBlockType::Rail && rail_count_ > 0) {
 			// Spawn rail
 			std::shared_ptr<Rail> r = std::make_shared<Rail>("rail", graphics_, input_, rl_);
 			r->SetScale(Vecf3(0.5f, 0.03125f, 0.5f));
-			r->SetPosition(Vecf3((int)round(targetTile.x), -0.5f, (int)round(targetTile.z)));
+			r->SetPosition(Vecf3((int)round(player_target.x), -0.5f, (int)round(player_target.z)));
+			// attempt to place rail
 			if (mapGen_->AddResource({ ResourceBlockType::Rail, 0, 1, r })) {
 				rail_count_ -= 1;
 				gui_.AddResource({ 1.0f, 2, -1 });
-			}
-			else {
+			} 
+			else { // fail to place rail
 				CraftRails(player);
 			}
-			
-		}
+		} // no action available, attempt to craft rails
 		else {
 			CraftRails(player);
 		}
+
 	}
+
+	//// Place rail
+	//if (input_->KeyWasPressed(k2))
+	//{
+	//	// Check if rail can be placed on player pos
+	//	Vecf3 targetTile = { player->target_->GetX(), player->target_->GetY() ,player->target_->GetZ() };
+	//	MapGenerator::ResourceTileData tile = mapGen_->GetCurrentTile(targetTile);
+	//	if (tile.walkable_ && tile.block_type_ != ResourceBlockType::Rail && rail_count_ > 0)
+	//	{
+	//		// Spawn rail
+	//		std::shared_ptr<Rail> r = std::make_shared<Rail>("rail", graphics_, input_, rl_);
+	//		r->SetScale(Vecf3(0.5f, 0.03125f, 0.5f));
+	//		r->SetPosition(Vecf3((int)round(targetTile.x), -0.5f, (int)round(targetTile.z)));
+	//		if (mapGen_->AddResource({ ResourceBlockType::Rail, 0, 1, r })) {
+	//			rail_count_ -= 1;
+	//			gui_.AddResource({ 1.0f, 2, -1 });
+	//		}
+	//		else {
+	//			CraftRails(player);
+	//		}
+	//		
+	//	}
+	//	else {
+	//		CraftRails(player);
+	//	}
+	//}
 }
