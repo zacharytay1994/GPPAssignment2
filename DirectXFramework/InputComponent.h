@@ -8,8 +8,12 @@ class InputComponent :
 {
 private:
 	Input& input_;
+	char up_;
+	char down_;
+	char left_;
+	char right_;
 public:
-	InputComponent(Entity& owner, Input& input);
+	InputComponent(Entity& owner, Input& input, const char& up, const char& down, const char& left, const char& right);
 	void Update(const float& frametime) override;
 	void Render() override;
 };

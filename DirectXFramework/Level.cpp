@@ -17,7 +17,10 @@ Level::Level(std::shared_ptr<Graphics> gfx, std::shared_ptr<Input> input, std::s
 
 	// Create player
 	player_ = AddPlayer({ 0.0f, 1.0f, 1.0f }, { 0.5f, 0.5f, 0.5f });
-	player_->AddComponent(std::make_shared<InputComponent>(InputComponent(*player_, *input_)));
+	player_->AddComponent(std::make_shared<InputComponent>(InputComponent(*player_, *input_, 'W', 'S', 'A', 'D')));
+	player2_ = AddPlayer({ 0.0f, 1.0f, 1.0f }, { 0.5f, 0.5f, 0.5f });
+	player2_->AddComponent(std::make_shared<InputComponent>(InputComponent(*player2_, *input_, VK_UP, VK_DOWN, VK_LEFT, VK_RIGHT)));
+	player2_->active_ = false;
 }
 
 void Level::Update(const float& dt)
@@ -30,10 +33,77 @@ void Level::Update(const float& dt)
 
 	wl_.SetPoint1(player_->GetPosition() + RotateVectorY(Vecf3(0.0f, 0.0f, 1.0f), -player_->GetOrientation().y) * 2.0f + Vecf3(0.0f, 1.0f, 0.0f));
 	wl_.SetPoint2(mapGen_->train_->GetPosition() + RotateVectorY(Vecf3(0.0f, 0.0f, 1.0f), -(mapGen_->train_->GetCube().GetAngleY())) * 2.0f + Vecf3(0.0f, 1.0f, 0.0f));
-
-	if (input_->KeyWasPressed('P')) {
-		gui_.AddResource({ 1.0f, 0 });
+	if (multiplayer_) {
+		wl_.SetPoint3(player2_->GetPosition() + RotateVectorY(Vecf3(0.0f, 0.0f, 1.0f), -player2_->GetOrientation().y) * 2.0f + Vecf3(0.0f, 1.0f, 0.0f));
 	}
+	else {
+		wl_.SetPoint3({0.0f, -1000.0f, 0.0f});
+	}
+
+	// SET MULTIPLAYER MODE
+	if (input_->KeyWasPressed('M')) {
+		multiplayer_ = !multiplayer_;
+		if (multiplayer_) {
+			player2_->active_ = true;
+			player2_->SetPosition(player_->GetPosition());
+		}
+		else {
+			player2_->active_ = false;
+		}
+	}
+	/*__________________________________*/
+	// CAMERA TRACKING MODE
+	/*__________________________________*/
+	if (multiplayer_) { camera_mode_ = 2; }
+	Vecf3 cam_to_target;
+	switch (camera_mode_) {
+	case 0: // free roam
+		break;
+	case 1: // third person
+		cam_to_target = ((player_->GetPosition() + Vecf3(0.0f, 3.0f, -4.0f)) - input_->GetCameraPosition());
+		if (!(cam_to_target.LenSq() < 0.1f)) {
+			input_->TranslateCamera({ cam_to_target.x, cam_to_target.y, cam_to_target.z }, dt);
+		}
+		if (abs(0.60f - input_->GetCamPitch()) > 0.05f) {
+			input_->SetCamPitch(input_->GetCamPitch() + (0.60f - input_->GetCamPitch()) * dt * 2.0f);
+		}
+		break;
+	case 2: // top down
+		if (multiplayer_) {
+			Vecf3 center = player2_->GetPosition() - player_->GetPosition();
+			float distance = center.Len();
+			center = player_->GetPosition() + (center / 2.0f);
+			cam_to_target = ((center + Vecf3(0.0f, 5.0f + distance * 0.5f, -2.0f - distance * 0.1f)) - input_->GetCameraPosition());
+		}
+		else {
+			cam_to_target = ((player_->GetPosition() + Vecf3(0.0f, 8.0f, -2.0f)) - input_->GetCameraPosition());
+		}
+		if (!(cam_to_target.LenSq() < 0.1f)) {
+			input_->TranslateCamera({ cam_to_target.x, cam_to_target.y, cam_to_target.z }, dt);
+		}
+		if (abs(1.20f - input_->GetCamPitch()) > 0.05f) {
+			input_->SetCamPitch(input_->GetCamPitch() + (1.20f - input_->GetCamPitch()) * dt * 2.0f);
+		}
+		break;
+	case 3: // follow train
+		Vecf3 tempvec = (mapGen_->train_->GetPosition() + Vecf3(0.0f, 10.0f, -5.0f));
+		tempvec.z = 4.0f;
+		cam_to_target = (tempvec - input_->GetCameraPosition());
+		if (!(cam_to_target.LenSq() < 0.1f)) {
+			input_->TranslateCamera({ cam_to_target.x, cam_to_target.y, cam_to_target.z }, dt);
+		}
+		if (abs(1.40f - input_->GetCamPitch()) > 0.05f) {
+			input_->SetCamPitch(input_->GetCamPitch() + (1.40f - input_->GetCamPitch()) * dt * 2.0f);
+		}
+		break;
+	}
+	/*__________________________________*/
+	// CAMERA SWITCH MODE
+	/*__________________________________*/
+	if (input_->KeyWasPressed('P')) {
+		camera_mode_ = (camera_mode_ + 1) > 3 ? 0 : (camera_mode_ + 1);
+	}
+
 	// <--- test code can remove if need be
 	if (input_->KeyWasPressed('B')) {
 		start_spawning_ = true;
@@ -53,64 +123,11 @@ void Level::Update(const float& dt)
 		}
 	}
 
-	// Get normalized player pos
-	Vecf3 norm_player_pos = player_->GetPosition();
-	norm_player_pos.x = (int)round(player_->GetPosition().x) - max(0, (mapGen_->GetTotalChunkNo() - 3) * mapGen_->GetChunkSize().x);
-	norm_player_pos.z = (int)round(player_->GetPosition().z) - max(0, (mapGen_->GetTotalChunkNo() - 3) * mapGen_->GetChunkSize().x);
-
 	// Generate new chunk
 	if (input_->KeyWasPressed('G')) mapGen_->GenerateMap();
 
-	// Collect resource if facing block & within 1 block
-	if (input_->KeyWasPressed('C')) 
-	{
-		// Placeholder to ResourceTileData, to be used in rotation check
-		MapGenerator::ResourceTileData* tile;
-
-		// Get player heading & check if there is a block in front of the player
-		float y_rot = fmod(player_->GetOrientation().y > 0 ? player_->GetOrientation().y : player_->GetOrientation().y + 2*PI, 2*PI);
-		if ((y_rot >= 7*PI/4) || (y_rot <= PI/4)) 
-		{
-			// Facing forward
-			tile = mapGen_->GetCurrentTilePtr(Vecf3(norm_player_pos.x, norm_player_pos.y, norm_player_pos.z + 1));
-		} 
-		else if (y_rot <= 3*PI/4) 
-		{
-			// Facing right
-			tile = mapGen_->GetCurrentTilePtr(Vecf3(norm_player_pos.x + 1, norm_player_pos.y, norm_player_pos.z));
-		}
-		else if (y_rot <= 5 * PI / 4) 
-		{
-			// Facing downward
-			tile = mapGen_->GetCurrentTilePtr(Vecf3(norm_player_pos.x, norm_player_pos.y, norm_player_pos.z - 1));
-		}
-		else
-		{
-			// Facing left
-			tile = mapGen_->GetCurrentTilePtr(Vecf3(norm_player_pos.x - 1, norm_player_pos.y, norm_player_pos.z));
-		}
-
-		if (tile->breakable_) 
-		{
-			EmitDestructionParticles(tile->block_type_, tile->ent_->GetPosition());
-			mapGen_->RemoveResource(tile);
-		}
-
-	}
-	// Place rail
-	if (input_->KeyWasPressed('R')) 
-	{	
-		// Check if rail can be placed on player pos
-		MapGenerator::ResourceTileData tile = mapGen_->GetCurrentTile(player_->GetPosition());
-		if (tile.walkable_ && tile.block_type_ != ResourceBlockType::Rail) 
-		{
-			// Spawn rail
-			std::shared_ptr<Rail> r = std::make_shared<Rail>("rail", graphics_, input_, rl_);
-			r->SetScale(Vecf3(0.5f, 0.03125f, 0.5f));
-			r->SetPosition(Vecf3((int)round(norm_player_pos.x), -0.5f, (int)round(norm_player_pos.z)));
-			mapGen_->AddResource({ ResourceBlockType::Rail, 0, 1, r });
-		}
-	}
+	PlayerLogic('C', 'R', player_);
+	if (multiplayer_) { PlayerLogic('K', 'L', player2_); }
 }
 
 void Level::Render(const float& dt)
@@ -134,7 +151,7 @@ void Level::Render(const float& dt)
 		std::stringstream ss;
 		ss << "Score:" << gui_.GetTrainX();
 		gui_.DrawString({ -0.55f, -0.2f, 0.0f }, 0.08f, ss.str());
-		gui_.DrawString({ -0.92f, -0.4f, 0.0f }, 0.035f, "- Press Enter To Main Menu -");
+		gui_.DrawString({ -0.94f, -0.4f, 0.0f }, 0.035f, "- Press Enter To Main Menu -");
 
 		if (input_->KeyWasPressed(VK_RETURN)) {
 			ChangeScene("mainmenu");
@@ -175,5 +192,65 @@ void Level::EmitDestructionParticles(const ResourceBlockType& type, const Vecf3&
 		gui_.AddResource({ 1.0f, 1 });
 
 		break;
+	}
+}
+
+void Level::PlayerLogic(const char& k1, const char& k2, std::shared_ptr<Player> player)
+{
+	// Get normalized player pos
+	Vecf3 norm_player_pos = player->GetPosition();
+	norm_player_pos.x = (int)round(player->GetPosition().x) - max(0, (mapGen_->GetTotalChunkNo() - 3) * mapGen_->GetChunkSize().x);
+	norm_player_pos.z = (int)round(player->GetPosition().z) - max(0, (mapGen_->GetTotalChunkNo() - 3) * mapGen_->GetChunkSize().x);
+
+	// Collect resource if facing block & within 1 block
+	if (input_->KeyWasPressed(k1))
+	{
+		// Placeholder to ResourceTileData, to be used in rotation check
+		MapGenerator::ResourceTileData* tile;
+
+		// Get player heading & check if there is a block in front of the player
+		float y_rot = fmod(player_->GetOrientation().y > 0 ? player_->GetOrientation().y : player_->GetOrientation().y + 2 * PI, 2 * PI);
+		if ((y_rot >= 7 * PI / 4) || (y_rot <= PI / 4))
+		{
+			// Facing forward
+			tile = mapGen_->GetCurrentTilePtr(Vecf3(norm_player_pos.x, norm_player_pos.y, norm_player_pos.z + 1));
+		}
+		else if (y_rot <= 3 * PI / 4)
+		{
+			// Facing right
+			tile = mapGen_->GetCurrentTilePtr(Vecf3(norm_player_pos.x + 1, norm_player_pos.y, norm_player_pos.z));
+		}
+		else if (y_rot <= 5 * PI / 4)
+		{
+			// Facing downward
+			tile = mapGen_->GetCurrentTilePtr(Vecf3(norm_player_pos.x, norm_player_pos.y, norm_player_pos.z - 1));
+		}
+		else
+		{
+			// Facing left
+			tile = mapGen_->GetCurrentTilePtr(Vecf3(norm_player_pos.x - 1, norm_player_pos.y, norm_player_pos.z));
+		}
+
+		if (tile->breakable_)
+		{
+			EmitDestructionParticles(tile->block_type_, tile->ent_->GetPosition());
+			mapGen_->RemoveResource(tile);
+		}
+
+	}
+
+	// Place rail
+	if (input_->KeyWasPressed(k2))
+	{
+		// Check if rail can be placed on player pos
+		MapGenerator::ResourceTileData tile = mapGen_->GetCurrentTile(player_->GetPosition());
+		if (tile.walkable_ && tile.block_type_ != ResourceBlockType::Rail)
+		{
+			// Spawn rail
+			std::shared_ptr<Rail> r = std::make_shared<Rail>("rail", graphics_, input_, rl_);
+			r->SetScale(Vecf3(0.5f, 0.03125f, 0.5f));
+			r->SetPosition(Vecf3((int)round(norm_player_pos.x), -0.5f, (int)round(norm_player_pos.z)));
+			mapGen_->AddResource({ ResourceBlockType::Rail, 0, 1, r });
+		}
 	}
 }

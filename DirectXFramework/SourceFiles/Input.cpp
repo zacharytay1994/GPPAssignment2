@@ -394,6 +394,33 @@ Vecf3 Input::GetCameraPosition()
 	return { cam_x_, cam_y_, cam_z_ };
 }
 
+void Input::SetCameraPosition(DirectX::XMFLOAT3 pos)
+{
+	using namespace DirectX;
+	XMFLOAT3 xz = pos;
+	XMStoreFloat3(&xz, XMVector3Transform(
+		XMLoadFloat3(&xz),
+		XMMatrixRotationRollPitchYaw(cam_pitch_, cam_yaw_, 0.0f)
+	));
+	cam_x_ = xz.x;
+	cam_z_ = xz.z;
+	XMFLOAT3 y = pos;
+	cam_y_ = y.y;
+}
+
+float Input::GetCamPitch()
+{
+	return cam_pitch_;
+}
+
+void Input::SetCamPitch(const float& cp)
+{
+	float temp;
+	temp = cp < -1.571f * 0.9f ? -1.571 * 0.9f : cp;
+	temp = temp > 1.571f * 0.9f ? 1.571f * 0.9f : temp;
+	cam_pitch_ = temp;
+}
+
 void Input::ResetCamera()
 {
 	mouse_raw_x_ = 0;

@@ -33,6 +33,8 @@ public:
 	float limb_rotation_speed_ = 10;
 	float arm_max_rotation_ = PI * 30 / 180;
 	float leg_max_rotation_ = PI * 15 / 180;
+
+	bool active_ = true;
 	
 	Player(std::shared_ptr<Graphics> gfx, std::shared_ptr<Input> input, std::shared_ptr<ResourceLibrary> rl);
 

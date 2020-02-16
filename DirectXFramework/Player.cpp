@@ -35,6 +35,9 @@ Player::Player(std::shared_ptr<Graphics> gfx, std::shared_ptr<Input> input, std:
 
 void Player::Update(const float& dt)
 {
+	if (!active_) {
+		return;
+	}
 	Entity::Update(dt);
 
 	velocity_ += acceleration_ * dt;
@@ -118,6 +121,9 @@ void Player::Update(const float& dt)
 void Player::Render()
 {
 	//cube_.Draw(dt);
+	if (!active_) {
+		return;
+	}
 	cubeModel_.Draw();
 	//scene_graph_->Draw();
 }
