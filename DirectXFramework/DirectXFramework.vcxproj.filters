@@ -101,6 +101,7 @@
     <ClInclude Include="SceneGraph.h" />
     <ClInclude Include="EntityPool.h" />
     <ClInclude Include="FastNoise.h" />
+    <ClInclude Include="ObjectPool.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Images\alpha_donald.png" />

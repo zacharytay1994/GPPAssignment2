@@ -20,7 +20,8 @@ MapGenerator::MapGenerator(std::shared_ptr<Graphics> graphics, std::shared_ptr<I
 	fn_->SetFrequency(.3);
 	fn_->SetCellularDistanceFunction(FastNoise::CellularDistanceFunction::Natural);
 
-	entity_pool = EntityPool::getInstance(graphics_, input_, rl_);
+	entity_pool_ = EntityPool::getInstance(graphics_, input_, rl_);
+	rail_pool_ = ObjectPool<Rail, 1152>::getInstance(graphics_, input_, rl_);
 }
 
 void MapGenerator::GenerateMap()
@@ -33,8 +34,18 @@ void MapGenerator::GenerateMap()
 		{
 			for (int x = 0; x < chunk_width_; x++)
 			{
-				if (resource_data_[3 * chunk_width_ * z + x].ent_) entity_pool->Release(resource_data_[3 * chunk_width_ * z + x].ent_);
-				if (ground_data_[3 * chunk_width_ * z + x].ent_) entity_pool->Release(ground_data_[3 * chunk_width_ * z + x].ent_);
+				ResourceTileData tile = resource_data_[3 * chunk_width_ * z + x];
+				if (tile.ent_) 
+				{
+					switch (tile.block_type_)
+					{
+						case ResourceBlockType::Rail:
+							rail_pool_->Release(std::dynamic_pointer_cast<Rail>(tile.ent_));
+						default:
+							entity_pool_->Release(tile.ent_);
+					}
+				}
+				if (ground_data_[3 * chunk_width_ * z + x].ent_) entity_pool_->Release(ground_data_[3 * chunk_width_ * z + x].ent_);
 			}
 		}
 
@@ -66,7 +77,7 @@ void MapGenerator::GenerateMap()
 			if (abs(x - checkpoint.x) <= 1 && abs(z - checkpoint.z) <= 1) {
 
 				// Spawn block & set ground_data_
-				e = entity_pool->Acquire("startblock");
+				e = entity_pool_->Acquire("startblock");
 				e->SetPosition(Vecf3(x, -1.0, z));
 				scene_->AddEntity(e);
 				ground_data_[3*chunk_width_ * z + (total_map_size_ >= 3 ? 48 + (x - total_map_size_ * chunk_width_) : x)] = { GroundBlockType::Checkpoint, true, e };
@@ -76,7 +87,7 @@ void MapGenerator::GenerateMap()
 
 				// Spawn block & set ground_data_
 				dim = rl_->GetDimensions("gndblk");
-				e = entity_pool->Acquire("gndblk");
+				e = entity_pool_->Acquire("gndblk");
 				e->SetDrawMode(3);
 				e->SetPosition(Vecf3(x, -1.5f, z));
 				e->SetScale(Vecf3(1 / dim.x, 1 / dim.y, 1 / dim.z));
@@ -91,7 +102,7 @@ void MapGenerator::GenerateMap()
 			if ((z - checkpoint.z) == 0 && abs(x - checkpoint.x) <= 1) {
 
 				// temp rails
-				std::shared_ptr<Rail> r = std::make_shared<Rail>("rail", graphics_, input_, rl_);
+				std::shared_ptr<Rail> r = rail_pool_->Acquire("rail");
 				r->SetScale(Vecf3(0.5, 0.03125, 0.5));
 				r->SetPosition(Vecf3(x, -0.5f, z));
 				AddResource({ ResourceBlockType::Rail, 0, 1, r });
@@ -108,37 +119,33 @@ void MapGenerator::GenerateMap()
 				// Generate voronoi noise value for current block
 				vn = fn_->GetCellular(x, z);
 
-				if (vn < -.3) {
+				if (vn < -.3) 
+				{
 					// Spawn tree & set resource_data_
 					dim = rl_->GetDimensions("tree");
-					e = entity_pool->Acquire("tree");
+					e = entity_pool_->Acquire("tree");
 					e->SetDrawMode(3);
 					e->SetPosition(Vecf3(x, -0.5f, z));
 					e->SetScale(Vecf3(1 / dim.x, 1.5 / dim.y, 1 / dim.z));
 					scene_->AddEntity(e);
 					resource_data_[3 * chunk_width_ * z + (total_map_size_ >= 3 ? 48 + (x - total_map_size_ * chunk_width_) : x)] = { ResourceBlockType::Tree, 1, 0, e };
 				}
-				else if (vn < .1) {
-
+				else if (vn < .1) 
+				{
 					// Spawn unbreakable rock & set resource_data_
 					dim = rl_->GetDimensions("unbreakablerock");
-					e = entity_pool->Acquire("unbreakablerock");
+					e = entity_pool_->Acquire("unbreakablerock");
 					e->SetDrawMode(3);
 					e->SetPosition(Vecf3(x, -0.5f, z));
 					e->SetScale(Vecf3(1 / dim.x, .9 / dim.y, 1 / dim.z));
 					scene_->AddEntity(e);
 					resource_data_[3 * chunk_width_ * z + (total_map_size_ >= 3 ? 48 + (x - total_map_size_ * chunk_width_) : x)] = { ResourceBlockType::Unbreakable, 0, 0, e };
 				}
-				//else if (vn < .5) {
-
-				//	// Set resource_data_
-				//	resource_data_[3 * chunk_width_ * z + (total_map_size_ >= 3 ? 48 + (x - total_map_size_ * chunk_width_) : x)] = { ResourceBlockType::Air, 0, 1, nullptr };
-
-				//}
-				else {
+				else 
+				{
 					// Spawn rock & set resource_data_
 					dim = rl_->GetDimensions("rock");
-					e = entity_pool->Acquire("rock");
+					e = entity_pool_->Acquire("rock");
 					e->SetDrawMode(3);
 					e->SetPosition(Vecf3(x, -0.5f, z));
 					e->SetScale(Vecf3(1 / dim.x, .8 / dim.y, 1 / dim.z));
@@ -260,13 +267,18 @@ bool MapGenerator::CanAddRail(std::shared_ptr<Rail> r)
 					}
 				}
 			}
-			else { return false; }
+			else 
+			{ 
+				rail_pool_->Release(r);
+				return false; 
+			}
 
  			rails_.push_back(r);
 			return true;
 
 		}
 	}
+	rail_pool_->Release(r);
 	return false;
 }
 
@@ -349,6 +361,6 @@ void MapGenerator::AddResource(ResourceTileData tile)
 
 void MapGenerator::RemoveResource(ResourceTileData* tile)
 {
-	entity_pool->Release(tile->ent_);
+	entity_pool_->Release(tile->ent_);
 	*(tile) = { ResourceBlockType::Air, 0, 1, nullptr };;
 }

@@ -1,5 +1,9 @@
 #pragma once
 
+#include "Base/Graphics.h"
+#include "Base/Input.h"
+#include "ResourceLibrary.h"
+
 #include <string>
 #include <iostream>
 #include <list>
