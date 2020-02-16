@@ -2,6 +2,8 @@
 #include "MathStuff.h"
 
 ParticleSystem::ParticleSystem(std::shared_ptr<Graphics> gfx, std::shared_ptr<Input> input, std::shared_ptr<ResourceLibrary> rl)
+	:
+	particle_pool_(ObjectPool<Particle, pool_size_>::getInstance(gfx, input, rl))
 {
 	InitializeParticles(gfx, input, rl);
 }
@@ -9,16 +11,16 @@ ParticleSystem::ParticleSystem(std::shared_ptr<Graphics> gfx, std::shared_ptr<In
 void ParticleSystem::Update(const float& dt)
 {
 	for (int i = 0; i < pool_size_; i++) {
-		if (particle_pool_[i].activated_) {
-			particle_pool_[i].Update(dt);
+		if (particles_[i]->activated_) {
+			particles_[i]->Update(dt);
 			// apply gravity to activated particles
-			particle_pool_[i].ApplyGravitationalForce(gravity_ * dt);
+			particles_[i]->ApplyGravitationalForce(gravity_ * dt);
 			// apply camera suck force
-			if (particle_pool_[i].start_sucking_) {
-				particle_pool_[i].ApplyForceToCamera((camera_suck_position_ - particle_pool_[i].GetPosition()).GetNormalized() * 240.0f * dt);
+			if (particles_[i]->start_sucking_) {
+				particles_[i]->ApplyForceToCamera((camera_suck_position_ - particles_[i]->GetPosition()).GetNormalized() * 240.0f * dt);
 			}
 			// deactivte when too low
-			particle_pool_[i].CheckActivated(deactivating_threshold_, camera_suck_position_.y);
+			particles_[i]->CheckActivated(deactivating_threshold_, camera_suck_position_.y);
 		}
 	}
 }
@@ -26,8 +28,8 @@ void ParticleSystem::Update(const float& dt)
 void ParticleSystem::Render()
 {
 	for (int i = 0; i < pool_size_; i++) {
-		if (particle_pool_[i].activated_) {
-			particle_pool_[i].Render();
+		if (particles_[i]->activated_) {
+			particles_[i]->Render();
 		}
 	}
 }
@@ -35,8 +37,8 @@ void ParticleSystem::Render()
 void ParticleSystem::InitializeParticles(std::shared_ptr<Graphics> gfx, std::shared_ptr<Input> input, std::shared_ptr<ResourceLibrary> rl)
 {
 	for (int i = 0; i < pool_size_; i++) {
-		particle_pool_.push_back(Particle("grassblock", gfx, input, rl));
-		particle_pool_[i].cube_.SetDrawMode(5);
+		particles_.push_back(particle_pool_->Acquire("grassblock"));
+		particles_[i]->cube_.SetDrawMode(5);
 	}
 }
 
@@ -46,18 +48,18 @@ bool ParticleSystem::EmitSphere(const int& count, const Vecf3& position, const f
 	// check if there are enough particles
 	for (int i = 0; i < pool_size_; i++) {
 		if (counting > 0) {
-			if (!particle_pool_[i].activated_) {
+			if (!particles_[i]->activated_) {
 				// activate this particle
-				particle_pool_[i].activated_ = true;
+				particles_[i]->activated_ = true;
 				// find random position around emit position
 				Vecf3 angle_vec = GetRandAngle();
-				particle_pool_[i].GetCube().SetColour(color);
-				particle_pool_[i].GetCube().SetScaleX(scale);
-				particle_pool_[i].GetCube().SetScaleY(scale);
-				particle_pool_[i].GetCube().SetScaleZ(scale);
-				particle_pool_[i].SetMass(mass);
-				particle_pool_[i].SetPosition(position + angle_vec  * Randf(0.0f, radius));
-				particle_pool_[i].ApplyForce(angle_vec * intensity);
+				particles_[i]->GetCube().SetColour(color);
+				particles_[i]->GetCube().SetScaleX(scale);
+				particles_[i]->GetCube().SetScaleY(scale);
+				particles_[i]->GetCube().SetScaleZ(scale);
+				particles_[i]->SetMass(mass);
+				particles_[i]->SetPosition(position + angle_vec  * Randf(0.0f, radius));
+				particles_[i]->ApplyForce(angle_vec * intensity);
 				counting--;
 			}
 		}

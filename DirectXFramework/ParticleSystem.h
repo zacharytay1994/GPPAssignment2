@@ -1,12 +1,14 @@
 #pragma once
 
+#include "ObjectPool.h"
 #include "Particle.h"
 #include <vector>
 
 class ParticleSystem {
 private:
-	int pool_size_ = 100;
-	std::vector<Particle> particle_pool_;
+	static const int pool_size_ = 100;
+	std::vector<std::shared_ptr<Particle>> particles_;
+	std::shared_ptr<ObjectPool<Particle, 100>> particle_pool_;
 
 	// particle physics
 	float deactivating_threshold_ = -2.0f;
