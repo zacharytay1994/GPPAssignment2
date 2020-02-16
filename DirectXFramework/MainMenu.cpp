@@ -14,6 +14,7 @@ MainMenu::MainMenu(std::shared_ptr<Graphics> gfx, std::shared_ptr<Input> input, 
 	player2_ = AddPlayer({ 0.0f, 1.0f, 1.0f }, { 0.5f, 0.5f, 0.5f });
 	player2_->AddComponent(std::make_shared<InputComponent>(InputComponent(*player2_, *input_, VK_UP, VK_DOWN, VK_LEFT, VK_RIGHT, VK_RSHIFT)));
 	player2_->active_ = false;
+	player2_->SetPlayer2();
 
 	std::shared_ptr<Entity> tempEntity;
 	Vecf3 tempDimension;

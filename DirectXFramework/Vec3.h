@@ -16,7 +16,7 @@ public:
 	{}
 	Vec3(const Vec3& vec3)
 		:
-		Vec3(vec3.x, vec3.y, vec3.z)
+  		Vec3(vec3.x, vec3.y, vec3.z)
 	{}
 	template <typename T2>
 	explicit operator Vec3<T2>() const

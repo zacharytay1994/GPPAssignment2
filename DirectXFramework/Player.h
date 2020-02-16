@@ -18,6 +18,9 @@ private:
 	std::shared_ptr<Input> input_;
 	
 public:
+	bool player_2_ = false;
+	bool active_ = true;
+
 	float movementSpeed = 30.0f;
 	float dashSpeed = 40.0f;
 	float maxVelocity_ = 30.0f;
@@ -47,7 +50,7 @@ public:
 	std::shared_ptr<Cube> target_;
 	bool draw_target_ = false;
 
-	bool active_ = true;
+
 	
 	Player(std::shared_ptr<Graphics> gfx, std::shared_ptr<Input> input, std::shared_ptr<ResourceLibrary> rl);
 
@@ -58,5 +61,6 @@ public:
 
 	Vecf3 GetOrientation() { return cubeModel_.GetOrientation(); };
 	void Punch();
+	void SetPlayer2();
 };
 

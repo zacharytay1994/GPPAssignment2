@@ -23,6 +23,7 @@ Level::Level(std::shared_ptr<Graphics> gfx, std::shared_ptr<Input> input, std::s
 	player2_->AddComponent(std::make_shared<InputComponent>(InputComponent(*player2_, *input_, VK_UP, VK_DOWN, VK_LEFT, VK_RIGHT, VK_RSHIFT)));
 	player2_->active_ = false;
 	player2_->SetDrawTarget(true);
+	player2_->SetPlayer2();
 	//player_->AddComponent(std::make_shared<InputComponent>(InputComponent(*player_, *input_)));
 
 	//target_block_ = AddBlock("highlight", player_->GetPosition(), {  });
@@ -143,7 +144,8 @@ void Level::Update(const float& dt)
 	if (input_->KeyWasPressed('G')) mapGen_->GenerateMap();
 
 	PlayerLogic(VK_SPACE, 'R', player_);
-	if (multiplayer_) { PlayerLogic(VK_LCONTROL, 'L', player2_); }
+	
+	if (multiplayer_) { PlayerLogic(VK_CONTROL, 'L', player2_); } // VK_RCONTROL doesn't work for me...
 
 	//TODO: compare with playerlogic()
 	//// Collect resource if facing block & within 1 block
