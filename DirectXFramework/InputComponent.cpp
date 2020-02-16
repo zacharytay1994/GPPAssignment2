@@ -50,6 +50,7 @@ void InputComponent::Update(const float& frametime)
 			player->dash_cooldown_timer_ = player->dash_cooldown_;
 			//player->velocity_ *= 5;
 			player->velocity_ = player->velocity_.GetNormalized() * player->dashSpeed;
+			player->velocity_.y = 0.0f;
 		}
 		
 	}
