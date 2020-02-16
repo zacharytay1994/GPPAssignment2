@@ -326,13 +326,13 @@ MapGenerator::ResourceTileData** MapGenerator::GetTilesAround(ResourceTileData* 
 
 MapGenerator::ResourceTileData* MapGenerator::GetCurrentTilePtr(const Vecf3& pos)
 {
-	int index = (pos.z * chunk_width_ * 3) + pos.x;
+	int index = (int)(round(pos.z) * chunk_width_ * 3 + round(pos.x));
 	return &(resource_data_[index]);
 }
 
 MapGenerator::ResourceTileData& MapGenerator::GetCurrentTile(const Vecf3& pos)
 {
-	int index = (pos.z * chunk_width_ * 3) + pos.x;
+	int index = (int)(round(pos.z) * chunk_width_ * 3 + round(pos.x));
 	return resource_data_[index];
 }
 
