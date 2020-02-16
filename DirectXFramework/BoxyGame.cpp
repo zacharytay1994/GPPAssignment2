@@ -49,6 +49,9 @@ void BoxyGame::Initialize(HWND hwnd)
 	rl_->AddCubeTexture("bottombar", L"Images/bar.png");
 	// train
 	rl_->AddPosTexModel("train", "Models\\SteamTrain.obj", L"Images\\Train.png");
+
+	//enemy
+	rl_->AddCubeTexture("alien", L"Images/alex.png");
 }
 
 void BoxyGame::Update()

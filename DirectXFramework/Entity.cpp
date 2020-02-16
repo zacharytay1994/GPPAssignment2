@@ -1,5 +1,7 @@
 #include "Entity.h"
 #include "Component.h"
+#include <sstream>
+#include <string>
 
 Entity::Entity(const std::string& image, std::shared_ptr<Graphics> gfx, std::shared_ptr<Input> input, std::shared_ptr<ResourceLibrary> rl)
 	:

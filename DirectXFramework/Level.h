@@ -2,6 +2,7 @@
 
 #include "MapGenerator.h"
 #include "Player.h"
+#include "Enemy.h"
 
 class Block;
 class Level : public Scene {
@@ -10,6 +11,9 @@ private:
 	std::unique_ptr<MapGenerator> mapGen_ = nullptr;
 	std::shared_ptr<Block> giraffe_ = nullptr;
 	std::shared_ptr<Player> player_;
+
+	std::shared_ptr<Enemy> enemy1_;
+	std::shared_ptr<Enemy> enemy2_;
 	MapGenerator::ResourceTileData* resourceTileData_;
 	/*std::shared_ptr<TestObject> test_object_;
 	std::shared_ptr<TestObject> test_object_2_;*/

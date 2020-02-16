@@ -37,6 +37,9 @@ Level::Level(std::shared_ptr<Graphics> gfx, std::shared_ptr<Input> input, std::s
 	//gravity_blocks_[0]->GetComponentOfType<CollisionComponent>("Collision")->SetAngularVelocity({ 1.0f, 1.0f, 1.0f }); // only solid blocks can be added to gravity blocks
 	//AddBlock("grassblock", { 0.0f, -10.0f, 5.0f }, { 5.0f, 1.0f, 5.0f });
 	player_ = AddPlayer({ 0.0f, 1.0f, 1.0f }, { 0.5f, 0.5f, 0.5f });
+	enemy1_ = AddEnemy({ 5.0f, 0.0f, 0.0f }, { 0.5f, 0.5f , 0.5f });
+	//enemy2_ = AddEnemy({ 0.0f, 1.0f, 6.0f }, { 1.0f, 1.0f, 1.0f });
+	
 	
 }
 
@@ -178,6 +181,16 @@ void Level::Update(const float& dt)
 
 				
 	}
+
+	// Remove enemy if enemy is dead
+	if (enemy1_ != nullptr)
+	{
+		if (enemy1_->isDead())
+		{
+			RemoveEntity(enemy1_);
+			enemy1_ = nullptr;
+		}
+	}
 		
 	
 	collideWithPlayer();
@@ -218,7 +231,6 @@ void Level::collideWithPlayer()
 	
 	if (player_->AABB2dCollision(train_, trainLength, trainWidth))
 	{
-		OutputDebugString("colliding \n");
 		if (player_->GetPosition().x < (train_->GetPosition().x - trainLength / 2.0f))
 		{
 			player_->player_touch_right = true;
@@ -235,10 +247,6 @@ void Level::collideWithPlayer()
 		{
 			player_->player_touch_back = true;
 		}
-	}
-	else
-	{
-		OutputDebugString("Not colliding \n");
 	}
 
 
@@ -273,6 +281,43 @@ void Level::collideWithPlayer()
 	if (blockBack_.ent_ != nullptr && blockBack_.walkable_ == false && player_->AABB2dCollision(blockBack_.ent_, 0.8f, 0.8f))
 	{
 		player_->player_touch_back = true;
+	}
+
+	// enemy collision
+	if (enemy1_ != nullptr)
+	{
+	
+		std::shared_ptr<Entity> tempEnt = std::dynamic_pointer_cast<Entity>(enemy1_);
+		if (player_->AABB2dCollision(tempEnt, 1.0f, 1.0f))
+		{
+			enemy1_->isStop(true);
+
+			if (player_->GetPosition().x < (tempEnt ->GetPosition().x - 0.5f))
+			{
+				player_->player_touch_right = true;
+			}
+			else if (player_->GetPosition().x > (tempEnt->GetPosition().x + 0.5f))
+			{
+				player_->player_touch_left = true;
+			}
+			else if (player_->GetPosition().z < (tempEnt->GetPosition().z - 0.5f))
+			{
+				player_->player_touch_front = true;
+			}
+			else if (player_->GetPosition().z > (tempEnt->GetPosition().z + 0.5f))
+			{
+				player_->player_touch_back = true;
+			}
+
+			if (input_->KeyWasPressed('Q'))
+			{
+				enemy1_->minusHealth();	
+			}
+		}
+		else
+		{
+			enemy1_->isStop(false);
+		}
 	}
 
 		
