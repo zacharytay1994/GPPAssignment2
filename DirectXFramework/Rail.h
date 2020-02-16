@@ -15,6 +15,7 @@ public:
 	};
 private:
 	Direction direction_ = Direction::Horizontal;
+	bool is_ghost_ = false;
 
 public:
 	Rail(const std::string& image, std::shared_ptr<Graphics> gfx, std::shared_ptr<Input> input, std::shared_ptr<ResourceLibrary> rl);
@@ -23,6 +24,8 @@ public:
 
 	Direction GetDirection() { return direction_; }
 	void SetDirection(Direction direction);
+
+	void MakeGhost();
 
 	QuaternionUWU ToQuaternion(Vecf3 rot) // yaw (Z), pitch (Y), roll (X)
 	{

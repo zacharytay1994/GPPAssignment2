@@ -11,6 +11,7 @@ private:
 	std::shared_ptr<Block> giraffe_ = nullptr;
 	std::shared_ptr<Player> player_;
 	std::shared_ptr<Player> player2_;
+
 	/*std::shared_ptr<TestObject> test_object_;
 	std::shared_ptr<TestObject> test_object_2_;*/
 	// <--- test variables can remove if need be
@@ -20,6 +21,20 @@ private:
 	int spawn_iterations_ = 20;
 	// --->
 	bool multiplayer_ = false;
+
+
+
+	int wood_count_ = 0;
+	int rock_count_ = 0;
+	int rail_count_ = 0;
+
+	int wood_per_rail_ = 1;
+	int rock_per_rail_ = 1;
+
+	float crafting_cooldown = 0.5f;
+	float crafting_cooldown_timer = 0.0f;
+	float crafting_radius_ = 3.0f;
+
 	bool game_over_ = false;
 	int camera_mode_ = 2;
 public:
@@ -31,5 +46,7 @@ public:
 	void SpawnRandomBlocks(const int& val);
 	// --->
 	void EmitDestructionParticles(const ResourceBlockType& type, const Vecf3& pos);
+
+	void CraftRails(std::shared_ptr<Player> player);
 	void PlayerLogic(const char& k1, const char& k2, std::shared_ptr<Player> player);
 };
