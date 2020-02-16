@@ -17,8 +17,6 @@ MapGenerator::MapGenerator(std::shared_ptr<Graphics> graphics, std::shared_ptr<I
 	rl_(rl),
 	scene_(scene)
 {
-	/*fn_->SetCellularNoiseLookup(fn_);
-	fn_->SetCellularReturnType(FastNoise::CellularReturnType::NoiseLookup);*/
 	fn_->SetFrequency(.3);
 	fn_->SetCellularDistanceFunction(FastNoise::CellularDistanceFunction::Natural);
 
