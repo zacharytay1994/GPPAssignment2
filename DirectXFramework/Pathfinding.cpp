@@ -98,7 +98,7 @@ std::vector<Node*> AStarPathfinding::RetracePath(Node* start, Node* end)
 	Node* current_node = end;
 
 	// trace parent back to find path
-	while (&start != &current_node)
+	while ((&*start) != (&*current_node))
 	{
 		path.push_back(current_node);
 		current_node = current_node->parent_;
@@ -133,8 +133,8 @@ void Grid::SetGrid()
 	int chunk_width = mg_->GetChunkSize().x;
 	for (int z = 0; z < chunk_height; z++) {
 		for (int x = 0; x < (total_map_size < 3 ? total_map_size : 3) * chunk_width; x++) {
-			MapGenerator::ResourceTileData temp = data[z * chunk_width + x];
-			if (data[z * chunk_width + x].walkable_) {
+			MapGenerator::ResourceTileData temp = data[z * 3 * chunk_width + x];
+			if (data[z * 3 * chunk_width + x].walkable_) {
 				node_grid_.push_back(Node(true, x, z));
 			}
 			else {

@@ -136,7 +136,7 @@ void Level::Update(const float& dt)
 	}
 	if (input_->KeyWasPressed('L')) {
 		std::vector<Node*> path;
-		pathfinder_->FindPath({ 0,0 }, { 3,0 }, path);
+		pathfinder_->FindPath({ 0,0 }, { 5,5 }, path);
 	}
 
 	PlayerLogic('C', 'R', player_);
