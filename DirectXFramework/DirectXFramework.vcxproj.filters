@@ -52,6 +52,10 @@
     <ClCompile Include="FastNoise.cpp" />
     <ClCompile Include="Button.cpp" />
     <ClCompile Include="SceneGraph.cpp" />
+    <ClCompile Include="..\..\..\b\Bird.cpp" />
+    <ClCompile Include="..\..\..\b\Flock.cpp" />
+    <ClCompile Include="..\..\..\b\ShipHandler.cpp" />
+    <ClCompile Include="..\..\..\b\Spaceship.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="assimp\include\assimp\config.h" />
@@ -104,6 +108,10 @@
     <ClInclude Include="EntityPool.h" />
     <ClInclude Include="FastNoise.h" />
     <ClInclude Include="ObjectPool.h" />
+    <ClInclude Include="..\..\..\b\Bird.h" />
+    <ClInclude Include="..\..\..\b\Flock.h" />
+    <ClInclude Include="..\..\..\b\ShipHandler.h" />
+    <ClInclude Include="..\..\..\b\Spaceship.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Images\alpha_donald.png" />

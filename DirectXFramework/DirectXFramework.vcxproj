@@ -107,6 +107,10 @@
     </FxCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\..\b\Bird.cpp" />
+    <ClCompile Include="..\..\..\b\Flock.cpp" />
+    <ClCompile Include="..\..\..\b\ShipHandler.cpp" />
+    <ClCompile Include="..\..\..\b\Spaceship.cpp" />
     <ClCompile Include="Block.cpp" />
     <ClCompile Include="BoxyGame.cpp" />
     <ClCompile Include="ChooChoo.cpp" />
@@ -144,6 +148,10 @@
     <ClCompile Include="WorldLights.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\..\b\Bird.h" />
+    <ClInclude Include="..\..\..\b\Flock.h" />
+    <ClInclude Include="..\..\..\b\ShipHandler.h" />
+    <ClInclude Include="..\..\..\b\Spaceship.h" />
     <ClInclude Include="assimp\include\assimp\config.h" />
     <ClInclude Include="assimp\include\assimp\fast_atof.h" />
     <ClInclude Include="Base\Color.h" />
