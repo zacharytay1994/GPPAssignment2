@@ -16,13 +16,14 @@ Level::Level(std::shared_ptr<Graphics> gfx, std::shared_ptr<Input> input, std::s
 	:
 	Scene(gfx, input, rl, game),
 	mapGen_(std::make_shared<MapGenerator>(graphics_, input_, rl_, this)),
-	pathfinder_(std::make_unique<AStarPathfinding>(mapGen_))
+	pathfinder_(std::make_shared<AStarPathfinding>(mapGen_))
 {
 	// Generate initial chunk
 	mapGen_->GenerateMap();
 	pathfinder_->GetGrid().SetGrid();
 	pathfinder_->GetGrid();
-	enemy1_ = AddEnemy({ 5.0f, 0.0f, 0.0f }, { 0.5f, 0.5f , 0.5f });
+	enemy1_ = AddEnemy({ 5.0f, 1.0f, 5.0f }, { 0.5f, 0.5f , 0.5f });
+	enemy1_->BindPathfinderAndMG(pathfinder_, mapGen_);
 	// Create player
 	player_ = AddPlayer({ 0.0f, 1.0f, 1.0f }, { 0.5f, 0.5f, 0.5f });
 	player_->AddComponent(std::make_shared<InputComponent>(InputComponent(*player_, *input_, 'W', 'S', 'A', 'D', VK_LSHIFT)));
@@ -45,6 +46,15 @@ void Level::Update(const float& dt)
 	gui_.Update(dt);
 	ps_.SetCameraSuckPosition(!game_over_ ? (input_->GetCameraPosition() + Vecf3(0.0f, 1.2f, 0.0f)) : (mapGen_->train_->GetPosition() + Vecf3(0.0f, 10.0f, 0.0f)));
 	gui_.SetTrainX(std::dynamic_pointer_cast<ChooChoo>(mapGen_->train_)->GetPosition().x);
+
+	// test 
+	if (pathfindcounter < pathfindtimer) {
+		pathfindcounter += dt;
+	}
+	else {
+		enemy1_->FindPath(mapGen_->GetCurrentIndex(enemy1_->GetPosition()), mapGen_->GetCurrentIndex(player_->GetPosition()));
+		pathfindcounter = 0.0f;
+	}
 
 	// <!-- crafting cooldown
 	if (crafting_cooldown_timer > 0) {
@@ -163,7 +173,7 @@ void Level::Update(const float& dt)
 	}
 	if (input_->KeyWasPressed('L')) {
 		std::vector<Node*> path;
-		pathfinder_->FindPath({ 0,0 }, { 5,5 }, path);
+		pathfinder_->FindPath({ 0,0 }, { 2,0 }, path);
 	}
 
 	PlayerLogic(VK_SPACE, 'R', player_);

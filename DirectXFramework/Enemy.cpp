@@ -14,6 +14,8 @@ void Enemy::Update(const float& dt)
 	Entity::Update(dt);
 	cubeModel_.SetPosition(position_);
 
+	// path if there is a path
+	ExecutePath(dt);
 	
 	if (isHit)
 	{		
@@ -39,6 +41,53 @@ void Enemy::pathWalking()
 void Enemy::isStop(bool iS)
 {
 	bStop = iS;
+}
+
+void Enemy::FindPath(const Veci2& start, const Veci2& end)
+{
+	// if path found
+	if (asp_->FindPath(start, end, current_path_)) {
+		execute_path_ = true;
+		current_index_ = 0;
+		last_index_ = current_path_.size() - 1;
+		return;
+	}
+	ResetPath();
+}
+
+void Enemy::ExecutePath(const float& dt)
+{
+	if (!current_path_.empty() && execute_path_) {
+		// check distance away from current index
+		Vecf3 direction = mg_->GetWorldPosOfIndex({ current_path_[current_index_]->grid_x_, current_path_[current_index_]->grid_y_ }) - position_;
+		float temp = direction.LenSq();
+		if (direction.LenSq() > 0.01f) {
+			position_ += direction.GetNormalized() * dt;
+		}
+		else {
+			if (current_index_ != last_index_) {
+				current_index_++;
+			}
+			else {
+				// reached end of path
+				ResetPath();
+			}
+		}
+	}
+}
+
+void Enemy::ResetPath()
+{
+	current_index_ = -1;
+	last_index_ = -1;
+	execute_path_ = false;
+	current_path_.clear();
+}
+
+void Enemy::BindPathfinderAndMG(std::shared_ptr<AStarPathfinding> pathfinder, std::shared_ptr<MapGenerator> mg)
+{
+	asp_ = pathfinder;
+	mg_ = mg;
 }
 
 bool Enemy::isDead()

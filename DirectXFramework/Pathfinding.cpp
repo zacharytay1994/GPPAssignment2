@@ -73,6 +73,11 @@ bool AStarPathfinding::FindPath(const Veci2& start, const Veci2& end, std::vecto
 			}
 		}
 	}
+	// reset all tempered nodes
+	for (Node* n : nodes_to_reset_) {
+		n->Reset();
+	}
+	nodes_to_reset_.clear();
 	return false;
 }
 

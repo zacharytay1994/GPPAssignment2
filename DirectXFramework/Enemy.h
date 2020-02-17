@@ -2,6 +2,7 @@
 #include "Entity.h"
 #include "CubeModel.h"
 #include "MapGenerator.h"
+#include "PathFinding.h"
 
 class Enemy : public Entity
 {
@@ -12,6 +13,11 @@ private:
 	bool bStop = false;
 	float Vel = -4.0f;
 	std::shared_ptr<MapGenerator> mg_;
+	std::shared_ptr<AStarPathfinding> asp_;
+	std::vector<Node*> current_path_;
+	bool execute_path_ = false;
+	int current_index_ = 0;
+	int last_index_ = 0;
 
 
 public:
@@ -22,5 +28,8 @@ public:
 	bool isDead();
 	void pathWalking();
 	void isStop(bool iS);
-
+	void FindPath(const Veci2& start, const Veci2& end);
+	void ExecutePath(const float& dt);
+	void ResetPath();
+	void BindPathfinderAndMG(std::shared_ptr<AStarPathfinding> pathfinder, std::shared_ptr<MapGenerator> mg);
 };

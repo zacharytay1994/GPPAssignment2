@@ -10,7 +10,7 @@ class Level : public Scene {
 private:
 	std::shared_ptr<Block> test_block_;
 	std::shared_ptr<MapGenerator> mapGen_ = nullptr;
-	std::unique_ptr<AStarPathfinding> pathfinder_ = nullptr;
+	std::shared_ptr<AStarPathfinding> pathfinder_ = nullptr;
 	std::shared_ptr<Block> giraffe_ = nullptr;
 	std::shared_ptr<Player> player_;
 
@@ -43,6 +43,10 @@ private:
 
 	bool game_over_ = false;
 	int camera_mode_ = 2;
+
+	// temp test
+	float pathfindtimer = 1.0f;
+	float pathfindcounter = 0.0f;
 public:
 	Level(std::shared_ptr<Graphics> gfx, std::shared_ptr<Input> input, std::shared_ptr<ResourceLibrary> rl, Game* game);
 	void Update(const float& dt) override;

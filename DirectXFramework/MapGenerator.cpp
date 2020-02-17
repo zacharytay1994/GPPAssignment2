@@ -409,6 +409,19 @@ MapGenerator::ResourceTileData& MapGenerator::GetCurrentTile(const Vecf3& pos)
 	return resource_data_[index];
 }
 
+Veci2 MapGenerator::GetCurrentIndex(const Vecf3& pos)
+{
+	Vecf3 norm_pos = pos;
+	norm_pos.x = (int)round(pos.x) - (std::max)(0, (total_map_size_ - 3) * chunk_width_);
+	norm_pos.z = (int)round(pos.z);
+	return {(int)norm_pos.x, (int)norm_pos.z};
+}
+
+Vecf3 MapGenerator::GetWorldPosOfIndex(const Veci2& index)
+{
+	return { (float)index.x + (total_map_size_ > 3 ? total_map_size_ - 3 : 0) * chunk_width_, 1.0f, (float)index.y };
+}
+
 bool MapGenerator::AddResource(ResourceTileData tile)
 {
 	if (tile.block_type_ == ResourceBlockType::Rail && !CanAddRail(std::dynamic_pointer_cast<Rail>(tile.ent_))) { return false; }
