@@ -37,4 +37,5 @@ public:
 	std::shared_ptr<ChooChoo> GetChildChoo(std::string id);
 	bool GameOver();
 	void SetGameOver(bool game_over);
+	float GetRotation();
 };

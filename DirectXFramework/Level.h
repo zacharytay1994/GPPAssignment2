@@ -45,7 +45,8 @@ public:
 	Level(std::shared_ptr<Graphics> gfx, std::shared_ptr<Input> input, std::shared_ptr<ResourceLibrary> rl, Game* game);
 	void Update(const float& dt) override;
 	void Render(const float& dt) override;
-	void collideWithPlayer();
+	void resourceCollideWithPlayer();
+	void entityCollideWithPlayer(std::shared_ptr<Entity> ent_, float length, float width);
 
 	// <--- test function can remove if need be
 	void SpawnRandomBlocks(const int& val);

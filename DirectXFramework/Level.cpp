@@ -20,6 +20,7 @@ Level::Level(std::shared_ptr<Graphics> gfx, std::shared_ptr<Input> input, std::s
 	// Generate initial chunk
 	mapGen_->GenerateMap();
 	enemy1_ = AddEnemy({ 5.0f, 0.0f, 0.0f }, { 0.5f, 0.5f , 0.5f });
+
 	// Create player
 	player_ = AddPlayer({ 0.0f, 1.0f, 1.0f }, { 0.5f, 0.5f, 0.5f });
 	player_->AddComponent(std::make_shared<InputComponent>(InputComponent(*player_, *input_, 'W', 'S', 'A', 'D', VK_LSHIFT)));
@@ -245,8 +246,16 @@ void Level::Update(const float& dt)
 			enemy1_ = nullptr;
 		}
 	}
-	
-	collideWithPlayer();
+
+	// initialize player collision
+	player_->player_touch_left = false;
+	player_->player_touch_right = false;
+	player_->player_touch_front = false;
+	player_->player_touch_back = false;
+
+	//collision
+	entityCollideWithPlayer(std::dynamic_pointer_cast<Entity>(enemy1_), 0.5f, 0.5f);	
+	resourceCollideWithPlayer();
 }
 
 
@@ -297,46 +306,12 @@ void Level::SpawnRandomBlocks(const int& val)
 }
 
 
-void Level::collideWithPlayer()
+void Level::resourceCollideWithPlayer()
 {
-	// initialize player collision
-	player_->player_touch_left = false;
-	player_->player_touch_right = false;
-	player_->player_touch_front = false;
-	player_->player_touch_back = false;
-
-	// train collision
-	std::shared_ptr<Entity> train_ = mapGen_->train_;
-
-	Vecf3 trainDimension = rl_->GetDimensions("train");
-	float trainWidth = trainDimension.x * train_->GetCube().GetScaleX();
-	float trainLength = trainDimension.z * train_->GetCube().GetScaleZ();
-	
-	if (player_->AABB2dCollision(train_, trainLength, trainWidth))
-	{
-		if (player_->GetPosition().x < (train_->GetPosition().x - trainLength / 2.0f))
-		{
-			player_->player_touch_right = true;
-		}
-		else if (player_->GetPosition().x > (train_->GetPosition().x + trainLength / 2.0f))
-		{
-			player_->player_touch_left = true;
-		}
-		else if (player_->GetPosition().z < (train_->GetPosition().z - trainWidth/ 2.0f))
-		{
-			player_->player_touch_front = true;
-		}
-		else if (player_->GetPosition().z > (train_->GetPosition().z + trainWidth / 2.0f))
-		{
-			player_->player_touch_back = true;
-		}
-	}
-
-
 	// Resource collision
 	float player_x = player_->GetPosition().x;
 	float player_z = player_->GetPosition().z;
-		
+
 
 	MapGenerator::ResourceTileData& blockRight_ = mapGen_->GetCurrentTile(Vecf3(player_x + 1.0f, -0.5f, player_z));
 	MapGenerator::ResourceTileData& blockLeft_ = mapGen_->GetCurrentTile(Vecf3(player_x - 1.0f, -0.5f, player_z));
@@ -344,70 +319,64 @@ void Level::collideWithPlayer()
 	MapGenerator::ResourceTileData& blockBack_ = mapGen_->GetCurrentTile(Vecf3(player_x, -0.5f, player_z - 1.0f));
 
 
-		
+
 	if (blockRight_.ent_ != nullptr && blockRight_.walkable_ == false && player_->AABB2dCollision(blockRight_.ent_, 0.8f, 0.8f))
 	{
-		//player_->SetPosition(player_->GetPosition() - Vecf3(1.0f, 0.0f, 0.0f));
+		player_->SetPosition(player_->GetPosition() - Vecf3(0.1f, 0.0f, 0.0f));
 		player_->player_touch_right = true;
 	}
 
 	if (blockLeft_.ent_ != nullptr && blockLeft_.walkable_ == false && player_->AABB2dCollision(blockLeft_.ent_, 0.8f, 0.8f))
 	{
-		//player_->SetPosition(player_->GetPosition() - Vecf3(-1.0f, 0.0f, 0.0f));
+		player_->SetPosition(player_->GetPosition() - Vecf3(-0.1f, 0.0f, 0.0f));
 		player_->player_touch_left = true;
 	}
 
 	if (blockFront_.ent_ != nullptr && blockFront_.walkable_ == false && player_->AABB2dCollision(blockFront_.ent_, 0.8f, 0.8f))
 	{
-		//player_->SetPosition(player_->GetPosition() - Vecf3(0.0f, 0.0f, -1.0f));
+		player_->SetPosition(player_->GetPosition() - Vecf3(0.0f, 0.0f, 0.1f));
 		player_->player_touch_front = true;
 	}
 
 	if (blockBack_.ent_ != nullptr && blockBack_.walkable_ == false && player_->AABB2dCollision(blockBack_.ent_, 0.8f, 0.8f))
 	{
-		//player_->SetPosition(player_->GetPosition() - Vecf3(0.0f, 0.0f, 1.0f));
+		player_->SetPosition(player_->GetPosition() - Vecf3(0.0f, 0.0f, -0.1f));
 		player_->player_touch_back = true;
 	}
-
-	// enemy collision
-	if (enemy1_ != nullptr)
-	{
 	
-		std::shared_ptr<Entity> tempEnt = std::dynamic_pointer_cast<Entity>(enemy1_);
-		if (player_->AABB2dCollision(tempEnt, 1.0f, 1.0f))
-		{
-			enemy1_->isStop(true);
+}
 
-			if (player_->GetPosition().x < (tempEnt ->GetPosition().x - 0.5f))
+void Level::entityCollideWithPlayer(std::shared_ptr<Entity> ent_, float length, float width)
+{
+	// enemy collision
+	if (ent_ != nullptr)
+		if (player_->AABB2dCollision(ent_, 1.0f, 1.0f))
+		{
+
+			if (player_->GetPosition().x < (ent_->GetPosition().x - length / 2.0f))
 			{
+				player_->SetPosition(player_->GetPosition() - Vecf3(0.1f, 0.0f, 0.0f));
 				player_->player_touch_right = true;
 			}
-			else if (player_->GetPosition().x > (tempEnt->GetPosition().x + 0.5f))
+			else if (player_->GetPosition().x > (ent_->GetPosition().x + length / 2.0f))
 			{
+				player_->SetPosition(player_->GetPosition() - Vecf3(-0.1f, 0.0f, 0.0f));
 				player_->player_touch_left = true;
 			}
-			else if (player_->GetPosition().z < (tempEnt->GetPosition().z - 0.5f))
+			else if (player_->GetPosition().z < (ent_->GetPosition().z - width / 2.0f))
 			{
+				player_->SetPosition(player_->GetPosition() - Vecf3(0.0f, 0.0f, 0.1f));
 				player_->player_touch_front = true;
 			}
-			else if (player_->GetPosition().z > (tempEnt->GetPosition().z + 0.5f))
+			else if (player_->GetPosition().z > (ent_->GetPosition().z + width / 2.0f))
 			{
+				player_->SetPosition(player_->GetPosition() - Vecf3(0.0f, 0.0f, -0.1f));
 				player_->player_touch_back = true;
 			}
-
-			if (input_->KeyWasPressed('Q'))
-			{
-				enemy1_->minusHealth();	
-			}
 		}
-		else
-		{
-			enemy1_->isStop(false);
-		}
-	}
-
-		
 }
+
+
 
 
 void Level::EmitDestructionParticles(const ResourceBlockType& type, const Vecf3& pos)

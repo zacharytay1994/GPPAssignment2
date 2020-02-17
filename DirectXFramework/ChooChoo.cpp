@@ -186,3 +186,15 @@ void ChooChoo::SetGameOver(bool game_over)
 		child_choo_->SetGameOver(game_over);
 	}
 }
+
+float ChooChoo::GetRotation()
+{
+	if (current_direction_ == Direction::Right || current_direction_ == Direction::Left)
+	{
+		return 0.0f;
+	}
+	else if (current_direction_ == Direction::Up || current_direction_ == Direction::Down)
+	{
+		return 90.0f;
+	}
+}
