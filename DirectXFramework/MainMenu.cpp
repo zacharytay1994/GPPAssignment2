@@ -10,10 +10,11 @@ MainMenu::MainMenu(std::shared_ptr<Graphics> gfx, std::shared_ptr<Input> input, 
 {
 
 	player_ = AddPlayer({ 0, 1.75, 0 }, { 0,0,0 });
-	player_->AddComponent(std::make_shared<InputComponent>(InputComponent(*player_, *input_, 'W', 'S', 'A', 'D')));
+	player_->AddComponent(std::make_shared<InputComponent>(InputComponent(*player_, *input_, 'W', 'S', 'A', 'D',VK_LSHIFT)));
 	player2_ = AddPlayer({ 0.0f, 1.0f, 1.0f }, { 0.5f, 0.5f, 0.5f });
-	player2_->AddComponent(std::make_shared<InputComponent>(InputComponent(*player2_, *input_, VK_UP, VK_DOWN, VK_LEFT, VK_RIGHT)));
+	player2_->AddComponent(std::make_shared<InputComponent>(InputComponent(*player2_, *input_, VK_UP, VK_DOWN, VK_LEFT, VK_RIGHT, VK_RSHIFT)));
 	player2_->active_ = false;
+	player2_->SetPlayer2();
 
 	std::shared_ptr<Entity> tempEntity;
 	Vecf3 tempDimension;
@@ -46,30 +47,34 @@ MainMenu::MainMenu(std::shared_ptr<Graphics> gfx, std::shared_ptr<Input> input, 
 	tempEntity->SetPosition({ button_pos.x,button_pos.y + button_size.y, button_pos.z - button_size.z * 2.5f * 2 });
 	AddEntity(tempEntity);
 
-	tempDimension = rl_->GetDimensions("gndblk");
-	tempScale = { 1 / tempDimension.x, 1 / tempDimension.y, 1 / tempDimension.z };
-	tempPosition = { 0,1,0};
-	
-	tempDimension = rl_->GetDimensions("tree");
-	Vecf3 tempSca2 = { 1 / tempDimension.x, 2 / tempDimension.y, 1 / tempDimension.z };
+	//tempDimension = rl_->GetDimensions("gndblk");
+	//tempScale = { 1 / tempDimension.x, 1 / tempDimension.y, 1 / tempDimension.z };
+	//tempPosition = { 0,1,0};
+	//
+	//tempDimension = rl_->GetDimensions("tree");
+	//Vecf3 tempSca2 = { 1 / tempDimension.x, 2 / tempDimension.y, 1 / tempDimension.z };
 
-	tempDimension = rl_->GetDimensions("rock");
-	Vecf3 tempSca3 = { 1 / tempDimension.x, 1 / tempDimension.y, 1 / tempDimension.z };
+	//tempDimension = rl_->GetDimensions("rock");
+	//Vecf3 tempSca3 = { 1 / tempDimension.x, 1 / tempDimension.y, 1 / tempDimension.z };
 
-	for (float i = 0; i < 10; i++)
-	{
-		for (float j = 0; j < 10; j++) {
-			AddModel("gndblk", { i,1,j }, tempScale, true);
+	//for (float i = 0; i < 10; i++)
+	//{
+	//	for (float j = 0; j < 10; j++) {
+	//		AddModel("gndblk", { i,1,j }, tempScale, true);
 
-			if (fmod(i,2) == 1) {
-				AddModel("tree", { i,2,j }, tempSca2, true);
-			}
-			else {
-				AddModel("rock", { i,2,j }, tempSca3, true);
-			}
-		}
-		
-	}
+	//		if (fmod(i,2) == 1) {
+	//			AddModel("tree", { i,2,j }, tempSca2, true);
+	//		}
+	//		else {
+	//			AddModel("rock", { i,2,j }, tempSca3, true);
+	//		}
+	//	}
+	//	
+	//}
+
+	//tempDimension = rl_->GetDimensions("minecart");
+	//tempScale = { 0.1, 1 / tempDimension.y, 1 / tempDimension.z };
+	//AddModel("minecart", { 0,1,0 }, {0.1f,0.1f,0.1f}, true);
 	
 	
 }
@@ -104,6 +109,12 @@ void MainMenu::Update(const float& dt)
 	Vecf3 cam_to_target;
 	if (multiplayer_) {
 		camera_mode_ = 2;
+	}
+	if (camera_mode_ != 0) {
+		input_->EngageCamera(false);
+	}
+	else {
+		input_->EngageCamera(true);
 	}
 	switch (camera_mode_) {
 	case 0: // free roam

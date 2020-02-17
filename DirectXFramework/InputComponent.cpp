@@ -2,20 +2,20 @@
 #include "Entity.h"
 #include "Player.h"
 
-InputComponent::InputComponent(Entity& owner, Input& input, const char& up, const char& down, const char& left, const char& right):
+InputComponent::InputComponent(Entity& owner, Input& input, const char& up, const char& down, const char& left, const char& right, const char& dash):
 	Component(owner,"InputComponent"),
 	input_(input),
 	up_(up),
 	down_(down),
 	left_(left),
-	right_(right)
+	right_(right),
+	dash_(dash)
 {
 }
 
 void InputComponent::Update(const float& frametime)
 {
 	Component::Update(frametime);
-
 	Player* player = (Player*)(&owner_);
 	//Vecf3 pos = player->GetPosition();
 
@@ -43,11 +43,19 @@ void InputComponent::Update(const float& frametime)
 	//player->SetPosition(pos);
 	//owner_.SetPosition(pos);
 
-	if (input_.KeyIsDown(VK_SHIFT)) {
+	if (input_.KeyIsDown(dash_)) {
 		// dash
+		if (player->dash_cooldown_timer_ <= 0) {
+			player->dash_cooldown_timer_ = player->dash_cooldown_;
+			//player->velocity_ *= 5;
+			player->velocity_ = player->velocity_.GetNormalized() * player->dashSpeed;
+			player->velocity_.y = 0.0f;
+		}
+		
 	}
 	if (input_.KeyIsDown(VK_SPACE)) {
 		// place rail
+		
 	}
 
 

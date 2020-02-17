@@ -17,7 +17,7 @@ bool AStarPathfinding::FindPath(const Veci2& start, const Veci2& end, std::vecto
 	std::priority_queue<Node*, std::vector<Node*>, decltype(nodePointerGreaterComparator)> minHeap(nodePointerGreaterComparator);
 
 	// calls .get() on unique_ptrs in grid, to create temp stored_ptrs
-	Node* startNode = nullptr; 
+	Node* startNode = nullptr;
 	Node* endNode = nullptr;
 	if (!grid_.GetNode(start.x, start.y, startNode)) {
 		return false;

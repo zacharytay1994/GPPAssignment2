@@ -144,10 +144,13 @@ void GUI::ProcessResourceQueue(const float& dt)
 				// increment type resource by 1
 				switch (rq.type_) {
 				case 0: // rock
-					level_data_.stone_collected_++;
+					level_data_.stone_collected_+= rq.amount_;
 					break;
 				case 1: // tree
-					level_data_.wood_collected_++;
+					level_data_.wood_collected_ += rq.amount_;
+					break;
+				case 2: // rail
+					level_data_.rails_collected_ += rq.amount_;
 					break;
 				}
 			}

@@ -5,6 +5,7 @@
 #include "Entity.h"
 #include "EntityPool.h"
 #include "FastNoise.h"
+#include "ObjectPool.h"
 #include "PerlinNoise.h"
 #include "Rail.h"
 #include "ResourceLibrary.h"
@@ -41,6 +42,8 @@ public:
 	};
 	// Sorry I need the train reference lol
 	std::shared_ptr<Entity> train_;
+	// Haha same
+	std::shared_ptr<Entity> crafter_; 
 private:
 	std::shared_ptr<Graphics> graphics_;
 	std::shared_ptr<Input> input_;
@@ -89,7 +92,9 @@ private:
 	// Checks if a rail can be placed
 	bool CanAddRail(std::shared_ptr<Rail> r);
 
-	std::shared_ptr<EntityPool> entity_pool;
+	// Resource pools
+	std::shared_ptr<ObjectPool<Block, 1152>> block_pool_;
+	std::shared_ptr<ObjectPool<Rail, 1152>> rail_pool_;
 
 public:
 	// Constructor
@@ -127,7 +132,8 @@ public:
 	ResourceTileData& GetCurrentTile(const Vecf3& pos);
 
 	// Add resource to resource_data_
-	void AddResource(ResourceTileData tile);
+	// return true if sucessfully added
+	bool AddResource(ResourceTileData tile);
 
 	// Remove resource from resource_data_
 	void RemoveResource(ResourceTileData* tile);

@@ -18,6 +18,19 @@ void Block::SetScale(const Vecf3& scale)
 void Block::Update(const float& dt)
 {
 	Entity::Update(dt);
+
+	if (moving_) {
+		IntegrateVelocity(dt);
+		if (velocity_.y > 0 && position_.y >= target_pos_.y) {
+			SetPosition(target_pos_);
+			moving_ = false;
+		}
+		else if (velocity_.y < 0 && position_.y <= target_pos_.y) {
+			SetPosition(target_pos_);
+			moving_ = false;
+		}
+	} 
+
 	// updating cube
 	/*cube_.SetX(position_.x);
 	cube_.SetY(position_.y);
@@ -38,4 +51,15 @@ void Block::Render()
 	//cube_.HandleDraw();
 }
 
+void Block::IntegrateVelocity(const float& dt)
+{
+	SetPosition(position_ + velocity_ * dt);
+}
 
+void Block::MoveTo(Vecf3 pos)
+{
+	moving_ = true;
+	target_pos_ = pos;
+
+	velocity_.y = (pos.y - position_.y) < 0 ? -7 : 7;
+}

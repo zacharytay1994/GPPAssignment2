@@ -24,10 +24,18 @@ BoxyGame::~BoxyGame()
 
 void BoxyGame::Initialize(HWND hwnd)
 {
-	rl_->AddCubeTexture("alex", L"Images/alex.png");
-	rl_->AddCubeTexture("alexbody", L"Images/alex_body.png");
-	rl_->AddCubeTexture("alexarm", L"Images/alex-arm.png");
-	rl_->AddCubeTexture("alexleg", L"Images/alex-leg.png");
+	rl_->AddCubeTexture("alex", L"Images/player/alex.png");
+	rl_->AddCubeTexture("alexbody", L"Images/player/alex_body.png");
+	rl_->AddCubeTexture("alexarm", L"Images/player/alex-arm.png");
+	rl_->AddCubeTexture("alexleg", L"Images/player/alex-leg.png");
+	rl_->AddPosNormTexModel("alexgun", "Models/alex-gun.obj", L"Images/player/alex-gun.png");
+
+	rl_->AddCubeTexture("steve", L"Images/player/steve.png");
+	rl_->AddCubeTexture("stevebody", L"Images/player/steve_body.png");
+	rl_->AddCubeTexture("stevearm", L"Images/player/steve-arm.png");
+	rl_->AddCubeTexture("steveleg", L"Images/player/steve-leg.png");
+	rl_->AddPosNormTexModel("stevegun", "Models/alex-gun.obj", L"Images/player/steve-gun.png");
+
 	rl_->AddCubeTexture("spacebox", L"Images/spacebox2.png");
 	rl_->AddCubeTexture("sun", L"Images/sunyellow.png");
 	rl_->AddCubeTexture("blackoverlay", L"Images/translucentblack.png");
@@ -45,6 +53,8 @@ void BoxyGame::Initialize(HWND hwnd)
 	rl_->AddCubeTexture("grassblock", L"Images/grassblock.png");
 	rl_->AddCubeTexture("startblock", L"Images/startblock.png");
 	rl_->AddCubeTexture("rail", L"Images/rail.png");
+	rl_->AddCubeTexture("grail", L"Images/ghost-rail.png");
+	rl_->AddCubeTexture("highlight", L"Images/highlight.png");
 	rl_->AddCubeTexture("railcurved", L"Images/corner-rail.png");
 	rl_->AddPosNormTexModel("tree", "Models\\tree.obj", L"Images\\tree.png");
 	rl_->AddPosNormTexModel("rock", "Models\\rock.obj", L"Images\\rock.png");
@@ -61,6 +71,10 @@ void BoxyGame::Initialize(HWND hwnd)
 	rl_->AddCubeTexture("bottombar", L"Images/bar.png");
 	// train
 	rl_->AddPosTexModel("train", "Models\\SteamTrain.obj", L"Images\\Train.png");
+	//enemy
+	rl_->AddCubeTexture("alien", L"Images/player/alex.png");
+	rl_->AddPosNormTexModel("enginecart", "Models/minecart_w_block.obj", L"Images/minecart_w_furnace.png");
+	rl_->AddPosNormTexModel("craftingcart", "Models/minecart_w_block.obj", L"Images/minecart_w_crafter.png");
 }
 
 void BoxyGame::Update()
