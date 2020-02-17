@@ -22,8 +22,7 @@ Level::Level(std::shared_ptr<Graphics> gfx, std::shared_ptr<Input> input, std::s
 	mapGen_->GenerateMap();
 	pathfinder_->GetGrid().SetGrid();
 	pathfinder_->GetGrid();
-	enemy1_ = AddEnemy({ 5.0f, 1.0f, 5.0f }, { 0.5f, 0.5f , 0.5f });
-	enemy1_->BindPathfinderAndMG(pathfinder_, mapGen_);
+	enemy1_ = AddEnemy({ 5.0f, 1.0f, 5.0f }, { 0.5f, 0.5f , 0.5f }, mapGen_, pathfinder_);
 	// Create player
 	player_ = AddPlayer({ 0.0f, 1.0f, 1.0f }, { 0.5f, 0.5f, 0.5f });
 	player_->AddComponent(std::make_shared<InputComponent>(InputComponent(*player_, *input_, 'W', 'S', 'A', 'D', VK_LSHIFT)));
@@ -47,14 +46,15 @@ void Level::Update(const float& dt)
 	ps_.SetCameraSuckPosition(!game_over_ ? (input_->GetCameraPosition() + Vecf3(0.0f, 1.2f, 0.0f)) : (mapGen_->train_->GetPosition() + Vecf3(0.0f, 10.0f, 0.0f)));
 	gui_.SetTrainX(std::dynamic_pointer_cast<ChooChoo>(mapGen_->train_)->GetPosition().x);
 
-	// test 
-	if (pathfindcounter < pathfindtimer) {
-		pathfindcounter += dt;
-	}
-	else {
-		enemy1_->FindPath(mapGen_->GetCurrentIndex(enemy1_->GetPosition()), mapGen_->GetCurrentIndex(player_->GetPosition()));
-		pathfindcounter = 0.0f;
-	}
+	//// test 
+	//if (pathfindcounter < pathfindtimer) {
+	//	pathfindcounter += dt;
+	//}
+	//else {
+	//	enemy1_->FindPath(enemy1_->GetPosition(), player_->GetPosition());
+	//	pathfindcounter = 0.0f;
+	//}
+	enemy1_->SetDestination(player_->GetPosition());
 
 	// <!-- crafting cooldown
 	if (crafting_cooldown_timer > 0) {
@@ -534,6 +534,8 @@ void Level::PlayerLogic(const char& k1, const char& k2, std::shared_ptr<Player> 
 		{
 			EmitDestructionParticles(tile->block_type_, tile->ent_->GetPosition());
 			mapGen_->RemoveResource(tile);
+			// update pathfinding grid after removal
+			pathfinder_->GetGrid().SetGrid();
 			player->Punch();
 		}
 		else if (tile->walkable_ && tile->block_type_ != ResourceBlockType::Rail && rail_count_ > 0) {

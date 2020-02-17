@@ -18,6 +18,8 @@ class Entity;
 class Block;
 class Player;
 class Enemy;
+class MapGenerator;
+class AStarPathfinding;
 class Scene {
 protected:
 	std::shared_ptr<Graphics> graphics_;
@@ -50,7 +52,7 @@ public:
 	std::shared_ptr<Block> AddModel(const std::string& texture, const Vecf3& position, const Vecf3& size, const bool& light);
 	std::shared_ptr<Block> AddUntexturedModel(const std::string& key, const Vecf3& position, const Vecf3& size);
 	std::shared_ptr<Player> AddPlayer(const Vecf3& position, const Vecf3& size);
-	std::shared_ptr<Enemy> AddEnemy(const Vecf3& position, const Vecf3& size);
+	std::shared_ptr<Enemy> AddEnemy(const Vecf3& position, const Vecf3& size, std::shared_ptr<MapGenerator> mg, std::shared_ptr<AStarPathfinding> pathfinder);
 	
 	void ChangeScene(std::string key);
 	void ChangeScene(std::shared_ptr<Scene> scene);
