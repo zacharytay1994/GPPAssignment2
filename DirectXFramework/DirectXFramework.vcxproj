@@ -127,6 +127,7 @@
     <ClCompile Include="MainMenu.cpp" />
     <ClCompile Include="Particle.cpp" />
     <ClCompile Include="ParticleSystem.cpp" />
+    <ClCompile Include="PathFinding.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="Rail.cpp" />
     <ClCompile Include="ResourceLibrary.cpp" />
@@ -181,6 +182,7 @@
     <ClInclude Include="ObjectPool.h" />
     <ClInclude Include="Particle.h" />
     <ClInclude Include="ParticleSystem.h" />
+    <ClInclude Include="PathFinding.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="Rail.h" />
     <ClInclude Include="ResourceLibrary.h" />

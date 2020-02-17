@@ -130,6 +130,8 @@ public:
 	ResourceTileData** GetTilesAround(ResourceTileData* starting_tile);
 	ResourceTileData* GetCurrentTilePtr(const Vecf3& pos);
 	ResourceTileData& GetCurrentTile(const Vecf3& pos);
+	Veci2 GetCurrentIndex(const Vecf3& pos);
+	Vecf3 GetWorldPosOfIndex(const Veci2& index);
 
 	// Add resource to resource_data_
 	// return true if sucessfully added

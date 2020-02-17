@@ -142,11 +142,12 @@ std::shared_ptr<Player> Scene::AddPlayer(const Vecf3& position, const Vecf3& siz
 	return player_;
 }
 
-std::shared_ptr<Enemy> Scene::AddEnemy(const Vecf3& position, const Vecf3& size)
+std::shared_ptr<Enemy> Scene::AddEnemy(const Vecf3& position, const Vecf3& size, std::shared_ptr<AStarPathfinding> pathfinder_, MapGenerator* mg)
 {
 	std::shared_ptr<Enemy> enemy_ = std::make_shared<Enemy>(Enemy(graphics_, input_, rl_));
 	enemy_->SetDrawMode(4);
 	enemy_->SetPosition(position);
+	enemy_->BindPathfinderAndMG(pathfinder_, mg);
 	AddEntity(std::dynamic_pointer_cast<Entity>(enemy_));
 	return enemy_;
 }

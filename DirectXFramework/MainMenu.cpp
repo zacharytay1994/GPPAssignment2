@@ -107,6 +107,12 @@ void MainMenu::Update(const float& dt)
 	// CAMERA TRACKING MODE
 	/*__________________________________*/
 	Vecf3 cam_to_target;
+	if (camera_mode_ != 0) {
+		input_->EngageCamera(false);
+	}
+	else {
+		input_->EngageCamera(true);
+	}
 	if (multiplayer_) {
 		camera_mode_ = 2;
 	}

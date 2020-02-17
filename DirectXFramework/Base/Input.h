@@ -88,6 +88,7 @@ public:
 	void SetCameraPosition(DirectX::XMFLOAT3 pos);
 	float GetCamPitch();
 	void SetCamPitch(const float& cp);
+	void EngageCamera(const bool& b) { camera_engaged_ = b; };
 
 	// Camera Functions
 	void ResetCamera();
