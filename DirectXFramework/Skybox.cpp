@@ -23,18 +23,24 @@ DirectX::XMMATRIX Skybox::GetSkyboxTransform(const Vecf3& angle, const Vecf3& tr
 	);
 }
 
+void Skybox::SetSkyShade(const float& f)
+{
+	sky_shade_ = f;
+}
+
 void Skybox::Render()
 {
+	float blue = sky_shade_ / 2.0f;
 	// draw back face
-	rl_->DrawTexturedPlane(background_key_, GetSkyboxTransform({ 0.0f, 0.0f, 0.0f }, { 0.0f, 0.0f, 0.5f * scale_ }));
+	rl_->DrawTexturedPlane(background_key_, GetSkyboxTransform({ 0.0f, 0.0f, 0.0f }, { 0.0f, 0.0f, 0.5f * scale_ }), {sky_shade_, sky_shade_, blue, 0.0f });
 	// draw right face
-	rl_->DrawTexturedPlane(background_key_, GetSkyboxTransform({ 0.0f, 1.5707963f, 0.0f }, { 0.5f * scale_, 0.0f, 0.0f }));
+	rl_->DrawTexturedPlane(background_key_, GetSkyboxTransform({ 0.0f, 1.5707963f, 0.0f }, { 0.5f * scale_, 0.0f, 0.0f }), { sky_shade_, sky_shade_, blue, 0.0f });
 	// draw left face
-	rl_->DrawTexturedPlane(background_key_, GetSkyboxTransform({ 0.0f, -1.5707963f, 0.0f }, { -0.5f * scale_, 0.0f, 0.0f }));
+	rl_->DrawTexturedPlane(background_key_, GetSkyboxTransform({ 0.0f, -1.5707963f, 0.0f }, { -0.5f * scale_, 0.0f, 0.0f }), { sky_shade_, sky_shade_, blue, 0.0f });
 	// draw back face
-	rl_->DrawTexturedPlane(background_key_, GetSkyboxTransform({ 0.0f, 3.1415926, 0.0f }, { 0.0f, 0.0f, -0.5f * scale_ }));
+	rl_->DrawTexturedPlane(background_key_, GetSkyboxTransform({ 0.0f, 3.1415926, 0.0f }, { 0.0f, 0.0f, -0.5f * scale_ }), { sky_shade_, sky_shade_, blue, 0.0f });
 	// draw top face
-	rl_->DrawTexturedPlane(background_key_, GetSkyboxTransform({ -1.5707963f, 0.0f, 0.0f }, { 0.0f, 0.5f * scale_, 0.0f }));
+	rl_->DrawTexturedPlane(background_key_, GetSkyboxTransform({ -1.5707963f, 0.0f, 0.0f }, { 0.0f, 0.5f * scale_, 0.0f }), { sky_shade_, sky_shade_, blue, 0.0f });
 	// draw bottom face
-	rl_->DrawTexturedPlane(background_key_, GetSkyboxTransform({ 1.5707963f, 0.0f, 0.0f }, { 0.0f, -0.5f * scale_, 0.0f }));
+	rl_->DrawTexturedPlane(background_key_, GetSkyboxTransform({ 1.5707963f, 0.0f, 0.0f }, { 0.0f, -0.5f * scale_, 0.0f }), { sky_shade_, sky_shade_, blue, 0.0f });
 }

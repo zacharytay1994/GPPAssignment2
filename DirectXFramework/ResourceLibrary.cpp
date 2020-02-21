@@ -651,6 +651,18 @@ void ResourceLibrary::DrawTexturedPlane(const std::string& key, const DirectX::X
 	gfx->BindIndexBuffer(vi_buffer_map["TexturedPlane"].p_i_buffer_);
 	gfx->BindShaderResourceView(srv_map[key]);
 	gfx->UpdateCBTransformSubresource({ transform, DirectX::XMMatrixIdentity() });
+	gfx->UpdateCBColourSubresource({ 0.0f, 0.0f, 0.0f, 0.0f });
+	gfx->DrawIndexed(vi_buffer_map["TexturedPlane"].index_count_);
+}
+
+void ResourceLibrary::DrawTexturedPlane(const std::string& key, const DirectX::XMMATRIX& transform, const DirectX::XMFLOAT4& color)
+{
+	gfx->SetUseType(ShaderType::Textured);
+	gfx->BindVertexBufferStride(vi_buffer_map["TexturedPlane"].p_v_buffer_, 20u);
+	gfx->BindIndexBuffer(vi_buffer_map["TexturedPlane"].p_i_buffer_);
+	gfx->BindShaderResourceView(srv_map[key]);
+	gfx->UpdateCBTransformSubresource({ transform, DirectX::XMMatrixIdentity() });
+	gfx->UpdateCBColourSubresource({ color.x, color.y, color.z, color.w });
 	gfx->DrawIndexed(vi_buffer_map["TexturedPlane"].index_count_);
 }
 

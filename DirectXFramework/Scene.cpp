@@ -14,10 +14,10 @@ Scene::Scene(std::shared_ptr<Graphics> gfx, std::shared_ptr<Input> input, std::s
 	graphics_(gfx),
 	input_(input),
 	rl_(rl),
-	sb_(rl, input),
+	sb_(std::make_shared<Skybox>(rl, input)),
 	ps_(gfx, input, rl),
 	gui_(rl),
-	wl_(gfx, rl, input),
+	wl_(gfx, rl, input, sb_),
 	game_(game)
 {
 }
@@ -67,7 +67,7 @@ void Scene::Update(const float& dt)
 
 void Scene::Render(const float& dt)
 {
-	sb_.Render();
+	sb_->Render();
 	wl_.Draw();
 	std::vector<std::shared_ptr<Entity>>::iterator we;
 	for (we = world_entities_.begin(); we != world_entities_.end(); we++) {

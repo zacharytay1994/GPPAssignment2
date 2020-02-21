@@ -28,7 +28,7 @@ protected:
 public:
 	ParticleSystem ps_;
 protected:
-	Skybox sb_;
+	std::shared_ptr<Skybox> sb_;
 	CollisionManager cm_;
 	WorldLights wl_;
 	std::vector<std::shared_ptr<Block>> gravity_blocks_;
