@@ -20,6 +20,7 @@ Level::Level(std::shared_ptr<Graphics> gfx, std::shared_ptr<Input> input, std::s
 {
 	// Generate initial chunk
 	mapGen_->GenerateMap();
+	mapGen_->GenerateMap();
 	enemy1_ = AddEnemy({ 5.0f, 0.0f, 0.0f }, { 0.5f, 0.5f , 0.5f }, pathfinder_, mapGen_.get());
 
 	// Create player
@@ -328,7 +329,32 @@ void Level::resourceCollideWithPlayer(const float& dt)
 	MapGenerator::ResourceTileData& blockFront_ = mapGen_->GetCurrentTile(Vecf3(player_x, -0.5f, player_z + 1.0f));
 	MapGenerator::ResourceTileData& blockBack_ = mapGen_->GetCurrentTile(Vecf3(player_x, -0.5f, player_z - 1.0f));
 
-
+	// collide with world boundaries
+	// right bound 0
+	if ((player_x - 0.4f) < -0.5f) {
+		float penetration = (player_x - 0.4f) - (-0.5f);
+		player_->SetPosition(player_->GetPosition() - Vecf3(penetration, 0.0f, 0.0f));
+	}
+	// right bound train
+	if ((player_x - 0.4f) < (mapGen_->train_->GetPosition().x - 24.0f)) {
+		float penetration = (player_x - 0.4f) - (mapGen_->train_->GetPosition().x - 24.0f);
+		player_->SetPosition(player_->GetPosition() - Vecf3(penetration, 0.0f, 0.0f));
+	}
+	// left bound train
+	if ((player_x + 0.4f) > (mapGen_->train_->GetPosition().x + 24.0f)) {
+		float penetration = (player_x + 0.4f) - (mapGen_->train_->GetPosition().x + 24.0f);
+		player_->SetPosition(player_->GetPosition() - Vecf3(penetration, 0.0f, 0.0f));
+	}
+	// bottom bound
+	if ((player_z - 0.4f) < -0.5f) {
+		float penetration = (player_z - 0.4f) - (-0.5f);
+		player_->SetPosition(player_->GetPosition() - Vecf3(0.0f, 0.0f, penetration));
+	}
+	// top bound
+	if ((player_z + 0.4f) > 15.5f) {
+		float penetration = (player_z + 0.4f) - (15.5f);
+		player_->SetPosition(player_->GetPosition() - Vecf3(0.0f, 0.0f, penetration));
+	}
 
 	if (blockRight_.ent_ != nullptr && blockRight_.walkable_ == false && player_->AABB2dCollision(blockRight_.ent_, 1.0f, 1.0f))
 	{
@@ -485,7 +511,10 @@ void Level::PlayerLogic(const char& k1, const char& k2, std::shared_ptr<Player> 
 		//}
 
 		Vecf3 player_target = { player->target_->GetX() , player->target_->GetY() ,player->target_->GetZ() };
-		MapGenerator::ResourceTileData* tile= mapGen_->GetCurrentTilePtr(player_target);
+		MapGenerator::ResourceTileData* tile = mapGen_->GetCurrentTilePtr(player_target);
+		if (tile == nullptr) {
+			return;
+		}
 
 		// break block
 		if (tile->breakable_)

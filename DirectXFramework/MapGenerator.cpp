@@ -391,6 +391,9 @@ MapGenerator::ResourceTileData* MapGenerator::GetCurrentTilePtr(const Vecf3& pos
 	Vecf3 norm_pos = pos;
 	norm_pos.x = (int)round(pos.x) - (std::max)(0, (total_map_size_ - 3) * chunk_width_);
 	norm_pos.z = (int)round(pos.z);
+	if (norm_pos.x < 0 || norm_pos.x > 72 || norm_pos.z < 0 || norm_pos.z > 16) {
+		return nullptr;
+	}
 	int index = (int)(round(norm_pos.z) * chunk_width_ * 3 + round(norm_pos.x));
 	return &(resource_data_[index]);
 }
