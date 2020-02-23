@@ -1,11 +1,14 @@
 #include "WorldLights.h"
 
-WorldLights::WorldLights(const std::shared_ptr<Graphics> gfx, const std::shared_ptr<ResourceLibrary> rl, const std::shared_ptr<Input> input)
+WorldLights::WorldLights(const std::shared_ptr<Graphics> gfx, const std::shared_ptr<ResourceLibrary> rl, const std::shared_ptr<Input> input,
+	const std::shared_ptr<Skybox> sb)
 	:
 	gfx(gfx),
 	rl(rl),
-	input(input)
+	input(input),
+	sb_(sb)
 {
+	angle.x = 1.570796326f;
 }
 
 void WorldLights::Update(const float& dt)
@@ -93,12 +96,14 @@ void WorldLights::ExecuteDayNightCycle(const float& dt)
 		angle.x += dt / day_cycle_;
 		// calculate intensity
 		float ratio = abs(angle.x - 1.5707963267f) / 1.5707963267f;
-		sun_intensity_ = ((1.0f - ratio) + 0.2f) * intensity_multiplier_;
+		sun_intensity_ = ((1.0f - ratio)) * intensity_multiplier_;
+		sb_->SetSkyShade((1.0f - ratio) * sky_shade_);
 	}
 	else {
 		angle.x += dt / night_cycle_;
 		is_day_ = false;
 		sun_intensity_ = 0.0f;
+		sb_->SetSkyShade(0.0f);
 		if (angle.x > 6.284f) {
 			angle.x = 0.0f;
 		}

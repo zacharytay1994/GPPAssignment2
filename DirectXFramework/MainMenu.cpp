@@ -77,6 +77,8 @@ MainMenu::MainMenu(std::shared_ptr<Graphics> gfx, std::shared_ptr<Input> input, 
 	//AddModel("minecart", { 0,1,0 }, {0.1f,0.1f,0.1f}, true);
 	
 	ship_handler_.Init(graphics_, input_, rl, 20);
+	ship_handler2_.Init(graphics_, input_, rl, 20);
+	ship_handler3_.Init(graphics_, input_, rl, 20);
 }
 
 void MainMenu::Update(const float& dt)
@@ -107,6 +109,12 @@ void MainMenu::Update(const float& dt)
 	// CAMERA TRACKING MODE
 	/*__________________________________*/
 	Vecf3 cam_to_target;
+	if (camera_mode_ != 0) {
+		input_->EngageCamera(false);
+	}
+	else {
+		input_->EngageCamera(true);
+	}
 	if (multiplayer_) {
 		camera_mode_ = 2;
 	}
@@ -148,6 +156,8 @@ void MainMenu::Update(const float& dt)
 	}
 
 	ship_handler_.Update(dt);
+	ship_handler2_.Update(dt);
+	ship_handler3_.Update(dt);
 }
 
 void MainMenu::Render(const float& dt)
@@ -155,6 +165,8 @@ void MainMenu::Render(const float& dt)
 	Scene::Render(dt);
 	//Scene::Render(dt);
 	ship_handler_.Render();
+	ship_handler2_.Render();
+	ship_handler3_.Render();
 }
 
 void MainMenu::HandleActiveButton(std::string btnId)
@@ -164,6 +176,7 @@ void MainMenu::HandleActiveButton(std::string btnId)
 	}
 	else if (btnId == "credit") {
 		// switch to credit scene or smmth
+		ChangeScene("credits");
 	}
 	else if (btnId == "quit") {
 		int hehe = 0;

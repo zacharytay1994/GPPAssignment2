@@ -1,33 +1,55 @@
 #pragma once
-#include <algorithm>
-#include <iostream>
-#include <string>
 
-class PathFiding
-{
-private:
-	struct sNode
-	{
-		bool isObstacle = false;
-		bool isVisited = false;
-		float fGlobalGoal;
-		float fLocalGoal;
-		float x;
-		float z;
+#include "Vec3.h"
+#include "MapGenerator.h"
 
-		sNode* parent;
-	};
+#include <vector>
 
-	const static int mapWidth = 24;
-	const static int mapHeight = 16;
-	sNode Node[mapWidth * mapHeight];
-	std::shared_ptr<sNode> nodes_ = nullptr;
-	std::shared_ptr<sNode> nodeStart_ = nullptr;
-	std::shared_ptr<sNode> nodeEnd_ = nullptr;
-
+class Node {
 public:
-	PathFiding() {}
+	int g_cost_ = 0;
+	int h_cost_ = 0;
+	int grid_x_;
+	int grid_y_;
 
-	void Update(const float& dt);
+	bool walkable_;
+	Node* parent_;
+	bool in_closed_ = false;
+	bool in_open_ = false;
+public:
+	Node(const bool& walkable, const int& gridx, const int& gridy);
+	int GetFCost();
+	void Reset();
+	bool operator>(Node& rhs) {
+		if (rhs.GetFCost() < GetFCost()) {
+			return true;
+		}
+		return false;
+	}
+};
 
+class Grid {
+public:
+	std::vector<Node> node_grid_;
+	int grid_size_x_;
+	int grid_size_y_;
+	MapGenerator* mg_;
+public:
+	Grid(MapGenerator* mg);
+	void SetGrid();
+	std::vector<Node*> GetNeighbours(const Node& node);
+	bool GetNode(const int& x, const int& y, Node*& returnnode);
+};
+
+class AStarPathfinding {
+private:
+	Grid grid_;
+	std::vector<Node*> nodes_to_reset_;
+public:
+	AStarPathfinding(MapGenerator* mg);
+	bool FindPath(const Veci2& start, const Veci2& end, std::vector<Node*>& path);
+	int GetDistanceBetweenNodes(const Node& node1, const Node& node2);
+	int GetLowestFNode(std::vector<Node> list);
+	std::vector<Node*> RetracePath(Node* start, Node* end);
+	Grid& GetGrid() { return grid_; };
 };

@@ -15,14 +15,16 @@
 Level::Level(std::shared_ptr<Graphics> gfx, std::shared_ptr<Input> input, std::shared_ptr<ResourceLibrary> rl, Game* game)
 	:
 	Scene(gfx, input, rl, game),
-	mapGen_(std::make_unique<MapGenerator>(graphics_, input_, rl_, this))
+	mapGen_(std::make_unique<MapGenerator>(graphics_, input_, rl_, this)),
+	pathfinder_(std::make_shared<AStarPathfinding>(mapGen_.get()))
 {
 	// Generate initial chunk
 	mapGen_->GenerateMap();
-	enemy1_ = AddEnemy({ 5.0f, 0.0f, 0.0f }, { 0.5f, 0.5f , 0.5f });
+	mapGen_->GenerateMap();
+	enemy1_ = AddEnemy({ 5.0f, 0.0f, 0.0f }, { 0.5f, 0.5f , 0.5f }, pathfinder_, mapGen_.get());
 
 	// Create player
-	player_ = AddPlayer({ 0.0f, 1.0f, 1.0f }, { 0.5f, 0.5f, 0.5f });
+	player_ = AddPlayer({ 0.0f, 1.0f, 0.0f }, { 0.5f, 0.5f, 0.5f });
 	player_->AddComponent(std::make_shared<InputComponent>(InputComponent(*player_, *input_, 'W', 'S', 'A', 'D', VK_LSHIFT)));
 	player_->SetDrawTarget(true);
 	player2_ = AddPlayer({ 0.0f, 1.0f, 1.0f }, { 0.5f, 0.5f, 0.5f });
@@ -44,6 +46,9 @@ void Level::Update(const float& dt)
 	ps_.SetCameraSuckPosition(!game_over_ ? (input_->GetCameraPosition() + Vecf3(0.0f, 1.2f, 0.0f)) : (mapGen_->train_->GetPosition() + Vecf3(0.0f, 10.0f, 0.0f)));
 	gui_.SetTrainX(std::dynamic_pointer_cast<ChooChoo>(mapGen_->train_)->GetPosition().x);
 
+	// set enemy destination
+	enemy1_->SetDestination(player_->GetPosition());
+
 	// <!-- crafting cooldown
 	if (crafting_cooldown_timer > 0) {
 		crafting_cooldown_timer -= dt;
@@ -54,7 +59,7 @@ void Level::Update(const float& dt)
 	// -->
 
 	wl_.SetPoint1(player_->GetPosition() + RotateVectorY(Vecf3(0.0f, 0.0f, 1.0f), -player_->GetOrientation().y) * 2.0f + Vecf3(0.0f, 1.0f, 0.0f));
-	wl_.SetPoint2(mapGen_->train_->GetPosition() + RotateVectorY(Vecf3(0.0f, 0.0f, 1.0f), -(mapGen_->train_->GetCube().GetAngleY())) * 2.0f + Vecf3(0.0f, 1.0f, 0.0f));
+	wl_.SetPoint2(mapGen_->train_->GetPosition() + RotateVectorY(Vecf3(0.0f, 0.0f, 1.0f), -(mapGen_->train_->GetCube().GetAngleY() + 1.57079f)) * 2.0f + Vecf3(0.0f, 1.0f, 0.0f));
 	if (multiplayer_) {
 		wl_.SetPoint3(player2_->GetPosition() + RotateVectorY(Vecf3(0.0f, 0.0f, 1.0f), -player2_->GetOrientation().y) * 2.0f + Vecf3(0.0f, 1.0f, 0.0f));
 	}
@@ -78,6 +83,12 @@ void Level::Update(const float& dt)
 	/*__________________________________*/
 	if (multiplayer_) { camera_mode_ = 2; }
 	Vecf3 cam_to_target;
+	if (camera_mode_ != 0) {
+		input_->EngageCamera(false);
+	}
+	else {
+		input_->EngageCamera(true);
+	}
 	switch (camera_mode_) {
 	case 0: // free roam
 		break;
@@ -255,7 +266,7 @@ void Level::Update(const float& dt)
 
 	//collision
 	entityCollideWithPlayer(std::dynamic_pointer_cast<Entity>(enemy1_), 0.5f, 0.5f);	
-	resourceCollideWithPlayer();
+	resourceCollideWithPlayer(dt);
 }
 
 
@@ -293,6 +304,9 @@ void Level::Render(const float& dt)
 	/*_____________________________________*/
 	graphics_->EnableTransparency(true);
 	rl_->DrawTexturedPlane("blueoverlay", rl_->GetTransform({0.0f, -0.5f, 0.0f}, {2000.0f, 2000.0f, 1.0f}, { 1.57079632f, 0.0f, 0.0f}, input_));
+	/*rl_->DrawTexturedCubeNorm("robin", rl_->GetTransform({ 0.0f, -0.0f, 0.0f }, { 2.0f, 2.0f, 2.0f }, { 0.0f, 0.0f, 0.0f }, input_),
+		rl_->GetModelTransform({ 0.0f, -0.0f, 0.0f }, { 2.0f, 2.0f, 2.0f }, { 0.0f, 0.0f, 0.0f }));*/
+	//rl_->DrawTexturedCube("robin", rl_->GetTransform({ 0.0f, 0.0f, 0.0f }, { 2.0f, 2.0f, 2.0f }, { 0.0f, 0.0f, 0.0f }, input_));
 	graphics_->EnableTransparency(false);
 }
 
@@ -306,7 +320,7 @@ void Level::SpawnRandomBlocks(const int& val)
 }
 
 
-void Level::resourceCollideWithPlayer()
+void Level::resourceCollideWithPlayer(const float& dt)
 {
 	// Resource collision
 	float player_x = player_->GetPosition().x;
@@ -318,29 +332,58 @@ void Level::resourceCollideWithPlayer()
 	MapGenerator::ResourceTileData& blockFront_ = mapGen_->GetCurrentTile(Vecf3(player_x, -0.5f, player_z + 1.0f));
 	MapGenerator::ResourceTileData& blockBack_ = mapGen_->GetCurrentTile(Vecf3(player_x, -0.5f, player_z - 1.0f));
 
+	// collide with world boundaries
+	// right bound 0
+	if ((player_x - 0.4f) < -0.5f) {
+		float penetration = (player_x - 0.4f) - (-0.5f);
+		player_->SetPosition(player_->GetPosition() - Vecf3(penetration, 0.0f, 0.0f));
+	}
+	// right bound train
+	if ((player_x - 0.4f) < (mapGen_->train_->GetPosition().x - 24.0f)) {
+		float penetration = (player_x - 0.4f) - (mapGen_->train_->GetPosition().x - 24.0f);
+		player_->SetPosition(player_->GetPosition() - Vecf3(penetration, 0.0f, 0.0f));
+	}
+	// left bound train
+	if ((player_x + 0.4f) > (mapGen_->train_->GetPosition().x + 24.0f)) {
+		float penetration = (player_x + 0.4f) - (mapGen_->train_->GetPosition().x + 24.0f);
+		player_->SetPosition(player_->GetPosition() - Vecf3(penetration, 0.0f, 0.0f));
+	}
+	// bottom bound
+	if ((player_z - 0.4f) < -0.5f) {
+		float penetration = (player_z - 0.4f) - (-0.5f);
+		player_->SetPosition(player_->GetPosition() - Vecf3(0.0f, 0.0f, penetration));
+	}
+	// top bound
+	if ((player_z + 0.4f) > 15.5f) {
+		float penetration = (player_z + 0.4f) - (15.5f);
+		player_->SetPosition(player_->GetPosition() - Vecf3(0.0f, 0.0f, penetration));
+	}
 
-
-	if (blockRight_.ent_ != nullptr && blockRight_.walkable_ == false && player_->AABB2dCollision(blockRight_.ent_, 0.8f, 0.8f))
+	if (blockRight_.ent_ != nullptr && blockRight_.walkable_ == false && player_->AABB2dCollision(blockRight_.ent_, 1.0f, 1.0f))
 	{
-		player_->SetPosition(player_->GetPosition() - Vecf3(0.1f, 0.0f, 0.0f));
+		float penetration = (player_->GetPosition().x + 0.4f) - (blockRight_.ent_->GetPosition().x - 0.5f);
+		player_->SetPosition(player_->GetPosition() - Vecf3(penetration, 0.0f, 0.0f));
 		player_->player_touch_right = true;
 	}
 
-	if (blockLeft_.ent_ != nullptr && blockLeft_.walkable_ == false && player_->AABB2dCollision(blockLeft_.ent_, 0.8f, 0.8f))
+	if (blockLeft_.ent_ != nullptr && blockLeft_.walkable_ == false && player_->AABB2dCollision(blockLeft_.ent_, 1.0f, 1.0f))
 	{
-		player_->SetPosition(player_->GetPosition() - Vecf3(-0.1f, 0.0f, 0.0f));
+		float penetration = (blockLeft_.ent_->GetPosition().x + 0.5f) - (player_->GetPosition().x - 0.4f);
+		player_->SetPosition(player_->GetPosition() + Vecf3(penetration, 0.0f, 0.0f));
 		player_->player_touch_left = true;
 	}
 
-	if (blockFront_.ent_ != nullptr && blockFront_.walkable_ == false && player_->AABB2dCollision(blockFront_.ent_, 0.8f, 0.8f))
+	if (blockFront_.ent_ != nullptr && blockFront_.walkable_ == false && player_->AABB2dCollision(blockFront_.ent_, 1.0f, 1.0f))
 	{
-		player_->SetPosition(player_->GetPosition() - Vecf3(0.0f, 0.0f, 0.1f));
+		float penetration = (player_->GetPosition().z + 0.4f) - (blockFront_.ent_->GetPosition().z - 0.5f);
+		player_->SetPosition(player_->GetPosition() - Vecf3(0.0f, 0.0f, penetration));
 		player_->player_touch_front = true;
 	}
 
-	if (blockBack_.ent_ != nullptr && blockBack_.walkable_ == false && player_->AABB2dCollision(blockBack_.ent_, 0.8f, 0.8f))
+	if (blockBack_.ent_ != nullptr && blockBack_.walkable_ == false && player_->AABB2dCollision(blockBack_.ent_, 1.0f, 1.0f))
 	{
-		player_->SetPosition(player_->GetPosition() - Vecf3(0.0f, 0.0f, -0.1f));
+		float penetration = (blockBack_.ent_->GetPosition().z + 0.5f) - (player_->GetPosition().z - 0.4f);
+		player_->SetPosition(player_->GetPosition() + Vecf3(0.0f, 0.0f, penetration));
 		player_->player_touch_back = true;
 	}
 	
@@ -355,22 +398,26 @@ void Level::entityCollideWithPlayer(std::shared_ptr<Entity> ent_, float length, 
 
 			if (player_->GetPosition().x < (ent_->GetPosition().x - length / 2.0f))
 			{
-				player_->SetPosition(player_->GetPosition() - Vecf3(0.1f, 0.0f, 0.0f));
+				float penetration = (player_->GetPosition().x + 0.4f) - (ent_->GetPosition().x - 0.4f);
+				player_->SetPosition(player_->GetPosition() - Vecf3(penetration, 0.0f, 0.0f));
 				player_->player_touch_right = true;
 			}
 			else if (player_->GetPosition().x > (ent_->GetPosition().x + length / 2.0f))
 			{
-				player_->SetPosition(player_->GetPosition() - Vecf3(-0.1f, 0.0f, 0.0f));
+				float penetration = (ent_->GetPosition().x + 0.5f) - (player_->GetPosition().x - 0.4f);
+				player_->SetPosition(player_->GetPosition() - Vecf3(-penetration, 0.0f, 0.0f));
 				player_->player_touch_left = true;
 			}
 			else if (player_->GetPosition().z < (ent_->GetPosition().z - width / 2.0f))
 			{
-				player_->SetPosition(player_->GetPosition() - Vecf3(0.0f, 0.0f, 0.1f));
+				float penetration = (player_->GetPosition().z + 0.4f) - (ent_->GetPosition().z - 0.5f);
+				player_->SetPosition(player_->GetPosition() - Vecf3(0.0f, 0.0f, penetration));
 				player_->player_touch_front = true;
 			}
 			else if (player_->GetPosition().z > (ent_->GetPosition().z + width / 2.0f))
 			{
-				player_->SetPosition(player_->GetPosition() - Vecf3(0.0f, 0.0f, -0.1f));
+				float penetration = (ent_->GetPosition().z + 0.5f) - (player_->GetPosition().z - 0.4f);
+				player_->SetPosition(player_->GetPosition() - Vecf3(0.0f, 0.0f, -penetration));
 				player_->player_touch_back = true;
 			}
 		}
@@ -467,13 +514,17 @@ void Level::PlayerLogic(const char& k1, const char& k2, std::shared_ptr<Player> 
 		//}
 
 		Vecf3 player_target = { player->target_->GetX() , player->target_->GetY() ,player->target_->GetZ() };
-		MapGenerator::ResourceTileData* tile= mapGen_->GetCurrentTilePtr(player_target);
+		MapGenerator::ResourceTileData* tile = mapGen_->GetCurrentTilePtr(player_target);
+		if (tile == nullptr) {
+			return;
+		}
 
 		// break block
 		if (tile->breakable_)
 		{
 			EmitDestructionParticles(tile->block_type_, tile->ent_->GetPosition());
 			mapGen_->RemoveResource(tile);
+			pathfinder_->GetGrid().SetGrid();
 			player->Punch();
 		}
 		else if (tile->walkable_ && tile->block_type_ != ResourceBlockType::Rail && rail_count_ > 0) {

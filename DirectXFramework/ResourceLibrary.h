@@ -50,6 +50,7 @@ public:
 	void Initialize();
 	Vecf3 GetDimensions(const std::string& key);
 	DirectX::XMMATRIX GetTransform(const Vecf3& pos, const Vecf3& scale, const Vecf3& rotation, std::shared_ptr<Input> input);
+	DirectX::XMMATRIX GetModelTransform(const Vecf3& pos, const Vecf3& scale, const Vecf3& rotation);
 	/*____________________________________*/
 	// MESH LOADING FUNCTIONS
 	/*____________________________________*/
@@ -79,6 +80,7 @@ public:
 	void DrawTexturedCubeNorm(const std::string& key, const DirectX::XMMATRIX& transform, const DirectX::XMMATRIX& model);	// draws textured cube with normals
 	void DrawUntexturedCubeNorm(const DirectX::XMMATRIX& transform, const DirectX::XMMATRIX& model, const DirectX::XMFLOAT4& colour);
 	void DrawTexturedPlane(const std::string& key, const DirectX::XMMATRIX& transform);
+	void DrawTexturedPlane(const std::string& key, const DirectX::XMMATRIX& transform, const DirectX::XMFLOAT4& color);
 	void DrawTexturedPlaneSlice(const std::string& key, const DirectX::XMMATRIX& transform, const int& columns, const int& rows, const int& index);
 	void DrawUnTexturedModelNorm(const std::string& key, const DirectX::XMMATRIX& transform, const DirectX::XMMATRIX& model);
 private:

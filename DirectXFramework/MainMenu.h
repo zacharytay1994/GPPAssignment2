@@ -18,6 +18,8 @@ private:
 	bool multiplayer_ = false;
 
 	ShipHandler ship_handler_;
+	ShipHandler ship_handler2_;
+	ShipHandler ship_handler3_;
 
 public:
 	MainMenu(std::shared_ptr<Graphics> gfx, std::shared_ptr<Input> input, std::shared_ptr<ResourceLibrary> rl, Game* game);

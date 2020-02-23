@@ -1,6 +1,7 @@
 #pragma once
 
 #include "MapGenerator.h"
+#include "PathFinding.h"
 #include "Player.h"
 #include "Enemy.h"
 
@@ -9,6 +10,7 @@ class Level : public Scene {
 private:
 	std::shared_ptr<Block> test_block_;
 	std::unique_ptr<MapGenerator> mapGen_ = nullptr;
+	std::shared_ptr<AStarPathfinding> pathfinder_ = nullptr;
 	std::shared_ptr<Block> giraffe_ = nullptr;
 	std::shared_ptr<Player> player_;
 
@@ -45,7 +47,7 @@ public:
 	Level(std::shared_ptr<Graphics> gfx, std::shared_ptr<Input> input, std::shared_ptr<ResourceLibrary> rl, Game* game);
 	void Update(const float& dt) override;
 	void Render(const float& dt) override;
-	void resourceCollideWithPlayer();
+	void resourceCollideWithPlayer(const float& dt);
 	void entityCollideWithPlayer(std::shared_ptr<Entity> ent_, float length, float width);
 
 	// <--- test function can remove if need be

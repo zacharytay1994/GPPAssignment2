@@ -33,6 +33,15 @@ DirectX::XMMATRIX ResourceLibrary::GetTransform(const Vecf3& pos, const Vecf3& s
 		DirectX::XMMatrixPerspectiveLH(1.0f, (float)Graphics::viewport_height_ / (float)Graphics::viewport_width_, 0.5f, 1000.0f));
 }
 
+DirectX::XMMATRIX ResourceLibrary::GetModelTransform(const Vecf3& pos, const Vecf3& scale, const Vecf3& rotation)
+{
+	// no scaling by 0
+	return	DirectX::XMMatrixTranspose(
+		DirectX::XMMatrixScaling(scale.x, scale.y, scale.z) *
+		DirectX::XMMatrixRotationRollPitchYaw(rotation.x, rotation.y, rotation.z) *
+		DirectX::XMMatrixTranslation(pos.x, pos.y, pos.z));
+}
+
 void ResourceLibrary::AddPosTexModel(const std::string& mapkey, const std::string& objfile, const std::wstring& texturefile)
 {
 	std::vector<PosTex> vs_data;
@@ -651,6 +660,18 @@ void ResourceLibrary::DrawTexturedPlane(const std::string& key, const DirectX::X
 	gfx->BindIndexBuffer(vi_buffer_map["TexturedPlane"].p_i_buffer_);
 	gfx->BindShaderResourceView(srv_map[key]);
 	gfx->UpdateCBTransformSubresource({ transform, DirectX::XMMatrixIdentity() });
+	gfx->UpdateCBColourSubresource({ 0.0f, 0.0f, 0.0f, 0.0f });
+	gfx->DrawIndexed(vi_buffer_map["TexturedPlane"].index_count_);
+}
+
+void ResourceLibrary::DrawTexturedPlane(const std::string& key, const DirectX::XMMATRIX& transform, const DirectX::XMFLOAT4& color)
+{
+	gfx->SetUseType(ShaderType::Textured);
+	gfx->BindVertexBufferStride(vi_buffer_map["TexturedPlane"].p_v_buffer_, 20u);
+	gfx->BindIndexBuffer(vi_buffer_map["TexturedPlane"].p_i_buffer_);
+	gfx->BindShaderResourceView(srv_map[key]);
+	gfx->UpdateCBTransformSubresource({ transform, DirectX::XMMatrixIdentity() });
+	gfx->UpdateCBColourSubresource({ color.x, color.y, color.z, color.w });
 	gfx->DrawIndexed(vi_buffer_map["TexturedPlane"].index_count_);
 }
 

@@ -115,6 +115,7 @@
     <ClCompile Include="CollisionComponent.cpp" />
     <ClCompile Include="CollisionManager.cpp" />
     <ClCompile Include="Component.cpp" />
+    <ClCompile Include="Credits.cpp" />
     <ClCompile Include="Cube.cpp" />
     <ClCompile Include="CubeModel.cpp" />
     <ClCompile Include="Enemy.cpp" />
@@ -129,6 +130,7 @@
     <ClCompile Include="MainMenu.cpp" />
     <ClCompile Include="Particle.cpp" />
     <ClCompile Include="ParticleSystem.cpp" />
+    <ClCompile Include="PathFinding.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="Rail.cpp" />
     <ClCompile Include="ResourceLibrary.cpp" />
@@ -168,6 +170,7 @@
     <ClInclude Include="CollisionManager.h" />
     <ClInclude Include="CollisionSolver.h" />
     <ClInclude Include="Component.h" />
+    <ClInclude Include="Credits.h" />
     <ClInclude Include="Cube.h" />
     <ClInclude Include="Drawable.h" />
     <ClInclude Include="CubeModel.h" />
@@ -187,6 +190,7 @@
     <ClInclude Include="ObjectPool.h" />
     <ClInclude Include="Particle.h" />
     <ClInclude Include="ParticleSystem.h" />
+    <ClInclude Include="PathFinding.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="Rail.h" />
     <ClInclude Include="ResourceLibrary.h" />
