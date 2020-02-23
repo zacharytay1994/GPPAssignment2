@@ -21,7 +21,7 @@ Level::Level(std::shared_ptr<Graphics> gfx, std::shared_ptr<Input> input, std::s
 	// Generate initial chunk
 	mapGen_->GenerateMap();
 	mapGen_->GenerateMap();
-	enemy1_ = AddEnemy({ 5.0f, 0.0f, 0.0f }, { 0.5f, 0.5f , 0.5f }, pathfinder_, mapGen_.get());
+	//enemy1_ = AddEnemy({ 5.0f, 0.0f, 0.0f }, { 0.5f, 0.5f , 0.5f }, pathfinder_, mapGen_.get());
 
 	// Create player
 	player_ = AddPlayer({ 0.0f, 1.0f, 0.0f }, { 0.5f, 0.5f, 0.5f });
@@ -47,7 +47,7 @@ void Level::Update(const float& dt)
 	gui_.SetTrainX(std::dynamic_pointer_cast<ChooChoo>(mapGen_->train_)->GetPosition().x);
 
 	// set enemy destination
-	enemy1_->SetDestination(player_->GetPosition());
+	//enemy1_->SetDestination(player_->GetPosition());
 
 	// <!-- crafting cooldown
 	if (crafting_cooldown_timer > 0) {
