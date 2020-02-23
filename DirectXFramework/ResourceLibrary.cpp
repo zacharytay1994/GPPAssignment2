@@ -33,6 +33,15 @@ DirectX::XMMATRIX ResourceLibrary::GetTransform(const Vecf3& pos, const Vecf3& s
 		DirectX::XMMatrixPerspectiveLH(1.0f, (float)Graphics::viewport_height_ / (float)Graphics::viewport_width_, 0.5f, 1000.0f));
 }
 
+DirectX::XMMATRIX ResourceLibrary::GetModelTransform(const Vecf3& pos, const Vecf3& scale, const Vecf3& rotation)
+{
+	// no scaling by 0
+	return	DirectX::XMMatrixTranspose(
+		DirectX::XMMatrixScaling(scale.x, scale.y, scale.z) *
+		DirectX::XMMatrixRotationRollPitchYaw(rotation.x, rotation.y, rotation.z) *
+		DirectX::XMMatrixTranslation(pos.x, pos.y, pos.z));
+}
+
 void ResourceLibrary::AddPosTexModel(const std::string& mapkey, const std::string& objfile, const std::wstring& texturefile)
 {
 	std::vector<PosTex> vs_data;

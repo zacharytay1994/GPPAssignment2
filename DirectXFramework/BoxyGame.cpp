@@ -1,6 +1,7 @@
 #include "BoxyGame.h"
 #include "Level.h"
 #include "MainMenu.h"
+#include "Credits.h"
 
 #include "Vec3.h"
 
@@ -12,7 +13,7 @@ BoxyGame::BoxyGame(HWND hwnd)
 	Initialize(hwnd);
 	EnableCursor();
 	// Go to main menu
-	current_scene_ = std::make_unique<Level>(graphics_, input_, rl_, this);
+	current_scene_ = std::make_unique<MainMenu>(graphics_, input_, rl_, this);
 
 	// Go to level
 	//current_scene_ = std::make_unique<Level>(graphics_, input_, rl_, this);
@@ -75,6 +76,13 @@ void BoxyGame::Initialize(HWND hwnd)
 	rl_->AddCubeTexture("alien", L"Images/player/alex.png");
 	rl_->AddPosNormTexModel("enginecart", "Models/minecart_w_block.obj", L"Images/minecart_w_furnace.png");
 	rl_->AddPosNormTexModel("craftingcart", "Models/minecart_w_block.obj", L"Images/minecart_w_crafter.png");
+	rl_->AddCubeTexture("ship", L"Images/startblock.png");
+	// for credits
+	rl_->AddCubeTexture("robin", L"Images/RobinName.png");
+	rl_->AddCubeTexture("huiqi", L"Images/HuiQiName.png");
+	rl_->AddCubeTexture("sheline", L"Images/ShelineName.png");
+	rl_->AddCubeTexture("moshi", L"Images/MoshiName.png");
+	rl_->AddCubeTexture("zachary", L"Images/ZacharyName.png");
 }
 
 void BoxyGame::Update()
@@ -117,6 +125,9 @@ void BoxyGame::ChangeScene(std::string key) {
 	}
 	else if (key == "mainmenu") {
 		new_scene_ = std::make_shared<MainMenu>(graphics_, input_, rl_, this);
+	}
+	else if (key == "credits") {
+		new_scene_ = std::make_shared<Credits>(graphics_, input_, rl_, this);
 	}
 }
 void BoxyGame::ChangeScene(std::shared_ptr<Scene> scene) {

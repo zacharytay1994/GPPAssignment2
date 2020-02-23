@@ -1,6 +1,7 @@
 #pragma once
 #include "Scene.h"
 #include "Player.h"
+#include "ShipHandler.h"
 
 #define MAKEPOSITION(pos,dim,sca) {pos.x - dim.x * sca.x / 2 , pos.y, pos.z - dim.z * sca.z / 2 }
 
@@ -16,6 +17,9 @@ private:
 	int camera_mode_ = 1;
 	bool multiplayer_ = false;
 
+	ShipHandler ship_handler_;
+	ShipHandler ship_handler2_;
+	ShipHandler ship_handler3_;
 
 public:
 	MainMenu(std::shared_ptr<Graphics> gfx, std::shared_ptr<Input> input, std::shared_ptr<ResourceLibrary> rl, Game* game);

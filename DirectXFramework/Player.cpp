@@ -48,7 +48,7 @@ void Player::Update(const float& dt)
 	//cubeModel_.RotateXTo("rarm", PI / 2 * dt);
 
 	// input for player
-	if (input_->KeyIsDown(VK_UP))
+	/*if (input_->KeyIsDown(VK_UP))
 	{
 		if (!(player_touch_front))
 		{
@@ -75,7 +75,7 @@ void Player::Update(const float& dt)
 		{
 			SetPosition(GetPosition() + Vecf3(2.0f, 0.0f, 0.0f) * dt);
 		}
-	}
+	}*/
 	// timers
 	if (dash_cooldown_timer_ > 0) {
 		dash_cooldown_timer_ -= dt;
