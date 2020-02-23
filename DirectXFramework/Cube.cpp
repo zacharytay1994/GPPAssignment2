@@ -8,7 +8,7 @@ Cube::Cube(std::shared_ptr<Graphics> gfx, std::shared_ptr<Input> input, const st
 	texture_key_(filename),
 	rl_(rl)
 {
-	InitializeCube(-10, 0, 0, 0.5f, 0.5f, 0.5f, 0.0f, 0.0f, 0.0f);
+	InitializeCube(-10, -1000, 0, 0.5f, 0.5f, 0.5f, 0.0f, 0.0f, 0.0f);
 }
 
 Cube::~Cube()

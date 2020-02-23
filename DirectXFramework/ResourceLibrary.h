@@ -50,6 +50,7 @@ public:
 	void Initialize();
 	Vecf3 GetDimensions(const std::string& key);
 	DirectX::XMMATRIX GetTransform(const Vecf3& pos, const Vecf3& scale, const Vecf3& rotation, std::shared_ptr<Input> input);
+	DirectX::XMMATRIX GetModelTransform(const Vecf3& pos, const Vecf3& scale, const Vecf3& rotation);
 	/*____________________________________*/
 	// MESH LOADING FUNCTIONS
 	/*____________________________________*/

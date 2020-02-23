@@ -168,6 +168,7 @@ void MainMenu::HandleActiveButton(std::string btnId)
 	}
 	else if (btnId == "credit") {
 		// switch to credit scene or smmth
+		ChangeScene("credits");
 	}
 	else if (btnId == "quit") {
 		int hehe = 0;

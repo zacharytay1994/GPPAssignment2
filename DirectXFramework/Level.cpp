@@ -304,6 +304,9 @@ void Level::Render(const float& dt)
 	/*_____________________________________*/
 	graphics_->EnableTransparency(true);
 	rl_->DrawTexturedPlane("blueoverlay", rl_->GetTransform({0.0f, -0.5f, 0.0f}, {2000.0f, 2000.0f, 1.0f}, { 1.57079632f, 0.0f, 0.0f}, input_));
+	/*rl_->DrawTexturedCubeNorm("robin", rl_->GetTransform({ 0.0f, -0.0f, 0.0f }, { 2.0f, 2.0f, 2.0f }, { 0.0f, 0.0f, 0.0f }, input_),
+		rl_->GetModelTransform({ 0.0f, -0.0f, 0.0f }, { 2.0f, 2.0f, 2.0f }, { 0.0f, 0.0f, 0.0f }));*/
+	//rl_->DrawTexturedCube("robin", rl_->GetTransform({ 0.0f, 0.0f, 0.0f }, { 2.0f, 2.0f, 2.0f }, { 0.0f, 0.0f, 0.0f }, input_));
 	graphics_->EnableTransparency(false);
 }
 

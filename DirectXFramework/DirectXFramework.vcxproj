@@ -114,6 +114,7 @@
     <ClCompile Include="CollisionComponent.cpp" />
     <ClCompile Include="CollisionManager.cpp" />
     <ClCompile Include="Component.cpp" />
+    <ClCompile Include="Credits.cpp" />
     <ClCompile Include="Cube.cpp" />
     <ClCompile Include="CubeModel.cpp" />
     <ClCompile Include="Enemy.cpp" />
@@ -164,6 +165,7 @@
     <ClInclude Include="CollisionManager.h" />
     <ClInclude Include="CollisionSolver.h" />
     <ClInclude Include="Component.h" />
+    <ClInclude Include="Credits.h" />
     <ClInclude Include="Cube.h" />
     <ClInclude Include="Drawable.h" />
     <ClInclude Include="CubeModel.h" />
