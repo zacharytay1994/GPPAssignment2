@@ -61,7 +61,7 @@ public:
 	bool player_touch_right = false;
 	bool player_touch_front = false;
 	bool player_touch_back = false;
-	bool AABBCollision();
+
 	void SetDrawTarget(bool draw_target);
 	Vecf3 GetOrientation() { return cubeModel_.GetOrientation(); };
 	void Punch();

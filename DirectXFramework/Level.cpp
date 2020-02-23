@@ -21,7 +21,7 @@ Level::Level(std::shared_ptr<Graphics> gfx, std::shared_ptr<Input> input, std::s
 	// Generate initial chunk
 	mapGen_->GenerateMap();
 	mapGen_->GenerateMap();
-	//enemy1_ = AddEnemy({ 5.0f, 0.0f, 0.0f }, { 0.5f, 0.5f , 0.5f }, pathfinder_, mapGen_.get());
+	enemy1_ = AddEnemy({ 10.0f, 0.0f, 4.0f }, { 0.5f, 0.5f , 0.5f }, pathfinder_, mapGen_.get());
 
 	// Create player
 	player_ = AddPlayer({ 0.0f, 1.0f, 0.0f }, { 0.5f, 0.5f, 0.5f });
@@ -258,14 +258,7 @@ void Level::Update(const float& dt)
 		}
 	}
 
-	// initialize player collision
-	player_->player_touch_left = false;
-	player_->player_touch_right = false;
-	player_->player_touch_front = false;
-	player_->player_touch_back = false;
-
-	//collision
-	entityCollideWithPlayer(std::dynamic_pointer_cast<Entity>(enemy1_), 0.5f, 0.5f);	
+	
 	resourceCollideWithPlayer(dt);
 }
 
@@ -335,16 +328,6 @@ void Level::resourceCollideWithPlayer(const float& dt)
 		float penetration = (player_x - 0.4f) - (-0.5f);
 		player_->SetPosition(player_->GetPosition() - Vecf3(penetration, 0.0f, 0.0f));
 	}
-	// right bound train
-	if ((player_x - 0.4f) < (mapGen_->train_->GetPosition().x - 24.0f)) {
-		float penetration = (player_x - 0.4f) - (mapGen_->train_->GetPosition().x - 24.0f);
-		player_->SetPosition(player_->GetPosition() - Vecf3(penetration, 0.0f, 0.0f));
-	}
-	// left bound train
-	if ((player_x + 0.4f) > (mapGen_->train_->GetPosition().x + 24.0f)) {
-		float penetration = (player_x + 0.4f) - (mapGen_->train_->GetPosition().x + 24.0f);
-		player_->SetPosition(player_->GetPosition() - Vecf3(penetration, 0.0f, 0.0f));
-	}
 	// bottom bound
 	if ((player_z - 0.4f) < -0.5f) {
 		float penetration = (player_z - 0.4f) - (-0.5f);
@@ -360,62 +343,64 @@ void Level::resourceCollideWithPlayer(const float& dt)
 	{
 		float penetration = (player_->GetPosition().x + 0.4f) - (blockRight_.ent_->GetPosition().x - 0.5f);
 		player_->SetPosition(player_->GetPosition() - Vecf3(penetration, 0.0f, 0.0f));
-		player_->player_touch_right = true;
 	}
 
 	if (blockLeft_.ent_ != nullptr && blockLeft_.walkable_ == false && player_->AABB2dCollision(blockLeft_.ent_, 1.0f, 1.0f))
 	{
 		float penetration = (blockLeft_.ent_->GetPosition().x + 0.5f) - (player_->GetPosition().x - 0.4f);
 		player_->SetPosition(player_->GetPosition() + Vecf3(penetration, 0.0f, 0.0f));
-		player_->player_touch_left = true;
 	}
 
 	if (blockFront_.ent_ != nullptr && blockFront_.walkable_ == false && player_->AABB2dCollision(blockFront_.ent_, 1.0f, 1.0f))
 	{
 		float penetration = (player_->GetPosition().z + 0.4f) - (blockFront_.ent_->GetPosition().z - 0.5f);
 		player_->SetPosition(player_->GetPosition() - Vecf3(0.0f, 0.0f, penetration));
-		player_->player_touch_front = true;
 	}
 
 	if (blockBack_.ent_ != nullptr && blockBack_.walkable_ == false && player_->AABB2dCollision(blockBack_.ent_, 1.0f, 1.0f))
 	{
 		float penetration = (blockBack_.ent_->GetPosition().z + 0.5f) - (player_->GetPosition().z - 0.4f);
 		player_->SetPosition(player_->GetPosition() + Vecf3(0.0f, 0.0f, penetration));
-		player_->player_touch_back = true;
 	}
+
+	//Train collision
+	std::shared_ptr<Entity> train_ = mapGen_->train_;
+	std::shared_ptr<Entity> crafter_ = mapGen_->crafter_;
+	entityCollideWithPlayer(train_, 0.8f, 0.8f);
+	entityCollideWithPlayer(crafter_, 0.8f, 0.8f);
+
+	// enemy collision
+	entityCollideWithPlayer(std::dynamic_pointer_cast<Entity>(enemy1_), 0.5f, 0.5f);
+
+
+
 	
 }
 
 void Level::entityCollideWithPlayer(std::shared_ptr<Entity> ent_, float length, float width)
 {
-	// enemy collision
 	if (ent_ != nullptr)
-		if (player_->AABB2dCollision(ent_, 1.0f, 1.0f))
+		if (player_->AABB2dCollision(ent_, length, width))
 		{
-
-			if (player_->GetPosition().x < (ent_->GetPosition().x - length / 2.0f))
+			if (player_->GetPosition().x +0.4f  < ent_->GetPosition().x  && (player_->GetPosition().z + 0.4f > ent_->GetPosition().z - width / 2.0f) && (player_->GetPosition().z - 0.4f < ent_->GetPosition().z + width / 2.0f))
 			{
-				float penetration = (player_->GetPosition().x + 0.4f) - (ent_->GetPosition().x - 0.4f);
+				float penetration = (player_->GetPosition().x + 0.4f) - (ent_->GetPosition().x - length / 2.0f);
 				player_->SetPosition(player_->GetPosition() - Vecf3(penetration, 0.0f, 0.0f));
-				player_->player_touch_right = true;
 			}
-			else if (player_->GetPosition().x > (ent_->GetPosition().x + length / 2.0f))
+			else if (player_->GetPosition().x -0.4f> ent_->GetPosition().x && (player_->GetPosition().z + 0.4f > ent_->GetPosition().z - width / 2.0f) && (player_->GetPosition().z - 0.4f < ent_->GetPosition().z + width / 2.0f))
 			{
-				float penetration = (ent_->GetPosition().x + 0.5f) - (player_->GetPosition().x - 0.4f);
+				float penetration = (ent_->GetPosition().x + length / 2.0f) - (player_->GetPosition().x - 0.4f);
 				player_->SetPosition(player_->GetPosition() - Vecf3(-penetration, 0.0f, 0.0f));
-				player_->player_touch_left = true;
 			}
-			else if (player_->GetPosition().z < (ent_->GetPosition().z - width / 2.0f))
+			else if (player_->GetPosition().z +0.4f < ent_->GetPosition().z && (player_->GetPosition().x + 0.4f > ent_->GetPosition().x - length / 2.0f) && (player_->GetPosition().x - 0.4f < ent_->GetPosition().x + length / 2.0f))
 			{
-				float penetration = (player_->GetPosition().z + 0.4f) - (ent_->GetPosition().z - 0.5f);
+				float penetration = (player_->GetPosition().z + 0.4f) - (ent_->GetPosition().z - width / 2.0f);
 				player_->SetPosition(player_->GetPosition() - Vecf3(0.0f, 0.0f, penetration));
-				player_->player_touch_front = true;
 			}
-			else if (player_->GetPosition().z > (ent_->GetPosition().z + width / 2.0f))
+			else if (player_->GetPosition().z - 0.4f > ent_->GetPosition().z && (player_->GetPosition().x + 0.4f > ent_->GetPosition().x - length / 2.0f) && (player_->GetPosition().x - 0.4f < ent_->GetPosition().x + length / 2.0f))
 			{
-				float penetration = (ent_->GetPosition().z + 0.5f) - (player_->GetPosition().z - 0.4f);
+				float penetration = (ent_->GetPosition().z + width / 2.0f) - (player_->GetPosition().z - 0.4f);
 				player_->SetPosition(player_->GetPosition() - Vecf3(0.0f, 0.0f, -penetration));
-				player_->player_touch_back = true;
 			}
 		}
 }
