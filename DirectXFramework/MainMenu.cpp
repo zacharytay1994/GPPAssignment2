@@ -76,7 +76,7 @@ MainMenu::MainMenu(std::shared_ptr<Graphics> gfx, std::shared_ptr<Input> input, 
 	//tempScale = { 0.1, 1 / tempDimension.y, 1 / tempDimension.z };
 	//AddModel("minecart", { 0,1,0 }, {0.1f,0.1f,0.1f}, true);
 	
-	
+	ship_handler_.Init(graphics_, input_, rl, 20);
 }
 
 void MainMenu::Update(const float& dt)
@@ -147,12 +147,14 @@ void MainMenu::Update(const float& dt)
 		camera_mode_ = (camera_mode_ + 1) > 2 ? 0 : (camera_mode_ + 1);
 	}
 
+	ship_handler_.Update(dt);
 }
 
 void MainMenu::Render(const float& dt)
 {
 	Scene::Render(dt);
-	Scene::Render(dt);
+	//Scene::Render(dt);
+	ship_handler_.Render();
 }
 
 void MainMenu::HandleActiveButton(std::string btnId)
