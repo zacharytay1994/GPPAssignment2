@@ -48,7 +48,7 @@ public:
 	void Update(const float& dt) override;
 	void Render(const float& dt) override;
 	void resourceCollideWithPlayer(const float& dt, std::shared_ptr<Player> player);
-	void entityCollideWithPlayer(std::shared_ptr<Entity> ent_, float length, float width);
+	bool entityCollideWithPlayer(std::shared_ptr<Entity> ent_, float length, float width, std::shared_ptr<Player>player_);
 
 	// <--- test function can remove if need be
 	void SpawnRandomBlocks(const int& val);

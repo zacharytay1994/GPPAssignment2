@@ -10,7 +10,6 @@ private:
 	CubeModel cubeModel_;
 	int health = 3;
 	bool isHit = false;
-	bool bStop = false;
 	float Vel = -4.0f;
 	float speed_ = 2.0f;
 	MapGenerator* mg_;
@@ -22,16 +21,17 @@ private:
 	Vecf3 destination_ = { -1.0f, 0.0f, -1.0f }; // default set out of map, i.e. won't find anything
 	float find_path_interval_ = 1.0f;
 	float find_path_counter_ = 0.0f;
+	bool destinationReached = false;
+	float oneSec = 1.0f;
 
 
 public:
+	bool removeLastRail = false;
 	Enemy(std::shared_ptr<Graphics> gfx, std::shared_ptr<Input> input, std::shared_ptr<ResourceLibrary> rl);
 	void Update(const float& dt) override;
 	void Render() override;
 	void minusHealth();
 	bool isDead();
-	void pathWalking();
-	void isStop(bool iS);
 	void FindPath(const Vecf3& start, const Vecf3& end);
 	void ExecutePath(const float& dt);
 	void ResetPath();

@@ -24,7 +24,6 @@ Level::Level(std::shared_ptr<Graphics> gfx, std::shared_ptr<Input> input, std::s
 
 	enemy1_ = AddEnemy({ 5.0f, 0.0f, 0.0f }, { 0.5f, 0.5f , 0.5f }, pathfinder_, mapGen_.get());
 
-
 	// Create player
 	player_ = AddPlayer({ 0.0f, 1.0f, 0.0f }, { 0.5f, 0.5f, 0.5f });
 	player_->AddComponent(std::make_shared<InputComponent>(InputComponent(*player_, *input_, 'W', 'S', 'A', 'D', VK_LSHIFT)));
@@ -48,7 +47,7 @@ void Level::Update(const float& dt)
 	ps_.SetCameraSuckPosition(!game_over_ ? (input_->GetCameraPosition() + Vecf3(0.0f, 1.2f, 0.0f)) : (mapGen_->train_->GetPosition() + Vecf3(0.0f, 10.0f, 0.0f)));
 	gui_.SetTrainX(std::dynamic_pointer_cast<ChooChoo>(mapGen_->train_)->GetPosition().x);
 
-	// set enemy destination
+
 	//enemy1_->SetDestination(player_->GetPosition());
 
 	// <!-- crafting cooldown
@@ -250,9 +249,14 @@ void Level::Update(const float& dt)
 
 	//}
 
-	// Remove enemy if enemy is dead
+	//enemy behavior
 	if (enemy1_ != nullptr)
 	{
+		enemy1_->SetDestination(mapGen_->GetLastRail()->GetPosition());
+		if (enemy1_->AABB2dCollision(mapGen_->GetLastRail(), 1.0f, 1.0f))
+		{
+			RemoveEntity(mapGen_->GetLastRail());
+		}
 		if (enemy1_->isDead())
 		{
 			RemoveEntity(enemy1_);
@@ -260,14 +264,25 @@ void Level::Update(const float& dt)
 		}
 	}
 
-
-
 	//collision	
+	entityCollideWithPlayer(mapGen_->train_, 0.8f, 0.8f, player_);
+	entityCollideWithPlayer(mapGen_->crafter_, 0.8f, 0.8f, player_);
+	if (entityCollideWithPlayer(std::dynamic_pointer_cast<Entity>(enemy1_), 0.5f, 0.5f, player_))
+	{
+
+	}
 	resourceCollideWithPlayer(dt, player_);
+
 	if (multiplayer_)
 	{
 		resourceCollideWithPlayer(dt, player2_);
+		entityCollideWithPlayer(std::dynamic_pointer_cast<Entity>(enemy1_), 0.5f, 0.5f, player2_);
+		entityCollideWithPlayer(mapGen_->train_, 0.8f, 0.8f, player2_);
+		entityCollideWithPlayer(mapGen_->crafter_, 0.8f, 0.8f, player2_);
 	}
+
+
+
 }
 
 
@@ -352,43 +367,30 @@ void Level::resourceCollideWithPlayer(const float& dt, std::shared_ptr<Player> p
 
 	if (blockRight_.ent_ != nullptr && blockRight_.walkable_ == false && player->AABB2dCollision(blockRight_.ent_, 1.0f, 1.0f))
 	{
-		float penetration = (player_->GetPosition().x + 0.4f) - (blockRight_.ent_->GetPosition().x - 0.5f);
-		player_->SetPosition(player_->GetPosition() - Vecf3(penetration, 0.0f, 0.0f));
+		float penetration = (player->GetPosition().x + 0.4f) - (blockRight_.ent_->GetPosition().x - 0.5f);
+		player->SetPosition(player->GetPosition() - Vecf3(penetration, 0.0f, 0.0f));
 	}
 
 	if (blockLeft_.ent_ != nullptr && blockLeft_.walkable_ == false && player->AABB2dCollision(blockLeft_.ent_, 1.0f, 1.0f))
 	{
-		float penetration = (blockLeft_.ent_->GetPosition().x + 0.5f) - (player_->GetPosition().x - 0.4f);
-		player_->SetPosition(player_->GetPosition() + Vecf3(penetration, 0.0f, 0.0f));
+		float penetration = (blockLeft_.ent_->GetPosition().x + 0.5f) - (player->GetPosition().x - 0.4f);
+		player->SetPosition(player->GetPosition() + Vecf3(penetration, 0.0f, 0.0f));
 	}
 
 	if (blockFront_.ent_ != nullptr && blockFront_.walkable_ == false && player->AABB2dCollision(blockFront_.ent_, 1.0f, 1.0f))
 	{
-		float penetration = (player_->GetPosition().z + 0.4f) - (blockFront_.ent_->GetPosition().z - 0.5f);
-		player_->SetPosition(player_->GetPosition() - Vecf3(0.0f, 0.0f, penetration));
+		float penetration = (player->GetPosition().z + 0.4f) - (blockFront_.ent_->GetPosition().z - 0.5f);
+		player->SetPosition(player->GetPosition() - Vecf3(0.0f, 0.0f, penetration));
 	}
 
 	if (blockBack_.ent_ != nullptr && blockBack_.walkable_ == false && player->AABB2dCollision(blockBack_.ent_, 1.0f, 1.0f))
 	{
-		float penetration = (blockBack_.ent_->GetPosition().z + 0.5f) - (player_->GetPosition().z - 0.4f);
-		player_->SetPosition(player_->GetPosition() + Vecf3(0.0f, 0.0f, penetration));
+		float penetration = (blockBack_.ent_->GetPosition().z + 0.5f) - (player->GetPosition().z - 0.4f);
+		player->SetPosition(player->GetPosition() + Vecf3(0.0f, 0.0f, penetration));
 	}
-
-	//Train collision
-	std::shared_ptr<Entity> train_ = mapGen_->train_;
-	std::shared_ptr<Entity> crafter_ = mapGen_->crafter_;
-	entityCollideWithPlayer(train_, 0.8f, 0.8f);
-	entityCollideWithPlayer(crafter_, 0.8f, 0.8f);
-
-	// enemy collision
-	entityCollideWithPlayer(std::dynamic_pointer_cast<Entity>(enemy1_), 0.5f, 0.5f);
-
-
-
-	
 }
 
-void Level::entityCollideWithPlayer(std::shared_ptr<Entity> ent_, float length, float width)
+bool Level::entityCollideWithPlayer(std::shared_ptr<Entity> ent_, float length, float width, std::shared_ptr<Player> player_)
 {
 	if (ent_ != nullptr)
 		if (player_->AABB2dCollision(ent_, length, width))
@@ -413,6 +415,12 @@ void Level::entityCollideWithPlayer(std::shared_ptr<Entity> ent_, float length, 
 				float penetration = (ent_->GetPosition().z + width / 2.0f) - (player_->GetPosition().z - 0.4f);
 				player_->SetPosition(player_->GetPosition() - Vecf3(0.0f, 0.0f, -penetration));
 			}
+
+			return true;
+		}
+		else
+		{
+			return false;
 		}
 }
 
@@ -534,6 +542,13 @@ void Level::PlayerLogic(const char& k1, const char& k2, std::shared_ptr<Player> 
 				CraftRails(player);
 			}
 		} // no action available, attempt to craft rails
+		else if (enemy1_ != nullptr)
+		{
+			if (enemy1_->AABB2dCollision(player, 0.6f, 0.6f))
+			{
+				enemy1_->minusHealth();
+			}
+		}
 		else {
 			CraftRails(player);
 		}

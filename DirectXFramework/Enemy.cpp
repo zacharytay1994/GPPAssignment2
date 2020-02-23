@@ -1,4 +1,5 @@
 #include "Enemy.h"
+#include "Scene.h"
 
 Enemy::Enemy(std::shared_ptr<Graphics> gfx, std::shared_ptr<Input> input, std::shared_ptr<ResourceLibrary> rl)
 	:
@@ -39,16 +40,21 @@ void Enemy::Update(const float& dt)
 		}
 	}
 
-}
+	//if (position_ == destination_)
+	//{
+	//	destinationReached = true;
+	//	oneSec -= dt;
 
-
-void Enemy::pathWalking()
-{
-}
-
-void Enemy::isStop(bool iS)
-{
-	bStop = iS;
+	//	if (oneSec < 0)
+	//	{
+	//		removeLastRail = true;
+	//		oneSec = 1.0f;
+	//	}
+	//	else
+	//	{
+	//		removeLastRail = false;
+	//	}
+	//}
 }
 
 void Enemy::FindPath(const Vecf3& start, const Vecf3& end)
@@ -66,6 +72,7 @@ void Enemy::FindPath(const Vecf3& start, const Vecf3& end)
 void Enemy::ExecutePath(const float& dt)
 {
 	if (!current_path_.empty() && execute_path_) {
+		destinationReached = false;
 		// check distance away from current index
 		Vecf3 direction = mg_->GetWorldPosOfIndex({ current_path_[current_index_]->grid_x_, current_path_[current_index_]->grid_y_ }) - position_;
 		float temp = direction.LenSq();
