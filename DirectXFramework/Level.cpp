@@ -542,7 +542,9 @@ void Level::PlayerLogic(const char& k1, const char& k2, std::shared_ptr<Player> 
 				CraftRails(player);
 			}
 		} // no action available, attempt to craft rails
-		else if (enemy1_ != nullptr)
+		else if (!enemy1_->isDead() && 
+			abs(enemy1_->GetPosition().x - player->GetPosition().x) < 1 &&
+			abs(enemy1_->GetPosition().z - player->GetPosition().z) < 1)
 		{
 			if (enemy1_->AABB2dCollision(player, 0.6f, 0.6f))
 			{
