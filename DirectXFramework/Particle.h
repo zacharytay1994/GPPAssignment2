@@ -3,7 +3,7 @@
 #include "Entity.h"
 #include "Vec3.h"
 
-class Particle : Entity {
+class Particle : public Entity {
 	friend class ParticleSystem;
 private:
 	int particle_id_ = -1;

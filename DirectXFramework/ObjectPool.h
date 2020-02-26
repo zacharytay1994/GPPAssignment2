@@ -2,6 +2,7 @@
 
 #include "Base/Graphics.h"
 #include "Base/Input.h"
+#include "Entity.h"
 #include "ResourceLibrary.h"
 
 #include <string>
@@ -18,6 +19,8 @@ private:
 	static std::shared_ptr<Graphics> graphics_;
 	static std::shared_ptr<Input> input_;
 	static std::shared_ptr<ResourceLibrary> rl_;
+
+	int MAX_SIZE_ = MAX_SIZE;
 
 public:
 	ObjectPool() {}
@@ -42,11 +45,17 @@ public:
 	 */
 	std::shared_ptr<T> Acquire(const std::string& image)
 	{
-		if (resources_.empty() || resources_.size() < MAX_SIZE) { return std::make_shared<T>(image, graphics_, input_, rl_); }
+		if (resources_.empty() || resources_.size() < MAX_SIZE_) { return std::make_shared<T>(image, graphics_, input_, rl_); }
 		else
 		{
-			std::cout << "Reusing existing." << std::endl;
+			OutputDebugString("Reusing existing \n");
 			std::shared_ptr<T> resource = resources_.front();
+
+			if (resource == nullptr) {
+				resource = std::make_shared<T>(image, graphics_, input_, rl_);
+				resource->SetInUse(1);
+			}
+
 			resources_.pop_front();
 			return resource;
 		}
